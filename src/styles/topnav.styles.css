@@ -1,0 +1,22 @@
+.topnav {
+    background-color: #333;
+    color: white;
+    padding: 20px 10px 20px 10px;
+}
+
+.topnav-container {
+    display: flex;
+    flex-wrap:wrap;
+}
+
+.topnav-container-app-name {
+    flex-basis:50%;
+}
+
+.topnav-container-user-account {
+    flex-basis:50%;
+}
+
+.topnav-container-user-account div {
+    float:right;
+}

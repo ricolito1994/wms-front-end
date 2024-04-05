@@ -7,10 +7,14 @@ import Topnav from "app/components/Topnav";
 function MainLayout () {
     return (
         <>
-            <div>
+            <div className="container">
                 <Topnav/>
-                <Sidenav/>
-                <Outlet/>
+                <div className="content">
+                    <Sidenav/>
+                    <div className="main">
+                        <Outlet/>
+                    </div>
+                </div>
             </div>
         </>
     );

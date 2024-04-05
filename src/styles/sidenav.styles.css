@@ -1,0 +1,40 @@
+ul{
+    list-style-type: none;
+    padding: 0;
+}
+.sidenav {
+    background-color: #275927;
+    width: 250px;
+    padding: 10px;
+}
+  
+.side-menu-container {
+    position:relative;
+    top:5%;
+    padding:5%;
+}
+.side-menu-container li a {
+    color:white;
+    width: 100%;
+    margin-bottom:2%;
+    display: block;
+    padding:1%;
+    text-decoration: none;
+}
+
+.side-menu-container li a:hover, 
+.side-menu-container li a.active {
+    background-color: white;
+    color: #275927;
+}
+
+.logo-container {
+    position:relative;
+    padding-left:30%;
+    top:3%;
+}
+
+.version-number {
+    color: white;
+    text-align: center;
+}
