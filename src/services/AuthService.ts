@@ -1,4 +1,3 @@
-import axios from "axios";
 import { apiClient, loginClient } from "./http-common";
 const BASE_URL = process.env.REACT_APP_WMS_BASE_URL;
 class AuthService {
@@ -18,6 +17,5 @@ class AuthService {
             throw error;
         } 
     }
-
 }
 export default AuthService;
