@@ -30,11 +30,11 @@ ul{
 
 .logo-container {
     position:relative;
-    padding-left:30%;
+    display: flex;
+    justify-content: center;
     top:3%;
 }
 
 .version-number {
     color: white;
-    text-align: center;
 }

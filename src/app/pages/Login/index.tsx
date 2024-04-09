@@ -1,7 +1,17 @@
-import React, { useState, useEffect } from 'react';
+import AuthService from 'services/AuthService';
+import { useState, useEffect, useContext } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { Form, Input, Button } from 'antd';
-function Login () {
+import { AppContext } from 'context';
+import { useDispatch } from 'react-redux';
 
+import { setToken } from 'slice/AuthSlice';
+const Login = () => {
+    const {setIsAuthenticated} = useContext(AppContext);
+    
+    const dispatch = useDispatch();
+    const authService = new AuthService();
+    const navigate = useNavigate();
     const [authData, setAuthData] = useState({
         username : '',
         password : '',
@@ -11,8 +21,16 @@ function Login () {
         // maybe useful someday
     },[authData])
 
-    const authenticate = ( ) => {
-        console.log(authData)
+    const authenticate = async ( ) => {
+        try {
+            let auth = await authService.login(authData);
+            localStorage.setItem('accessToken', auth.access_token)
+            dispatch(setToken(auth));
+            setIsAuthenticated(true)
+            navigate('/')
+        } catch(e) {
+            console.log(e)
+        }
     }
 
     const onAuthValuesChange = (changedValues: any, allValues: any) => {
@@ -51,5 +69,4 @@ function Login () {
         </div>
     )
 }
-
 export default Login;

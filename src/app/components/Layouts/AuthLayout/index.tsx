@@ -8,5 +8,4 @@ function AuthLayout () {
         </div>
     )
 }
-
 export default AuthLayout;

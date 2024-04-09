@@ -1,7 +1,8 @@
-import * as React from 'react';
+import React , {useContext, useEffect} from 'react';
 import { Helmet } from 'react-helmet-async';
-import { useSelector, useDispatch } from 'react-redux';
+import { useSelector } from 'react-redux';
 import { Route, Routes, useLocation, useNavigate } from 'react-router-dom';
+import { AppContext } from 'context';
 //components
 import MainLayout from './components/Layouts/MainLayout';
 import AuthLayout from './components/Layouts/AuthLayout';
@@ -12,10 +13,21 @@ import Unit from './pages/Unit';
 import NotFound from './pages/NotFound';
 //authentication page
 import Login from './pages/Login';
-
-function App() {
-    const location = useLocation();
+import { RootState } from 'store';
+const App = () => {
+    const { isAuthenticated, setIsAuthenticated } = useContext(AppContext);
+    //const location = useLocation();
     const navigate = useNavigate();
+    const auth = useSelector((state: RootState) => state.token)
+    useEffect(() => {
+        setIsAuthenticated(!auth.value)
+        if (!isAuthenticated) {
+           navigate('/')
+        } else {
+           navigate('/login')
+        }
+    },[isAuthenticated])
+    
     return (
         <>
             <Helmet>
@@ -43,4 +55,16 @@ function App() {
         </>
     )
 }
+ 
+/* const mapStateToProps = (state : any) => ({
+    token: state.auth.token
+});
+  
+const mapDispatchToProps = {
+    setToken
+};
+export default connect(
+    mapStateToProps, 
+    mapDispatchToProps
+)(App);  */
 export default App;
