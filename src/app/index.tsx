@@ -15,19 +15,19 @@ import NotFound from './pages/NotFound';
 import Login from './pages/Login';
 import { RootState } from 'store';
 const App = () => {
-    const { isAuthenticated, setIsAuthenticated } = useContext(AppContext);
+    const { isAuthenticated, accessToken } = useContext(AppContext);
     //const location = useLocation();
     const navigate = useNavigate();
-    const auth = useSelector((state: RootState) => state.token)
+    //const auth = useSelector((state: RootState) => state.token)
     useEffect(() => {
-        setIsAuthenticated(!auth.value)
-        if (!isAuthenticated) {
-           navigate('/')
+        if (isAuthenticated) {
+            //navigate('/')
         } else {
-           navigate('/login')
+            //navigate('/login')
         }
-    },[isAuthenticated])
-    
+    },[accessToken,isAuthenticated])
+
+
     return (
         <>
             <Helmet>
@@ -55,7 +55,6 @@ const App = () => {
         </>
     )
 }
- 
 /* const mapStateToProps = (state : any) => ({
     token: state.auth.token
 });

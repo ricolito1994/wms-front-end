@@ -4,13 +4,14 @@ import { useNavigate } from 'react-router-dom';
 import { Form, Input, Button } from 'antd';
 import { AppContext } from 'context';
 import { useDispatch } from 'react-redux';
-
 import { setToken } from 'slice/AuthSlice';
+//import { userAsync } from 'slice/UserSlice'
+//import { AppDispatch } from 'store';
 const Login = () => {
-    const {setIsAuthenticated} = useContext(AppContext);
-    
+    const {setIsAuthenticated, setAccessToken} = useContext(AppContext);
     const dispatch = useDispatch();
-    const authService = new AuthService();
+    //const dispatchAsync = useDispatch<AppDispatch>();
+    const authService = new AuthService('');
     const navigate = useNavigate();
     const [authData, setAuthData] = useState({
         username : '',
@@ -24,8 +25,8 @@ const Login = () => {
     const authenticate = async ( ) => {
         try {
             let auth = await authService.login(authData);
-            localStorage.setItem('accessToken', auth.access_token)
-            dispatch(setToken(auth));
+            setAccessToken(auth.access_token)
+            dispatch(setToken(auth.access_token));
             setIsAuthenticated(true)
             navigate('/')
         } catch(e) {

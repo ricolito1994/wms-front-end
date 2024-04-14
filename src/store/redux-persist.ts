@@ -4,7 +4,10 @@ import storage from 'redux-persist/lib/storage';
 const persistConfig = {
   key: 'root',
   storage,
-  whitelist: ['token'], // Add slices you want to persist
+  whitelist: [
+    'auth',
+    'user',
+  ], 
 };
 
 export default persistConfig;

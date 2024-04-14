@@ -4,9 +4,6 @@ import { persistStore } from 'redux-persist';
 import { configureStore } from "@reduxjs/toolkit"
 
 export const store = configureStore({
-    /* reducer: {
-        auth : authSliceReducer
-    } */
     reducer: persistedReducer
 })
 export const persistor = persistStore(store);
