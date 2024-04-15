@@ -20,7 +20,7 @@ const App = () => {
     const navigate = useNavigate();
     //const auth = useSelector((state: RootState) => state.token)
     useEffect(() => {
-        if (isAuthenticated) {
+        if (isAuthenticated && accessToken) {
             //navigate('/')
         } else {
             //navigate('/login')

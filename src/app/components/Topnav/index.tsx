@@ -35,12 +35,20 @@ const Topnav = () => {
                 <div className='topnav-container-app-name'>
                     {process.env.REACT_APP_NAME}
                 </div>
+                <div className='topnav-container-middle'>
+                    
+                </div>
                 <div className='topnav-container-user-account'>
                     <div>
-                        {userData ? userData.fullname : ''}
+                        <div>
+                            <img src='./profilepic.png' alt="Logo" width='50'/>
+                        </div>
                     </div>
                     <div>
-                        <a href='#' onClick={logout}>logout</a>
+                        <div>{userData ? userData.fullname : ''}</div>
+                    </div>
+                    <div>
+                        <div><a href='#' onClick={logout}>logout</a></div>
                     </div>
                 </div>
             </div>

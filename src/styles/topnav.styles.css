@@ -1,22 +1,42 @@
 .topnav {
     background-color: #333;
     color: white;
-    padding: 20px 10px 20px 10px;
 }
-
 .topnav-container {
     display: flex;
     flex-wrap:wrap;
 }
-
 .topnav-container-app-name {
     flex-basis:50%;
+    padding: 15px 0px 15px 0px;
+    margin-left:10px;
 }
-
+.topnav-container-middle {
+    flex-basis:25%;
+}
 .topnav-container-user-account {
-    flex-basis:50%;
+    flex-basis:23%;
 }
 
-.topnav-container-user-account div {
+.topnav-container-user-account{
+    display: flex;
+    flex-wrap:wrap;
+    margin-right:10px;
+}
+.topnav-container-user-account div:nth-child(1){
+    padding-top:2px;
+    flex-basis:25%;
+}
+.topnav-container-user-account div:nth-child(2){
+    flex-basis:50%;
+    padding-top:12px;
+}
+.topnav-container-user-account div:nth-child(3){
+    flex-basis:25%;
+    padding-top:12px;
+}
+.topnav-container-user-account div:nth-child(1) div,
+.topnav-container-user-account div:nth-child(3) div,
+.topnav-container-user-account div:nth-child(2) div {
     float:right;
 }

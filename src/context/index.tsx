@@ -12,9 +12,9 @@ const AppContextProvider = ({children} : any) => {
     const [isAuthenticated, setIsAuthenticated] = useState<boolean>(false);
     const [isUserDataLoaded, setIsUserDataLoaded] = useState<boolean>(false);
     const [userData, setUserData] = useState<UserModel>(UserDefaults);
-    const [accessToken, setAccessToken] = useState<any>('');
+    const [accessToken, setAccessToken] = useState<any>(null);
     useEffect (() => {
-        if (accessToken && accessToken !== '') {
+        if (accessToken) {
             (new UserService(accessToken)).myself()
             .then((data: UserModel) => {
                 setUserData(data);
@@ -22,9 +22,9 @@ const AppContextProvider = ({children} : any) => {
             })
             .catch((err: any) => {
                 if(err.response.data.status == 'Token is Expired') {
-                    setAccessToken('expired');
+                    setAccessToken(null);
+                    setIsAuthenticated(false);
                 }
-
             });
         } else {
             setAccessToken(token.value);
