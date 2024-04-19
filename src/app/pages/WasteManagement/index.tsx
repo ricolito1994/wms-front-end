@@ -4,7 +4,7 @@ import React, {
     useState 
 } from "react";
 import { AppContext } from "context";
-const Reports = () => {
+const WasteManagement = () => {
     const { 
         setIsAuthenticated, 
         accessToken, 
@@ -17,9 +17,9 @@ const Reports = () => {
     }, [])
     return (
         <>
-            <div>Reports</div>
+            <div>Waste Management</div>
         </>
     )
 }
 
-export default Reports;
+export default WasteManagement;

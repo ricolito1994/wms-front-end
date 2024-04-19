@@ -21,6 +21,7 @@ const Sidenav = () => {
             <div className='side-menu-container'>
                 <ul>
                     <li><Link className={isActiveLink('/')} to ='/'>Dashboard</Link></li>
+                    <li><Link className={isActiveLink('/waste-management')} to ='/waste-management'>Waste Management</Link></li>
                     <li><Link className={isActiveLink('/unit')} to ='/unit'>Unit</Link></li>
                     <li><Link className={isActiveLink('/reports')} to ='/reports'>Reports</Link></li>
                 </ul>

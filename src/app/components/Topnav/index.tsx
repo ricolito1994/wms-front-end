@@ -10,6 +10,7 @@ const Topnav = () => {
     const { 
         setIsAuthenticated, 
         accessToken, 
+        setAccessToken,
         isUserDataLoaded, 
         userData 
     } = useContext(AppContext);
@@ -22,6 +23,7 @@ const Topnav = () => {
             dispatch(clearToken())
             dispatch(clearUser())
             setIsAuthenticated(false)
+            setAccessToken(null)
             navigate('/login')
         } catch (e) {
             //
@@ -45,7 +47,7 @@ const Topnav = () => {
                         </div>
                     </div>
                     <div>
-                        <div>{userData ? userData.fullname : ''}</div>
+                        <div>{userData.fullname}</div>
                     </div>
                     <div>
                         <div><a href='#' onClick={logout}>logout</a></div>

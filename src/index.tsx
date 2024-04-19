@@ -4,6 +4,7 @@ import './styles/main.styles.css';
 import './styles/sidenav.styles.css';
 import './styles/topnav.styles.css';
 import './styles/auth.styles.css';
+import './styles/dashboard.styles.css'
 //import App from './App';
 import App from 'app';
 import reportWebVitals from './reportWebVitals';

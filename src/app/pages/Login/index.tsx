@@ -5,12 +5,12 @@ import { Form, Input, Button } from 'antd';
 import { AppContext } from 'context';
 import { useDispatch } from 'react-redux';
 import { setToken } from 'slice/AuthSlice';
-//import { userAsync } from 'slice/UserSlice'
-//import { AppDispatch } from 'store';
+import { userAsync } from 'slice/UserSlice'
+import { AppDispatch } from 'store';
 const Login = () => {
     const {setIsAuthenticated, setAccessToken} = useContext(AppContext);
     const dispatch = useDispatch();
-    //const dispatchAsync = useDispatch<AppDispatch>();
+    const dispatchAsync = useDispatch<AppDispatch>();
     const authService = new AuthService('');
     const navigate = useNavigate();
     const [authData, setAuthData] = useState({
@@ -27,6 +27,7 @@ const Login = () => {
             let auth = await authService.login(authData);
             setAccessToken(auth.access_token)
             dispatch(setToken(auth.access_token));
+            dispatchAsync(userAsync(auth.access_token));
             setIsAuthenticated(true)
             navigate('/')
         } catch(e) {
@@ -34,7 +35,10 @@ const Login = () => {
         }
     }
 
-    const onAuthValuesChange = (changedValues: any, allValues: any) => {
+    const onAuthValuesChange = (
+        changedValues: any, 
+        allValues: any
+    ) => {
         setAuthData(allValues)
     }
 
