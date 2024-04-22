@@ -5,6 +5,8 @@ import './styles/sidenav.styles.css';
 import './styles/topnav.styles.css';
 import './styles/auth.styles.css';
 import './styles/dashboard.styles.css'
+import './styles/unit.styles.css';
+import './styles/toptabs.styles.css';
 //import App from './App';
 import App from 'app';
 import reportWebVitals from './reportWebVitals';

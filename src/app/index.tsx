@@ -3,6 +3,7 @@ import { Helmet } from 'react-helmet-async';
 // import { useSelector } from 'react-redux';
 import { Route, Routes, /*useLocation, useNavigate,*/ Navigate } from 'react-router-dom';
 import { AppContext } from 'context';
+import UnitContextProvider from '../context/UnitContext';
 // components
 import MainLayout from './components/Layouts/MainLayout';
 import AuthLayout from './components/Layouts/AuthLayout';
@@ -12,6 +13,10 @@ import Reports from './pages/Reports';
 import Unit from './pages/Unit';
 import WasteManagement from './pages/WasteManagement';
 import NotFound from './pages/NotFound';
+//unit
+import UnitDashboard from './pages/Unit/UnitDashboard';
+import UnitPerformance from './pages/Unit/UnitPerformance';
+import UnitMonitor from './pages/Unit/UnitMonitor';
 //authentication page
 import Login from './pages/Login';
 //import { RootState } from 'store';
@@ -53,7 +58,27 @@ const App = () => {
                 >
                     <Route path="/" element={renderElement(<Dashboard />)}/>
                     <Route path="/reports" element={renderElement(<Reports />)} />
-                    <Route path="/unit" element={renderElement(<Unit />)}/>
+                    <Route path="/unit" element={renderElement(
+                        <UnitContextProvider>
+                            <Unit />
+                        </UnitContextProvider>
+                    )}>
+                        <Route path="/unit/" element={renderElement(
+                            <UnitContextProvider>
+                                <UnitDashboard />
+                            </UnitContextProvider>
+                        )}/>
+                        <Route path="/unit/performance" element={renderElement(
+                            <UnitContextProvider>
+                                <UnitPerformance />
+                            </UnitContextProvider>
+                        )}/>
+                        <Route path="/unit/monitor" element={renderElement(
+                            <UnitContextProvider>
+                                <UnitMonitor />
+                            </UnitContextProvider>
+                        )}/>
+                    </Route>
                     <Route path="/waste-management" element={renderElement(<WasteManagement />)}/>
                 </Route>
                 <Route path="*" element={<NotFound />} />

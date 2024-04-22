@@ -26,3 +26,45 @@ body, html {
   padding: 10px;
   padding:1%;
 }
+
+.content-main-container {
+  display: grid;
+  height: 85%;
+  width: 98%;
+  box-sizing: border-box;
+  /*grid-auto-rows: 240px;*/
+  /*overflow-y: auto;*/
+  /* max-height: 90svh;*/
+  margin-top: 1rem;
+}
+
+.content-main-items {
+  display: flex;
+  flex-direction: column;
+  /* justify-content: center;*/
+  /* align-items: center;*/
+  background: #ccc;
+  color: #353535;
+  box-shadow: rgba(3, 8, 20, 0.1) 0px 0.15rem 0.5rem, rgba(2, 8, 20, 0.1) 0px 0.075rem 0.175rem;
+  height: 100%;
+  width: 100%;
+  border-radius: 4px;
+  transition: all 500ms;
+  overflow: hidden;
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  padding: 1%;
+}
+.content-main-wide {
+  grid-column: span 1 / auto;
+}
+
+.content-main-tall {
+  grid-row: span 3 / auto;
+}
+
+.content-main-tall-wide {
+  grid-column: span 3 / auto;
+  grid-row: span 3 / auto;
+}
