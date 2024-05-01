@@ -5,8 +5,8 @@ export class HttpCommons {
   apiClient: AxiosInstance;
   constructor(accessToken:string) {
     this.accessToken = accessToken;
-    if (this.accessToken === '') this.apiClient = this.getLoginClient();
-    else this.apiClient = this.getApiClient();
+    this.apiClient = this.accessToken === '' ? this.getLoginClient() : 
+      this.getApiClient();
   }
 
   protected getLoginClient () : AxiosInstance {
@@ -23,6 +23,7 @@ export class HttpCommons {
     return axios.create({
       baseURL: process.env.REACT_APP_WMS_BASE_URL,
       headers: {
+        'Access-Control-Allow-Origin' : '*',
         'Content-type': 'application/json',
         'Authorization': `Bearer ${this.accessToken}`,
         Accept: 'application/json',

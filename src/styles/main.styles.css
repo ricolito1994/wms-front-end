@@ -68,3 +68,17 @@ body, html {
   grid-column: span 3 / auto;
   grid-row: span 3 / auto;
 }
+.btn-drop-down-menu{
+  width:20%; 
+  float:left; 
+  padding-left:0.5%;
+  position: relative;
+}
+.btn-dropdown-menu__content {
+  position: absolute;
+  top: 100%;
+  left: 2%;
+  z-index: 999;
+  width:100%;
+}
+

@@ -1,5 +1,6 @@
 import React from 'react';
 import ReactDOM from 'react-dom/client';
+//import 'antd/dist/antd.css'; 
 import './styles/main.styles.css';
 import './styles/sidenav.styles.css';
 import './styles/topnav.styles.css';
@@ -7,6 +8,8 @@ import './styles/auth.styles.css';
 import './styles/dashboard.styles.css'
 import './styles/unit.styles.css';
 import './styles/toptabs.styles.css';
+import './styles/datatable.styles.css';
+import './styles/loader.styles.css';
 //import App from './App';
 import App from 'app';
 import reportWebVitals from './reportWebVitals';

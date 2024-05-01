@@ -1,7 +1,5 @@
-import React, {useState, useEffect} from "react";
-import { Link } from 'react-router-dom';
+import { useState, useEffect } from "react";
 import { useLocation, useNavigate } from 'react-router-dom';
-
 interface TabOption {
     title : String,
     link : String,
@@ -13,26 +11,27 @@ interface TabOptions {
     currentIndex : any,
     setCurrentIndex: Function,
 }
-const TopTabMenu = ({ tabOptions, currentIndex, setCurrentIndex }: TabOptions) => {
+const TopTabMenu = (
+{ 
+    tabOptions, 
+    currentIndex, 
+    setCurrentIndex 
+}: TabOptions) => {
     const location = useLocation();
     const navigate = useNavigate();
-    const isActiveLink = (index : any, path: String) => {
-        //return location.pathname === path ? 'active' : '';
-        return currentIndex === index ? 'active' : '';
-    };
-    useEffect(()=>{
+    const isActiveLink = (index : any) => 
+        currentIndex === index ? 'active' : '';
+    useEffect(() => {
         let loc = location.pathname.split('/')[2]
         let indexLoc = tabOptions.findIndex(x => x.name === loc)
-        //let pathLink: any = tabOptions[currentIndex];
-        //navigate(pathLink.link)
+            indexLoc = indexLoc < 0 ? 0 : indexLoc;
         setCurrentIndex(indexLoc)
     },[currentIndex])
-
     return (
         <div className="top-tabs-container"> 
-            {tabOptions.map ((tabOption: TabOption, index:Number) => 
-                <div 
-                    className={"top-tab-option tab-"+index+" "+isActiveLink(index, tabOption.name)} 
+            {tabOptions.map ((tabOption: TabOption, index:any) => 
+                <div key={index}
+                    className={`top-tab-option tab-${index} ${isActiveLink(index)}`} 
                     onClick={()=>{
                         let link : any = tabOption.link;
                         navigate(link)
@@ -45,5 +44,4 @@ const TopTabMenu = ({ tabOptions, currentIndex, setCurrentIndex }: TabOptions) =
         </div>
     )
 }
- 
 export default TopTabMenu;

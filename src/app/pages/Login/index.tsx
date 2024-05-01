@@ -46,7 +46,7 @@ const Login = () => {
         <div className='login-container'>
             <div className='login-form-container'>
                 <div className='login-form-logo-container'>
-                    <img src='./wms-logo.png' alt="Logo" />
+                    <img src={`${process.env.PUBLIC_URL}/wms-logo.png?${new Date().getTime()}`} alt="Logo" />
                 </div>
                 <div className='login-form-app-title-container'>
                     {process.env.REACT_APP_NAME} - {process.env.REACT_APP_WMS_VERSION}

@@ -11,7 +11,7 @@ const Sidenav = () => {
         <div className="sidenav">
             <div className="logo-container">
                 <div>
-                    <img src='./wms-logo.png' alt="Logo" width='100'/>
+                    <img src={`${process.env.PUBLIC_URL}/wms-logo.png?${new Date().getTime()}`} alt="Logo" width='100'/>
                 </div>
                 <div className='version-number'>
                     {process.env.REACT_APP_WMS_VERSION}

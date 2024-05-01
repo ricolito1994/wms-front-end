@@ -43,7 +43,11 @@ const Topnav = () => {
                 <div className='topnav-container-user-account'>
                     <div>
                         <div>
-                            <img src='./profilepic.png' alt="Logo" width='50'/>
+                            <img 
+                                src={`${process.env.PUBLIC_URL}/profilepic.png?${new Date().getTime()}`} 
+                                alt="Logo" 
+                                width='50'
+                            />
                         </div>
                     </div>
                     <div>

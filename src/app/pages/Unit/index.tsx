@@ -18,7 +18,7 @@ function Unit () {
             switchTab: changeTab
         },
         {
-            title: 'Unit Performance',
+            title: 'Dispatch Unit',
             link : '/unit/performance',
             name : 'performance',
             switchTab: changeTab
