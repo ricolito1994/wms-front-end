@@ -31,12 +31,12 @@ root.render(
     >
       <React.StrictMode>
         <HelmetProvider>
-            <AppContextProvider>
-              <BrowserRouter>
-                <App />
-              </BrowserRouter>
-            </AppContextProvider>
-          </HelmetProvider>
+          <AppContextProvider>
+            <BrowserRouter>
+              <App />
+            </BrowserRouter>
+          </AppContextProvider>
+        </HelmetProvider>
       </React.StrictMode>
     </PersistGate>
   </Provider>

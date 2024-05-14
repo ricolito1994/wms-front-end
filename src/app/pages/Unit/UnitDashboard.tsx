@@ -6,11 +6,22 @@ import {
 import { Input, Button, Menu } from 'antd';
 import { UnitContext } from 'context/UnitContext';
 import { UnitService } from 'services/UnitService';
-import { DownOutlined, PlusOutlined } from '@ant-design/icons';
+import { DownOutlined, PlusOutlined /*CloseOutlined*/ } from '@ant-design/icons';
 import DataTable from 'app/components/DataTable';
 import UnitDialog from '../../components/DialogBox/UnitDialog';
 interface UnitModel {
-
+    id : Number | null,
+    model_name: String,
+    plate_number : String,
+    chassis_number : String,
+    gross_weight : Number | null,
+}
+const defaultUnitValues = {
+    id : null,
+    model_name: '',
+    plate_number : '',
+    chassis_number : '',
+    gross_weight : null,
 }
 const UnitDashboard = () => {
     const {accessToken} = useContext(UnitContext)
@@ -21,6 +32,7 @@ const UnitDashboard = () => {
     const [currentPage, setCurrentPage] = useState<string>("");
     const [tableData, setTableData] = useState<any>([]);
     const [paginationButtons, setPaginationButtons] = useState<any>([]);
+    const [unitDataForm, setUnitDataForm] = useState<UnitModel>(defaultUnitValues);
     const [searchOption, setSearchOption] = useState<any>({
         sort_name : 'All',
         sort_key: 'all'
@@ -61,7 +73,7 @@ const UnitDashboard = () => {
             title : "Gross Weight",
             dataIndex: 'gross_weight',
             key: 'gross_weight',
-            sorter: (a:any, b:any) => a.gross_weight.localeCompare(b.gross_weight),
+            sorter: (a:any, b:any) => a.gross_weight.toString().localeCompare(b.gross_weight.toString()),
         },
         {
             title : "Plate Number",
@@ -72,10 +84,9 @@ const UnitDashboard = () => {
         {
             title : "Actions",
             key: 'action',
-            render: (text: any, record: any) => (
+            render: (text: any, unit: any) => (
                 <span>
-                  <Button type="primary" onClick={() => openUnit(record.key)}>Edit</Button>&nbsp;
-                  <Button type="default" onClick={() => deleteUnit(record.key)}>X Delete</Button>
+                  <Button type="primary" onClick={() => openUnit(unit.id)}>Edit</Button>&nbsp;
                 </span>
             ),
         },
@@ -83,31 +94,64 @@ const UnitDashboard = () => {
 
     const handleSearchMenuClick = (choice: any) => {
         let chosen = searchOptions.find(x => x.sort_key === choice.key)
-        setSearchOption(chosen)
         setSearchOptionVisible(false)
+        if (searchValue!=='') {
+            let chosenData = {
+                sort_key: chosen?.sort_key,
+                sort_name : chosen?.sort_name,
+                searchValue: '',
+            }
+            if (chosen?.sort_name !== 'All') 
+                chosenData['searchValue'] = searchValue
+            setSearchOption(chosenData)
+            getUnitData(chosenData)
+            return;
+        }
+        setSearchOption(chosen)
+        getUnitData(chosen)
     }
 
-    const openUnit = (r : any) => {
+    const openUnit = async (unitID : any = null) => {
         setIsOpenUnitDialog(true)
+        if (!unitID) {
+            setUnitDataForm(defaultUnitValues)
+            return
+        };
+        let unitData = await getUnitData(null, null, unitID)
+        let unit = unitData.result;
+        setUnitDataForm(unit)
     }
 
-    const deleteUnit = (r : any) => {}
-    const getUnitData = async (searchOptionParam: any = null, page:any = null) => {
+    const deleteUnit = (unitId : any) => {}
+
+    const getUnitData = async (
+        searchOptionParam: any = null, 
+        page: any = null,
+        unitID: any = null
+    ) => {
         try{
             setIsLoadingUnitData(true)
             let searchParams = searchOptionParam ? searchOptionParam : searchOption
-            searchParams['searchValue'] = searchValue
-            let result = await unitService.getUnit(searchParams, page)
+            let result = await unitService.getUnit(searchParams, page, unitID)
             setIsLoadingUnitData(false)
-            setTableData(result.result.data)
-            setPaginationButtons(result.result.links)
-            setCurrentPage(result.result.current_page)
+            if (!unitID){
+                let unitData = result.result.data.map((item:any, index:any) => {
+                    return { ...item, key: index.toString() };
+                });
+                setTableData(unitData)
+                setPaginationButtons(result.result.links)
+                setCurrentPage(result.result.current_page)
+                return;
+            } 
+            return result;
         }catch(e){
             //console.log(e)
         }
     }
     const handleChangeSearch = (e: any) => {
         setSearchValue(e.target.value)
+        searchOption['searchValue'] = e.target.value
+        setSearchOption(searchOption);
         getUnitData(searchOption);
     }
     useEffect(() => {
@@ -118,7 +162,8 @@ const UnitDashboard = () => {
             <UnitDialog 
                 isOpen={isOpenUnitDialog}
                 setIsOpen={setIsOpenUnitDialog}
-                unitDataForm={{}}
+                unitDataForm={unitDataForm}
+                setUnitDataForm={setUnitDataForm}
             />
             <DataTable
                 columnData={columnData}
@@ -135,6 +180,7 @@ const UnitDashboard = () => {
                     <div style={{width:'50%', float:'left'}}>
                         <Input 
                             style={{ height: '40px' }} 
+                            disabled={searchOption.sort_name === 'All'}
                             placeholder={`Search by ${searchOption.sort_name}`} 
                             onPressEnter={handleChangeSearch}
                         />
@@ -156,7 +202,7 @@ const UnitDashboard = () => {
                         }
                     </div>
                     <div style={{width:'20%', float:'left', paddingLeft:'0.5%'}}>
-                        <Button onClick={openUnit} type="default" style={{ height: '40px', width:'100%' }}>
+                        <Button onClick={()=>{openUnit()}} type="default" style={{ height: '40px', width:'100%' }}>
                             <PlusOutlined /> Add New Unit
                         </Button>
                     </div>

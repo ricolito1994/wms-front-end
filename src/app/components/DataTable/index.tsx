@@ -26,7 +26,7 @@ const DataTable = (
     const renderPagniationLabel = (pagination: any, index:any) : React.ReactNode => {
         if (pagination.label.includes("Next")) {
             return (
-                <Button disabled={!pagination.url} type="link" onClick={() =>{
+                <Button key={index} disabled={!pagination.url} type="link" onClick={() =>{
                     currentPage = currentPage + 1;
                     paginationFunction(null, currentPage)
                 }}>
@@ -35,7 +35,7 @@ const DataTable = (
             )
         } else if (pagination.label.includes("Previous")){
             return  (
-                <Button disabled={!pagination.url} type="link" onClick={() =>{
+                <Button key={index} disabled={!pagination.url} type="link" onClick={() =>{
                     currentPage = currentPage - 1;
                     paginationFunction(null, currentPage)
                 }}>
@@ -44,7 +44,7 @@ const DataTable = (
             )
         } 
         return  (
-            <Button type={!pagination.active ? "default" : 'primary'} 
+            <Button key={index} type={!pagination.active ? "default" : 'primary'} 
                 onClick={() => {paginationFunction(null, index)}}>
                 {pagination.label}
             </Button> 

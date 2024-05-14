@@ -4,6 +4,7 @@ interface DialogBoxProps {
     setIsOpen : Function,
     modalTitle: String,
     form : any | null,
+    handleClose: Function | null,
     children : any,
 }
 const DialogBox = ({
@@ -11,6 +12,7 @@ const DialogBox = ({
     setIsOpen, 
     modalTitle, 
     form,
+    handleClose,
     children
 } : DialogBoxProps) => {
     const handleOk = () => {
@@ -18,6 +20,7 @@ const DialogBox = ({
         if(form) form.submit()
     }
     const handleCancel  = () => {
+        if(handleClose) handleClose();
         setIsOpen(!isOpen)
     }
     return (

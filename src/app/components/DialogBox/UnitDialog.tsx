@@ -4,7 +4,7 @@ import { UnitService } from 'services/UnitService';
 import { Form, Input /*, Button, Row, Col*/ } from 'antd';
 import DialogBox from './';
 interface UnitForm {
-    model : String,
+    model_name: String,
     plate_number : String,
     chassis_number : String,
     gross_weight : Number,
@@ -13,21 +13,24 @@ interface UnitDialogProps {
     isOpen: boolean,
     setIsOpen : Function,
     unitDataForm: any,
+    setUnitDataForm: Function,
 }
-const UnitDialog = ({isOpen, setIsOpen, unitDataForm}: UnitDialogProps) => {
+const UnitDialog = ({isOpen, setIsOpen, unitDataForm, setUnitDataForm}: UnitDialogProps) => {
     const {accessToken} = useContext(UnitContext)
     const [form] = Form.useForm<UnitForm>()
     const unitService = new UnitService(accessToken);
     const submitForm = async (values: UnitForm) => {
         try {
-            await unitService.addUnit(values)
+            let result = await unitService.addUnit(values)
+            setUnitDataForm(result.data)
         } catch (e) {
             console.log(e)
         }
     }
     useEffect ( () => {
-        
-    }, [unitDataForm])
+        if (isOpen)
+            form.setFieldsValue(unitDataForm)
+    }, [])
     return (
         <>
             <DialogBox
@@ -35,6 +38,10 @@ const UnitDialog = ({isOpen, setIsOpen, unitDataForm}: UnitDialogProps) => {
                 setIsOpen={setIsOpen}
                 modalTitle={`UNIT`}
                 form={form}
+                handleClose={()=>{
+                    form.setFieldsValue({})
+                    setUnitDataForm(null)
+                }}
             >
                 <Form 
                     form = {form}
@@ -47,6 +54,7 @@ const UnitDialog = ({isOpen, setIsOpen, unitDataForm}: UnitDialogProps) => {
                     <Form.Item 
                         label="Model" 
                         name="model_name" 
+                        key = "model_name"
                         rules={[{ required: true, message: 'Model is required' }]}
                     >
                         <Input />
@@ -54,6 +62,7 @@ const UnitDialog = ({isOpen, setIsOpen, unitDataForm}: UnitDialogProps) => {
                     <Form.Item 
                         label="Plate Number" 
                         name="plate_number" 
+                        key = "plate_number"
                         rules={[{ required: true, message: 'Plate Number is required' }]}
                     >
                         <Input />
@@ -61,6 +70,7 @@ const UnitDialog = ({isOpen, setIsOpen, unitDataForm}: UnitDialogProps) => {
                     <Form.Item 
                         label="Chassis Number" 
                         name="chassis_number" 
+                        key = "chassis_number"
                         rules={[{ required: true, message: 'Chassis Number is required' }]}
                     >
                         <Input />
@@ -68,9 +78,17 @@ const UnitDialog = ({isOpen, setIsOpen, unitDataForm}: UnitDialogProps) => {
                     <Form.Item 
                         label="Gross Weight" 
                         name="gross_weight" 
+                        key = "gross_weight"
                         rules={[{ required: true, message: 'Gross Weight is required' }]}
                     >
                         <Input />
+                    </Form.Item>
+                    <Form.Item 
+                        style={{ display: 'none' }} 
+                        name="id"
+                        key = "id"
+                    >
+                        <Input type="hidden" />
                     </Form.Item>
                 </Form>
             </DialogBox>

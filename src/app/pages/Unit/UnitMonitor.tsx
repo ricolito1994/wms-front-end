@@ -25,7 +25,7 @@ const UnitMonitor = () => {
     };
     const Marker = ({ text }:any) => <div>{text}</div>;
     useEffect(() => {
-        console.log('API_KEY', process.env)
+        
     }, [])
     return (
         <>

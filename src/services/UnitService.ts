@@ -23,7 +23,7 @@ export class UnitService extends HttpCommons {
     async getUnit (payload:any, page:any = null, unitId: any = null) {
         try {
             let url = `${BASE_URL}/unit/show${unitId ? '/'+unitId : ''}${page ? '?page='+page : ''}`;
-            const response = await this.apiClient.get(url, payload);
+            const response = await this.apiClient.get(url, {params : payload});
             return response.data;
         } catch (error) {
             throw error;
