@@ -1,4 +1,4 @@
-import React, { useEffect, useContext } from 'react';
+import { useEffect, useContext } from 'react';
 import { UnitContext } from 'context/UnitContext';
 import { UnitService } from 'services/UnitService';
 import { Form, Input /*, Button, Row, Col*/ } from 'antd';
@@ -15,7 +15,15 @@ interface UnitDialogProps {
     unitDataForm: any,
     setUnitDataForm: Function,
 }
-const UnitDialog = ({isOpen, setIsOpen, unitDataForm, setUnitDataForm}: UnitDialogProps) => {
+const UnitDialog = (
+    {
+        isOpen, 
+        setIsOpen, 
+        unitDataForm, 
+        setUnitDataForm
+    }
+    : UnitDialogProps
+) => {
     const {accessToken} = useContext(UnitContext)
     const [form] = Form.useForm<UnitForm>()
     const unitService = new UnitService(accessToken);
@@ -28,9 +36,10 @@ const UnitDialog = ({isOpen, setIsOpen, unitDataForm, setUnitDataForm}: UnitDial
         }
     }
     useEffect ( () => {
-        if (isOpen)
+        if (isOpen) {
             form.setFieldsValue(unitDataForm)
-    }, [])
+        }
+    }, [isOpen])
     return (
         <>
             <DialogBox

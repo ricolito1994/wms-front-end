@@ -16,7 +16,7 @@ interface UnitModel {
     chassis_number : String,
     gross_weight : Number | null,
 }
-const defaultUnitValues = {
+const defaultUnitValues: UnitModel = {
     id : null,
     model_name: '',
     plate_number : '',
@@ -101,8 +101,11 @@ const UnitDashboard = () => {
                 sort_name : chosen?.sort_name,
                 searchValue: '',
             }
-            if (chosen?.sort_name !== 'All') 
+            if (chosen?.sort_name !== 'All')  {
                 chosenData['searchValue'] = searchValue
+            } else {
+                setSearchValue("")
+            }
             setSearchOption(chosenData)
             getUnitData(chosenData)
             return;
@@ -112,14 +115,13 @@ const UnitDashboard = () => {
     }
 
     const openUnit = async (unitID : any = null) => {
-        setIsOpenUnitDialog(true)
         if (!unitID) {
             setUnitDataForm(defaultUnitValues)
             return
         };
         let unitData = await getUnitData(null, null, unitID)
-        let unit = unitData.result;
-        setUnitDataForm(unit)
+        setUnitDataForm(unitData.result);
+        setIsOpenUnitDialog(true)
     }
 
     const deleteUnit = (unitId : any) => {}
@@ -145,7 +147,7 @@ const UnitDashboard = () => {
             } 
             return result;
         }catch(e){
-            //console.log(e)
+            console.log(e)
         }
     }
     const handleChangeSearch = (e: any) => {
@@ -183,6 +185,8 @@ const UnitDashboard = () => {
                             disabled={searchOption.sort_name === 'All'}
                             placeholder={`Search by ${searchOption.sort_name}`} 
                             onPressEnter={handleChangeSearch}
+                            onChange={(e) => setSearchValue(e.target.value)}
+                            value={searchValue}
                         />
                     </div>
                     <div className="btn-drop-down-menu">
