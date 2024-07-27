@@ -9,18 +9,26 @@ interface UnitForm {
     chassis_number : String,
     gross_weight : Number,
 }
+interface RefreshUnitTable {
+    getUnitFunction : any,
+    params: any,
+}
 interface UnitDialogProps {
     isOpen: boolean,
     setIsOpen : Function,
     unitDataForm: any,
     setUnitDataForm: Function,
+    setIsLoadingUnitData: Function,
+    refreshUnitTable: RefreshUnitTable,
 }
 const UnitDialog = (
     {
         isOpen, 
         setIsOpen, 
         unitDataForm, 
-        setUnitDataForm
+        setUnitDataForm,
+        setIsLoadingUnitData,
+        refreshUnitTable,
     }
     : UnitDialogProps
 ) => {
@@ -29,8 +37,13 @@ const UnitDialog = (
     const unitService = new UnitService(accessToken);
     const submitForm = async (values: UnitForm) => {
         try {
+            setIsLoadingUnitData(true)
             let result = await unitService.addUnit(values)
             setUnitDataForm(result.data)
+            refreshUnitTable.getUnitFunction(
+                refreshUnitTable.params.searchOptionParam, 
+                refreshUnitTable.params.page
+            );
         } catch (e) {
             console.log(e)
         }

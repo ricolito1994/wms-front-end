@@ -1,21 +1,26 @@
 import AuthService from 'services/AuthService';
 import { useState, useEffect, useContext } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Form, Input, Button } from 'antd';
+import { Form, Input, Button, notification, Spin } from 'antd';
 import { AppContext } from 'context';
 import { useDispatch } from 'react-redux';
 import { setToken } from 'slice/AuthSlice';
 import { userAsync } from 'slice/UserSlice'
 import { AppDispatch } from 'store';
+interface LoginCredentials {
+    username : String,
+    password : String
+}
 const Login = () => {
     const {setIsAuthenticated, setAccessToken} = useContext(AppContext);
+    const [isLoading, setIsLoading] = useState<any>(false);
     const dispatch = useDispatch();
     const dispatchAsync = useDispatch<AppDispatch>();
     const authService = new AuthService('');
     const navigate = useNavigate();
-    const [authData, setAuthData] = useState({
-        username : '',
-        password : '',
+    const [authData, setAuthData] = useState<LoginCredentials>({
+        username: '',
+        password: '',
     });
 
     useEffect(() => {
@@ -24,14 +29,21 @@ const Login = () => {
 
     const authenticate = async ( ) => {
         try {
+            setIsLoading(true)
             let auth = await authService.login(authData);
             setAccessToken(auth.access_token)
             dispatch(setToken(auth.access_token));
             dispatchAsync(userAsync(auth.access_token));
             setIsAuthenticated(true)
             navigate('/')
-        } catch(e) {
-            console.log(e)
+        } catch(e: any) {
+            notification.error({
+                message: 'Login Failed',
+                description: e.response.data.error,
+                placement: 'top',
+            });
+        } finally {
+            setIsLoading(false)
         }
     }
 
@@ -43,8 +55,9 @@ const Login = () => {
     }
 
     return (
+        <Spin spinning={isLoading}>
         <div className='login-container'>
-            <div className='login-form-container'>
+            <div className='login-form-container'  style={{marginTop:'5%'}}>
                 <div className='login-form-logo-container'>
                     <img src={`${process.env.PUBLIC_URL}/wms-logo.png?${new Date().getTime()}`} alt="Logo" />
                 </div>
@@ -64,14 +77,15 @@ const Login = () => {
                             <Input.Password />
                         </Form.Item>
                         <Form.Item>
-                            <Button type="primary" htmlType="submit">
-                                Submit
+                            <Button type="primary" htmlType="submit" style={{'width':'100%'}}>
+                                SIGN IN
                             </Button>
                         </Form.Item>
                     </Form>
                 </div>
             </div>
         </div>
+        </Spin>
     )
 }
 export default Login;

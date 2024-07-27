@@ -10,6 +10,8 @@ interface PropsData {
     pagination : any [],
     paginationFunction: Function,
     currentPage: any,
+    loadedResult : any,
+    totalResult : any,
     children: any
 }
 const DataTable = (
@@ -19,10 +21,17 @@ const DataTable = (
         pagination,
         paginationFunction,
         currentPage,
+        loadedResult,
+        totalResult,
         children 
     }: PropsData
 ) => 
 {
+    useEffect( () => {
+        return () => {
+
+        }
+    }, [tableData]);
     const renderPagniationLabel = (pagination: any, index:any) : React.ReactNode => {
         if (pagination.label.includes("Next")) {
             return (
@@ -60,6 +69,9 @@ const DataTable = (
                         columns={columnData}
                         pagination={false}
                     />
+                </div>
+                <div>
+                    {loadedResult} out of {totalResult} results
                 </div>
                 <div className="pagination-buttons-container">
                     {pagination.map((value:any, index:any) => renderPagniationLabel(value, index))}
