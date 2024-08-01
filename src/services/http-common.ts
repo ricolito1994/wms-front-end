@@ -4,6 +4,7 @@ export class HttpCommons {
   accessToken: string;
   apiClient: AxiosInstance;
   baseUrl: String | any;
+  abortControllerSignal: any|null;
   constructor(accessToken:string) {
     this.accessToken = accessToken;
     this.apiClient = this.accessToken === '' ? this.getLoginClient() : this.getApiClient();
@@ -30,5 +31,10 @@ export class HttpCommons {
         Accept: 'application/json',
       },
     });
+  }
+
+  public setAbortControllerSignal (signal:any|null) {
+    if (!signal) throw "what? where is your signal?"
+    this.abortControllerSignal = signal;
   }
 }

@@ -14,6 +14,8 @@ import './styles/loader.styles.css';
 import App from 'app';
 import reportWebVitals from './reportWebVitals';
 import AppContextProvider from 'context';
+
+import DatatableContextProvider from 'context/DataTableContext';
 import { HelmetProvider } from 'react-helmet-async';
 import { BrowserRouter } from 'react-router-dom';
 import { Provider } from 'react-redux';
@@ -29,15 +31,17 @@ root.render(
       loading={null} 
       persistor={persistor}
     >
-      <React.StrictMode>
+      {/*<React.StrictMode>*/}
         <HelmetProvider>
           <AppContextProvider>
             <BrowserRouter>
-              <App />
+              <DatatableContextProvider>
+                <App />
+              </DatatableContextProvider>
             </BrowserRouter>
           </AppContextProvider>
         </HelmetProvider>
-      </React.StrictMode>
+      {/*</React.StrictMode>*/}
     </PersistGate>
   </Provider>
 );

@@ -6,7 +6,7 @@ export class UnitService extends HttpCommons {
     }
     async addUnit (payload:any) {
         try {
-            const response = await this.apiClient.post(`${BASE_URL}/unit/create`, payload);
+            const response = await this.apiClient.post(`${this.baseUrl}/unit/create`, payload);
             return response.data;
         } catch (error) {
             throw error;
@@ -14,7 +14,7 @@ export class UnitService extends HttpCommons {
     }
     async editUnit (payload:any) {
         try {
-            const response = await this.apiClient.post(`${BASE_URL}/unit/update`, payload);
+            const response = await this.apiClient.post(`${this.baseUrl}/unit/update`, payload);
             return response.data;
         } catch (error) {
             throw error;

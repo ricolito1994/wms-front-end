@@ -165,7 +165,7 @@ const UnitDashboard = () => {
 
             let result = await unitService.getUnit(searchParams, pageNum, unitID)
           
-            setIsLoadingUnitData(false)
+            
             setUnitSearchParam({
                 getUnitFunction: getUnitData,
                 params : {
@@ -188,6 +188,8 @@ const UnitDashboard = () => {
             return result;
         } catch(e) {
             console.log(e)
+        } finally {
+            setIsLoadingUnitData(false)
         }
     }
     const handleChangeSearch = (e: any) => {
