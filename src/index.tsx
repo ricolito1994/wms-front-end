@@ -10,6 +10,7 @@ import './styles/unit.styles.css';
 import './styles/toptabs.styles.css';
 import './styles/datatable.styles.css';
 import './styles/loader.styles.css';
+import './styles/crew.modal.styles.css';
 //import App from './App';
 import App from 'app';
 import reportWebVitals from './reportWebVitals';

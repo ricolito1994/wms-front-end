@@ -9,6 +9,7 @@ import { UnitService } from 'services/UnitService';
 import { DownOutlined, PlusOutlined /*CloseOutlined*/ } from '@ant-design/icons';
 import DataTable from 'app/components/DataTable';
 import UnitDialog from '../../components/DialogBox/UnitDialog';
+import UnitCrewDialog from "app/components/DialogBox/UnitCrewModal";
 interface UnitModel {
     id? : Number | null,
     model_name: String,
@@ -45,6 +46,8 @@ const defaultUnitSearchOptions : UnitSearchOption = {
 const UnitDashboard = () => {
     const {accessToken} = useContext(UnitContext)
     const [isOpenUnitDialog, setIsOpenUnitDialog] = useState<boolean>(false);
+    const [isOpenCrewModal, setIsOpenCrewModal] = useState<boolean>(false);
+    const [unitData, setUnitData] = useState<any>({});
     const [isSearchOptionVisible, setSearchOptionVisible] = useState<boolean>(false);
     const [isLoadingUnitData, setIsLoadingUnitData] = useState<boolean>(false);
     const [searchValue, setSearchValue] = useState<string>("");
@@ -104,12 +107,24 @@ const UnitDashboard = () => {
             title : "Actions",
             key: 'action',
             render: (text: any, unit: any) => (
-                <span>
-                  <Button type="primary" onClick={() => openUnit(unit.id)}>Edit</Button>&nbsp;
-                </span>
+                <>
+                    <span>
+                    <Button type="primary" onClick={() => openUnit(unit.id)}>Edit</Button>&nbsp;
+                    </span>
+                    <span>
+                        <Button type="primary" onClick={() => crewSetup(unit)}>
+                            Crew Setup
+                        </Button>
+                    </span>
+                </>
             ),
         },
     ]
+
+    const crewSetup = (unit:any) => {
+        setUnitData(unit)
+        setIsOpenCrewModal(true)
+    }
 
     const handleSearchMenuClick = (choice: any) => {
         let chosen = searchOptions.find(x => x.sort_key === choice.key)
@@ -205,6 +220,13 @@ const UnitDashboard = () => {
     }, [])
     return (
         <>
+            <UnitCrewDialog
+                unitData={unitData}
+                isOpen={isOpenCrewModal}
+                setIsOpen={setIsOpenCrewModal}
+                form={null}
+                handleClose={()=>setIsOpenCrewModal(false)}
+            />
             <UnitDialog 
                 isOpen={isOpenUnitDialog}
                 setIsOpen={setIsOpenUnitDialog}

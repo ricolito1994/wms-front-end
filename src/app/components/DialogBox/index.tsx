@@ -5,6 +5,7 @@ interface DialogBoxProps {
     modalTitle: String,
     form : any | null,
     handleClose: Function | null,
+    onSave? : Function | null,
     children : any,
 }
 const DialogBox = ({
@@ -13,11 +14,13 @@ const DialogBox = ({
     modalTitle, 
     form,
     handleClose,
+    onSave,
     children
 } : DialogBoxProps) => {
     const handleOk = () => {
         //setIsOpen(!isOpen)
         if(form) form.submit()
+        else if (onSave) onSave()
     }
     const handleCancel  = () => {
         if(handleClose) handleClose();

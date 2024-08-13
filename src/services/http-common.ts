@@ -1,11 +1,13 @@
 import axios from 'axios';
 import type { AxiosInstance } from 'axios';
 export class HttpCommons {
+
   accessToken: string;
   apiClient: AxiosInstance;
   baseUrl: String | any;
   abortControllerSignal: any|null;
-  constructor(accessToken:string) {
+
+  constructor (accessToken:string) {
     this.accessToken = accessToken;
     this.apiClient = this.accessToken === '' ? this.getLoginClient() : this.getApiClient();
     this.baseUrl = process.env.REACT_APP_WMS_BASE_URL
@@ -37,4 +39,5 @@ export class HttpCommons {
     if (!signal) throw "what? where is your signal?"
     this.abortControllerSignal = signal;
   }
+
 }

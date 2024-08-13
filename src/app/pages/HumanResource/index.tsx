@@ -17,12 +17,12 @@ function HumanResource () {
             name : '',
             switchTab: changeTab
         },
-        {
+        /*{
             title: 'Crew Setup',
             link : '/hr/crew',
             name : 'crew',
             switchTab: changeTab
-        },
+        },*/
     ]
     return (
         <>
