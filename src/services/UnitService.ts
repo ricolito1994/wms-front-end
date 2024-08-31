@@ -29,4 +29,24 @@ export class UnitService extends HttpCommons {
             throw error;
         }
     }
+
+    async saveCrew (payload:any, unitId:any) {
+        try {
+            let url = `${BASE_URL}/employee/crew/${unitId}`;
+            const response = await this.apiClient.post(url, payload);
+            return response.data;
+        } catch (error) {
+            throw error;
+        }
+    }
+
+    async getCrew (unitId:any) {
+        try {
+            let url = `${BASE_URL}/employee/crew/${unitId}`;
+            const response = await this.apiClient.get(url);
+            return response.data;
+        } catch (error) {
+            throw error;
+        }
+    }
 }

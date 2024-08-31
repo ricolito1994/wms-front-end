@@ -9,6 +9,7 @@ interface AutoCompletePropsData {
     setData: Function,
     payload? : any
     wAutoCompleteIndexPayload:string,
+    wAutoCompleteIndexRsLabel:string,
     style? :any,
 }
 
@@ -19,6 +20,7 @@ const WAutoComplete : React.FC<AutoCompletePropsData> = ({
     setData,
     payload,
     wAutoCompleteIndexPayload,
+    wAutoCompleteIndexRsLabel,
     style,
 })  => {
 
@@ -28,6 +30,7 @@ const WAutoComplete : React.FC<AutoCompletePropsData> = ({
     const debouncedAutoCompleteValue = useDebounce<any>(autoCompleteInputValue)
 
     useEffect(()=>{
+      
       const getData = async (value:any, signal:any|null = null) => {
         try {
             setIsLoading(true)
@@ -40,7 +43,7 @@ const WAutoComplete : React.FC<AutoCompletePropsData> = ({
                         return {
                             item,
                             ...{
-                                label : item.fullname,
+                                label : item[wAutoCompleteIndexRsLabel],
                                 value : item.id
                             },
                         } 
@@ -58,12 +61,13 @@ const WAutoComplete : React.FC<AutoCompletePropsData> = ({
       const controller = new AbortController();
       const signal = controller.signal;
       getData(debouncedAutoCompleteValue, signal)
+      
       return () => {
         // abortController
         controller.abort();
       }  
     }, [debouncedAutoCompleteValue])
-
+    
     const handleSelect = (value:any) => {
         let result = resultData.find( (x:any) => x.value === value)
         setAutoCompleteInputValue(result.label)
@@ -71,8 +75,12 @@ const WAutoComplete : React.FC<AutoCompletePropsData> = ({
     }
 
     const handleChange = (value:any) => {
+        //console.log('resultData', resultData)
+        //let result = resultData.find( (x:any) => x.value === value)
+        //if(!result) return
+        //setAutoCompleteInputValue(result.value)
         setAutoCompleteInputValue(value)
-    }
+    }   
 
     return (<>
         <Spin spinning={isLoading}>

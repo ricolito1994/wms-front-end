@@ -1,8 +1,9 @@
 import { useEffect, useState, useContext } from 'react';
 import { DownOutlined, PlusOutlined ,CloseOutlined } from '@ant-design/icons';
 import { UnitContext } from 'context/UnitContext';
-import { Button } from 'antd';
+import { Button, Checkbox } from 'antd';
 import UserService from 'services/UserService';
+import { UnitService } from 'services/UnitService';
 import WAutoComplete from '../WAutoComplete';
 import DialogBox from './';
 
@@ -11,6 +12,8 @@ interface UnitCrewDialogProps {
     isOpen : boolean,
     setIsOpen : Function,
     form? : any | null,
+    crewdata? : any | null,
+    leaddata? : any | null,
     handleClose : Function,
 }
 
@@ -19,17 +22,24 @@ const UnitCrewDialog : React.FC <UnitCrewDialogProps> = ({
     isOpen,
     setIsOpen,
     form,
+    crewdata,
+    leaddata,
     handleClose,
 } ) => {
     const {accessToken} = useContext(UnitContext)
     const [teamLeadData, setTeamLeadData] = useState<any>({});
     const [teamMemberData, setTeamMemberData] = useState<any[]>([]);
-    const userService = new UserService(accessToken)
+    const userService = new UserService(accessToken);
+    const unitService = new UnitService(accessToken);
     const { v4: uuidv4 } = require('uuid');
-    const addCrewMember = () => {
+
+    const addCrewMember = (crew:any|null = null) => {
         setTeamMemberData((prev:any) => [...prev, {
-            'user_name' : '',
-            '_index' : uuidv4()
+            'user_name' : crew ? crew.users_name : '',
+            'user_id' : crew ? crew.user_id : '',
+            is_driver : crew ? crew.is_driver : false,
+            is_team_lead : crew ? crew.is_team_lead : false,
+            //'_index' : crew ? crew._index : uuidv4()
         }])
     }
 
@@ -45,27 +55,84 @@ const UnitCrewDialog : React.FC <UnitCrewDialogProps> = ({
     const updateCrewMember = (crew: any, index: number) => {
         setTeamMemberData((prev:any) => 
             prev.map((member:any, i:number) => 
-                i === index ? { ...member, user_name: crew.label } : member
+                i === index ? { ...member, user_name: crew.label, user_id: crew.value } : member
             )
         );
     }
 
-    const saveCrewMembers = () => {
-        console.log(teamMemberData)
+    const saveCrewMembers = async () => {
+        try {
+            const teamLead = {
+                user_id : teamLeadData.user_id,
+                unit_id : unitData.id,
+                is_driver : teamLeadData.is_driver,
+                is_team_leader: true
+            }
+            let teamMememberDataToDB = teamMemberData.map ( (m: any, i: number) => {
+                return {
+                    unit_id : unitData.id,
+                    user_id : m.user_id,
+                    is_driver : m.is_driver ? m.is_driver : false,
+                    is_team_leader: m.is_team_leader ? m.is_team_leader : false,
+                }
+            } )
+            teamMememberDataToDB =  [...teamMememberDataToDB, teamLead];
+            let crewDatas = {
+                crew : teamMememberDataToDB
+            }
+            console.log('crewDatas', crewDatas)
+            let newCrewData = await unitService.saveCrew(crewDatas, unitData?.id)
+            
+            //teamMememberDataToDB.map ((tm:any, i:any) => {
+                //let f = newCrewData.data.find((x:any) => tm.unit_id === x.id)
+                //console.log('aaa',newCrewData.data)
+                //return {...teamMememberDataToDB, fullname: f.employee.fullname}
+            //})
+
+            onCloseThisModal({
+                crew : newCrewData.data,
+                unitId : unitData.id,
+            });
+        } catch (e) {
+
+        }
+    }
+
+    const onCloseThisModal = (e: any) => {
+        setTeamLeadData({});
+        setTeamMemberData([]);
+        handleClose(e)
     }
 
     useEffect(() => {
         if (isOpen) {
             //
+            if(leaddata) {
+                setTeamLeadData({
+                    user_name : leaddata.users_name,
+                    user_id : leaddata.user_id,
+                    is_driver : leaddata.is_driver,
+                    is_team_lead : leaddata.is_team_leader,
+                })
+            }
+            if(crewdata) {
+                for (let i in crewdata) {
+                    if(crewdata[i]) addCrewMember(crewdata[i])
+                }
+            }
+            
+        } 
+        return () => {
         }
     },[isOpen])
+
     return (<>
         <DialogBox
             isOpen={isOpen}
             setIsOpen={setIsOpen}
             modalTitle={`UNIT CREW`}
             form={form}
-            handleClose={handleClose}
+            handleClose={onCloseThisModal}
             onSave={saveCrewMembers}
         >
             <div id="crew-modal-container">
@@ -75,19 +142,31 @@ const UnitCrewDialog : React.FC <UnitCrewDialogProps> = ({
                 <div id="cm-plate-no">Plate No: {unitData?.plate_number}</div>
                 <div id="crew-modal-body" style={{marginTop: '1%'}}>
                     <div id="cm-team-lead">
-                        Team Lead:
-                        <WAutoComplete 
-                            service={userService}
-                            functionName={'getUser'}
-                            data={teamLeadData}
-                            setData={setTeamLeadData}
-                            payload={{
-                                payload : {users_name : ''},
-                                page: 1,
-                            }}
-                            wAutoCompleteIndexPayload={'users_name'}
-                            style={{width:'100%'}}
-                        />
+                        {isOpen ? (
+                            <>
+                                <WAutoComplete 
+                                    key={uuidv4()}
+                                    service={userService}
+                                    functionName={'getUser'}
+                                    data={teamLeadData.user_name}
+                                    setData={(crew:any) => setTeamLeadData((prev:any) => ({...prev, user_id: crew.value, user_name: crew.label }))}
+                                    payload={{
+                                        payload : {
+                                            users_name : '',
+                                        },
+                                        page: 1,
+                                    }}
+                                    wAutoCompleteIndexPayload={'users_name'}
+                                    wAutoCompleteIndexRsLabel={'fullname'}
+                                    style={{width:'100%'}}
+                                />
+                                <Checkbox checked={teamLeadData.is_driver} onChange={()=>
+                                    setTeamLeadData((prev:any) => ({...prev, is_driver : !teamLeadData.is_driver}))
+                                }>
+                                    Set as Driver
+                                </Checkbox>
+                            </>)
+                    : ''}
                     </div>
                     <div id="cm-team-members">
                         <div id="add-new-cm">
@@ -97,20 +176,33 @@ const UnitCrewDialog : React.FC <UnitCrewDialogProps> = ({
                             </Button>
                         </div>
                         <div id="cm-crew-members-container">
-                            {teamMemberData.map((crew:any, index:number) => {
-                                return (<>
-                                    <div style={{float:'left', width:'90%'}}>
+                            {teamMemberData.map((crew:any, index:number) => 
+                                (<>
+                                    <div style={{float:'left', width:'20%'}}>
+                                        <Checkbox checked={crew.is_driver} onChange={()=>{
+                                            crew.is_driver = !crew.is_driver
+                                            crew.value = crew.user_id
+                                            crew.label = crew.user_name
+                                            updateCrewMember(crew, index)
+                                        }}>
+                                            is driver
+                                        </Checkbox>
+                                    </div>
+                                    <div style={{float:'left', width:'70%'}}>
                                         <WAutoComplete 
-                                            key={crew._index}
+                                            key={uuidv4()}
                                             service={userService}
                                             functionName={'getUser'}
                                             data={crew.user_name}
                                             setData={(crew:any) => updateCrewMember(crew, index)}
                                             payload={{
-                                                payload : {users_name : ''},
+                                                payload : {
+                                                    users_name : '',
+                                                },
                                                 page: 1,
                                             }}
                                             wAutoCompleteIndexPayload={'users_name'}
+                                            wAutoCompleteIndexRsLabel={'fullname'}
                                             style={{width:'100%'}}
                                         />
                                     </div>
@@ -123,7 +215,7 @@ const UnitCrewDialog : React.FC <UnitCrewDialogProps> = ({
 
                                     </div>
                                 </>)
-                            })}
+                            )}
                         </div>
                     </div>
                 </div>
@@ -131,5 +223,4 @@ const UnitCrewDialog : React.FC <UnitCrewDialogProps> = ({
         </DialogBox>
     </>)
 }
-
 export default UnitCrewDialog;

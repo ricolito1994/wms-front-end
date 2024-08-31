@@ -41,6 +41,8 @@ const AppContextProvider = ({children} : any) => {
     const [isUserDataLoaded, setIsUserDataLoaded] = useState<boolean>(false);
     const [userData, setUserData] = useState<UserModel>(UserDefaults);
     const [accessToken, setAccessToken] = useState<any>(null);
+    const { v4: uuidv4 } = require('uuid');
+
     useEffect (() => {
         const getUserData = async () => {
             try {
@@ -73,7 +75,8 @@ const AppContextProvider = ({children} : any) => {
                 setAccessToken,
                 isUserDataLoaded,
                 setIsUserDataLoaded,
-                userData
+                userData,
+                uuidv4,
             }}
         >
             {children}

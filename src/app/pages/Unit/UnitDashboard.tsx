@@ -4,6 +4,7 @@ import {
     useState 
 } from "react";
 import { Input, Button, Menu } from 'antd';
+import { AppContext } from "context";
 import { UnitContext } from 'context/UnitContext';
 import { UnitService } from 'services/UnitService';
 import { DownOutlined, PlusOutlined /*CloseOutlined*/ } from '@ant-design/icons';
@@ -45,6 +46,7 @@ const defaultUnitSearchOptions : UnitSearchOption = {
 
 const UnitDashboard = () => {
     const {accessToken} = useContext(UnitContext)
+    const {uuidv4} = useContext(AppContext)
     const [isOpenUnitDialog, setIsOpenUnitDialog] = useState<boolean>(false);
     const [isOpenCrewModal, setIsOpenCrewModal] = useState<boolean>(false);
     const [unitData, setUnitData] = useState<any>({});
@@ -59,6 +61,8 @@ const UnitDashboard = () => {
     const [searchOption, setSearchOption] = useState<UnitSearchOption>(defaultUnitSearchOptions);
     const [totalResult, setTotalResult] = useState<Number>(0);
     const [loadedResult, setTotalLoadedResult] = useState<Number>(0);
+    const [teamLeadData, setTeamLeadData] = useState<any|null>(null);
+    const [crewData, setCrewData] = useState<any|null>(null);
     const unitService = new UnitService(accessToken);
     const searchOptions = [
         {
@@ -122,6 +126,29 @@ const UnitDashboard = () => {
     ]
 
     const crewSetup = (unit:any) => {
+        console.log('unit.crew0', unit.crew)
+        let crewData = unit.crew
+            .filter((crew:any) => !crew.is_team_leader) 
+            .map((crew:any, index:number) => ({
+                users_name : crew.employee.fullname,
+                user_id : crew.employee.id,
+                is_driver : crew.is_driver,
+                is_team_lead : crew?.is_team_leader,
+                _index : `${index}-${crew.employee.id}-${crew.id}`
+            }))
+        let teamLead = unit.crew.find((x : any) => x.is_team_leader)
+        if(teamLead) {
+            setTeamLeadData({                
+                users_name : teamLead.employee.fullname,
+                user_id : teamLead.employee.id,
+                is_driver : teamLead.is_driver,
+                is_team_lead : teamLead.is_team_leader,
+            })
+        } else {
+            setTeamLeadData({})
+        }
+        
+        setCrewData(crewData)
         setUnitData(unit)
         setIsOpenCrewModal(true)
     }
@@ -225,7 +252,15 @@ const UnitDashboard = () => {
                 isOpen={isOpenCrewModal}
                 setIsOpen={setIsOpenCrewModal}
                 form={null}
-                handleClose={()=>setIsOpenCrewModal(false)}
+                crewdata={crewData}
+                leaddata={teamLeadData}
+                handleClose={(e:any)=>{
+                    if (! e) return;
+                    setIsOpenCrewModal(false)
+                    setTableData((prev:any) => prev.map((unit:any, index:number) => {
+                        return unit.id === e.unitId ? { ...unit , crew : e.crew } : unit
+                    }))
+                }}
             />
             <UnitDialog 
                 isOpen={isOpenUnitDialog}
@@ -241,6 +276,7 @@ const UnitDashboard = () => {
                 }
             />
             <DataTable
+                key={uuidv4()}
                 columnData={columnData}
                 tableData={tableData}
                 pagination={paginationButtons}
