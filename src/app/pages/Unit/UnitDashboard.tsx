@@ -126,7 +126,6 @@ const UnitDashboard = () => {
     ]
 
     const crewSetup = (unit:any) => {
-        console.log('unit.crew0', unit.crew)
         let crewData = unit.crew
             .filter((crew:any) => !crew.is_team_leader) 
             .map((crew:any, index:number) => ({

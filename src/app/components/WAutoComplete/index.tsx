@@ -7,10 +7,10 @@ interface AutoCompletePropsData {
     functionName? : any,
     data: any,
     setData: Function,
-    payload? : any
-    wAutoCompleteIndexPayload:string,
-    wAutoCompleteIndexRsLabel:string,
-    style? :any,
+    payload?: any
+    wAutoCompleteIndexPayload: string,
+    wAutoCompleteIndexRsLabel: string,
+    style?: any,
 }
 
 const WAutoComplete : React.FC<AutoCompletePropsData> = ({
@@ -75,10 +75,6 @@ const WAutoComplete : React.FC<AutoCompletePropsData> = ({
     }
 
     const handleChange = (value:any) => {
-        //console.log('resultData', resultData)
-        //let result = resultData.find( (x:any) => x.value === value)
-        //if(!result) return
-        //setAutoCompleteInputValue(result.value)
         setAutoCompleteInputValue(value)
     }   
 

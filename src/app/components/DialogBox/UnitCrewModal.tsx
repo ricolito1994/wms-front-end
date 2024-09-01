@@ -80,15 +80,7 @@ const UnitCrewDialog : React.FC <UnitCrewDialogProps> = ({
             let crewDatas = {
                 crew : teamMememberDataToDB
             }
-            console.log('crewDatas', crewDatas)
             let newCrewData = await unitService.saveCrew(crewDatas, unitData?.id)
-            
-            //teamMememberDataToDB.map ((tm:any, i:any) => {
-                //let f = newCrewData.data.find((x:any) => tm.unit_id === x.id)
-                //console.log('aaa',newCrewData.data)
-                //return {...teamMememberDataToDB, fullname: f.employee.fullname}
-            //})
-
             onCloseThisModal({
                 crew : newCrewData.data,
                 unitId : unitData.id,
@@ -149,7 +141,9 @@ const UnitCrewDialog : React.FC <UnitCrewDialogProps> = ({
                                     service={userService}
                                     functionName={'getUser'}
                                     data={teamLeadData.user_name}
-                                    setData={(crew:any) => setTeamLeadData((prev:any) => ({...prev, user_id: crew.value, user_name: crew.label }))}
+                                    setData={(crew:any) => setTeamLeadData((prev:any) => (
+                                        {...prev, user_id: crew.value, user_name: crew.label }
+                                    ))}
                                     payload={{
                                         payload : {
                                             users_name : '',
