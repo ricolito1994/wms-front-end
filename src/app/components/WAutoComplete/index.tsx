@@ -52,8 +52,9 @@ const WAutoComplete : React.FC<AutoCompletePropsData> = ({
             } else {
                 throw "Function not existent";
             }
-        } catch (e) {
+        } catch (e: any) {
             // err
+            throw e.getMessage();
         } finally {
             setIsLoading(false)
         }
