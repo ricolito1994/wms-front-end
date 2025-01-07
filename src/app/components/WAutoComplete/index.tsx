@@ -35,6 +35,7 @@ const WAutoComplete : React.FC<AutoCompletePropsData> = ({
         try {
             setIsLoading(true)
             if(signal) service?.setAbortControllerSignal(signal)
+            if(!value) return;
             payload.payload[wAutoCompleteIndexPayload] = value;
             if(service[functionName]) {
                 let data = await service[functionName](...Object.values(payload))
@@ -54,7 +55,7 @@ const WAutoComplete : React.FC<AutoCompletePropsData> = ({
             }
         } catch (e: any) {
             // err
-            throw e.getMessage();
+            throw e;
         } finally {
             setIsLoading(false)
         }
