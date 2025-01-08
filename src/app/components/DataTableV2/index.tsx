@@ -115,7 +115,12 @@ const DataTableV2 = (
         );
     }
     return (
-        <Spin spinning={isLoading}>
+        <>
+            {/*<Spin spinning={isLoading} style={{height:'110%'}} />*/}
+            { isLoading ?
+                <div className="overlay-form-loading"> 
+                    <div className="loader"></div>
+                </div> : '' }
             <div className="data-table-container">
                 {children}
                 <div className="data-table-main-container">
@@ -126,13 +131,14 @@ const DataTableV2 = (
                     />
                 </div>
                 <div>
-                    {loadedResult} out of {totalResult} results
+                        {loadedResult} out of {totalResult} results
                 </div>
                 <div className="pagination-buttons-container">
                     {paginationButtons.map((value:any, index:any) => renderPagniationLabel(value, index))}
                 </div>
             </div>
-        </Spin>
+        </>
+
     )
 }
 export default DataTableV2;

@@ -129,7 +129,7 @@ const Employee = () => {
 
     return (
         <>
-            <div>
+            <div style={{height:'100%'}}>
                 { isLoading ?
                 <div className="overlay-form-loading">
                     <div className="loader"></div>
@@ -147,7 +147,7 @@ const Employee = () => {
                     getDataMethodName={'getUser'}
                     payload={payload}
                 >
-                    <div style={{height:'10%', paddingBottom:'1%'}}>
+                    <div style={{height:'7%', paddingBottom:'1%'}}>
                         <div style={{width:'50%', float:'left'}}>
                             <Input 
                                 style={{ height: '40px' }} 

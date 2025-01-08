@@ -14,6 +14,7 @@
 }
 .data-table-main-container {
     height:80%;
+    background-color: #ccc;
 }
 .active-pagination-button {
     background: blue;

@@ -5,6 +5,7 @@ import { Route, Routes, /*useLocation, useNavigate,*/ Navigate } from 'react-rou
 import { AppContext } from 'context';
 import UnitContextProvider from '../context/UnitContext';
 import HRContextProvider from 'context/HRContext';
+import LandmarksContextProvider from 'context/LandmarksContext';
 // components
 import MainLayout from './components/Layouts/MainLayout';
 import AuthLayout from './components/Layouts/AuthLayout';
@@ -22,6 +23,12 @@ import UnitMonitor from './pages/Unit/UnitMonitor';
 import HumanResource from './pages/HumanResource';
 import Employee from './pages/HumanResource/Employee';
 import Crew from './pages/HumanResource/Crew';
+//landmarks
+import Landmarks from './pages/Landmarks';
+import Address from './pages/Landmarks/Address';
+import Barangay from './pages/Landmarks/Barangay';
+import Purok from './pages/Landmarks/Purok';
+import DashboardLandmarkMaps from './pages/Landmarks/DashboardLandmarkMaps';
 //authentication page
 import Login from './pages/Login';
 //import { RootState } from 'store';
@@ -98,6 +105,32 @@ const App = () => {
                             <HRContextProvider>
                                 <Crew />
                             </HRContextProvider>
+                        )}/>
+                    </Route>
+                    <Route path="/landmarks" element={renderElement(
+                        <LandmarksContextProvider>
+                            <Landmarks />
+                        </LandmarksContextProvider>
+                    )}>
+                        <Route path="/landmarks/" element={renderElement(
+                            <LandmarksContextProvider>
+                                <DashboardLandmarkMaps />
+                            </LandmarksContextProvider>
+                        )}/>
+                        <Route path="/landmarks/address" element={renderElement(
+                            <LandmarksContextProvider>
+                                <Address />
+                            </LandmarksContextProvider>
+                        )}/>
+                        <Route path="/landmarks/barangay" element={renderElement(
+                            <LandmarksContextProvider>
+                                <Barangay />
+                            </LandmarksContextProvider>
+                        )}/>
+                        <Route path="/landmarks/purok" element={renderElement(
+                            <LandmarksContextProvider>
+                                <Purok />
+                            </LandmarksContextProvider>
                         )}/>
                     </Route>
                     <Route path="/waste-management" element={renderElement(<WasteManagement />)}/>
