@@ -15,7 +15,7 @@ import { HRContext } from "context/HRContext";
 import UserDialog from "app/components/DialogBox/UserDialog";
 import DataTableV2 from "app/components/DataTableV2";
 import UserService from "services/UserService";
-import {DatatableContext}from 'context/DataTableContext';
+import { DatatableContext }from 'context/DataTableContext';
 
 interface UserModel {
     id? : Number | null,
@@ -130,10 +130,10 @@ const Employee = () => {
     return (
         <>
             <div style={{height:'100%'}}>
-                { isLoading ?
+                {/* isLoading ?
                 <div className="overlay-form-loading">
                     <div className="loader"></div>
-                </div> : '' }
+                </div> : '' */}
                 <UserDialog 
                     isOpen={isUserDialogOpen}
                     setIsOpen={setIsUserDialogOpen}

@@ -1,7 +1,8 @@
 import React, { 
     useState, 
     useEffect, 
-    useContext
+    useContext,
+    useCallback
 } from "react";
 
 import { 
@@ -48,7 +49,13 @@ const DataTableV2 = (
         try {
             if(!isLoading) setIsloading(true);  
             if (signal) getDataService?.setAbortControllerSignal(signal)
-            let results = await (getDataService as any)[getDataMethodName](payload, !page ? currentPage : page);
+            let results = null;
+
+            if (payload.payloadObject) { 
+                results = await (getDataService as any)[getDataMethodName](...Object.values(payload.payloadObject), (!page ? currentPage : page));
+            } else {
+                results = await (getDataService as any)[getDataMethodName](payload, (!page ? currentPage : page));
+            }
             let usersData = results.data.data.map((item:any, index:any) => {
                 return { ...item, key: index.toString() };
             });
@@ -70,6 +77,7 @@ const DataTableV2 = (
     }
 
     useEffect( () => {
+        if (!isRefreshDataTable) return;
         const controller = new AbortController();
         const signal = controller.signal;
         loadTableData(signal)
@@ -79,6 +87,8 @@ const DataTableV2 = (
     }, [currentPage, isRefreshDataTable]);
 
     useEffect( () => {
+        if (payload.payloadObject && Object.keys(payload?.payloadObject?.payload).length === 0) 
+            return;
         const controller = new AbortController();
         const signal = controller.signal;
         loadTableData(signal, 1)
@@ -91,6 +101,7 @@ const DataTableV2 = (
         if (pagination.label.includes("Next")) {
             return (
                 <Button key={index} disabled={!pagination.url} type="link" onClick={() =>{
+                    setIsRefreshDataTable((prev : any)=> !prev);
                     setCurrentPage( (prevCurrentPage: number|any) => prevCurrentPage + 1);
                 }}>
                     <RightOutlined />
@@ -99,6 +110,7 @@ const DataTableV2 = (
         } else if (pagination.label.includes("Previous")){
             return  (
                 <Button key={index} disabled={!pagination.url} type="link" onClick={() =>{
+                    setIsRefreshDataTable((prev : any)=> !prev);
                     setCurrentPage( (prevCurrentPage: number|any) => prevCurrentPage - 1);
                 }}>
                     <LeftOutlined />
@@ -108,6 +120,7 @@ const DataTableV2 = (
         return  (
             <Button key={index} type={!pagination.active ? "default" : 'primary'} 
                 onClick={() => {
+                    setIsRefreshDataTable((prev : any)=> !prev);
                     setCurrentPage(index)
                 }}>
                 {pagination.label}
@@ -131,7 +144,7 @@ const DataTableV2 = (
                     />
                 </div>
                 <div>
-                        {loadedResult} out of {totalResult} results
+                    {loadedResult} out of {totalResult} results
                 </div>
                 <div className="pagination-buttons-container">
                     {paginationButtons.map((value:any, index:any) => renderPagniationLabel(value, index))}
