@@ -33,6 +33,8 @@ ChartJS.register(
 );
 export const AppContext = createContext<any>(null);
 const AppContextProvider = ({children} : any) => {
+    const CURRENT_CITY = "BAGO CITY";
+    const CURRENT_CITY_ID = 1;
     const token = (useSelector((state: RootState) => state.auth));
     const userLogInData = (useSelector((state: RootState) => state.user));
     //const dispatchAsync = useDispatch<AppDispatch>();
@@ -77,6 +79,8 @@ const AppContextProvider = ({children} : any) => {
                 setIsUserDataLoaded,
                 userData,
                 uuidv4,
+                CURRENT_CITY,
+                CURRENT_CITY_ID
             }}
         >
             {children}

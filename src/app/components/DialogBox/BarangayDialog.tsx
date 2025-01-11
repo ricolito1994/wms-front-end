@@ -54,14 +54,14 @@ const BarangayDialog = (
     };
       
 
-    const submitForm = async (values: UserForm) => {
+    const submitForm = async (values: any) => {
         try {
+            const { ['city_name']: a, ...updatedValues } = values;
             setIsLoadingBarangayData(true)
-            if (values?.id) {
-                let result = await landmarkService.update(type, values.id, values)
-                setBarangayDataForm(result.data)
+            if (updatedValues?.id) {
+                await landmarkService.update(type, updatedValues.id, updatedValues)
                 setIsRefreshDataTable(true)
-                form.setFieldsValue(result.data)
+                setIsOpen(false)
                 notification.success({
                     message: 'success',
                     description: 'Update barangay data success.',
@@ -69,15 +69,10 @@ const BarangayDialog = (
                 });
                 return;
             }
-            let result = await landmarkService.create(type, values)
-            setBarangayDataForm(result.data)
-            /*refreshUserTable.getUnitFunction(
-                refreshUserTable.params.searchOptionParam, 
-                refreshUserTable.params.page
-            );*/
-            // if (refreshUserTable) {refreshUserTable()}
+            const { ['id']: b, ...rest } = values;
+            await landmarkService.create(type, rest)
+            setIsOpen(false)
             setIsRefreshDataTable(true)
-            form.setFieldsValue(result.data)
             notification.success({
                 message: 'success',
                 description: 'Added a new barangay',
@@ -94,7 +89,7 @@ const BarangayDialog = (
         }
     }
     useEffect ( () => {
-        if (isOpen) {console.log(barangayDataForm)
+        if (isOpen) {
             form.setFieldsValue(barangayDataForm)
         }
     }, [isOpen])
@@ -130,8 +125,25 @@ const BarangayDialog = (
                     <Form.Item 
                         label="City Name" 
                         key = "city_name"
+                        name = "city_name"
                     >
-                        <Input />
+                        <Input disabled />
+                    </Form.Item> 
+
+                    <Form.Item 
+                        label="Longitude" 
+                        name="longitude" 
+                        key = "longitude"
+                    >
+                        <Input disabled />
+                    </Form.Item>
+
+                    <Form.Item 
+                        label="Latitude" 
+                        name="latitude" 
+                        key = "latitude"
+                    >
+                        <Input disabled />
                     </Form.Item>
 
                     <Form.Item 
@@ -162,5 +174,4 @@ const BarangayDialog = (
         </>
     )
 }
-
 export default BarangayDialog;

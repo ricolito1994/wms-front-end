@@ -2,6 +2,7 @@ import React, {
     useState, 
     useEffect, 
     useContext,
+    useMemo,
     useCallback
 } from "react";
 
@@ -15,12 +16,18 @@ import {
 import { LeftOutlined, RightOutlined } from '@ant-design/icons';
 import { DatatableContext } from "context/DataTableContext";
 
+
+interface AdditionalProps {
+    payloadObject : Object
+}
+
 interface PropsData {
     columnData: any [],
     getDataService: any,
     getDataMethodName: string,
     payload : any,
     children : React.ReactElement,
+    additionalProps?: AdditionalProps /* additonal params to be passed when requesting data to datable */
 }
 
 
@@ -30,7 +37,8 @@ const DataTableV2 = (
         getDataService,
         getDataMethodName,
         payload,
-        children
+        children,
+        additionalProps
    } 
    : PropsData
 ) 
@@ -51,8 +59,8 @@ const DataTableV2 = (
             if (signal) getDataService?.setAbortControllerSignal(signal)
             let results = null;
 
-            if (payload.payloadObject) { 
-                results = await (getDataService as any)[getDataMethodName](...Object.values(payload.payloadObject), (!page ? currentPage : page));
+            if (additionalProps?.payloadObject) { 
+                results = await (getDataService as any)[getDataMethodName](...Object.values(additionalProps.payloadObject), (!page ? currentPage : page));
             } else {
                 results = await (getDataService as any)[getDataMethodName](payload, (!page ? currentPage : page));
             }
@@ -76,6 +84,8 @@ const DataTableV2 = (
         }
     }
 
+    const memoizedPayload = useMemo(() => payload, [payload])
+
     useEffect( () => {
         if (!isRefreshDataTable) return;
         const controller = new AbortController();
@@ -87,15 +97,13 @@ const DataTableV2 = (
     }, [currentPage, isRefreshDataTable]);
 
     useEffect( () => {
-        if (payload.payloadObject && Object.keys(payload?.payloadObject?.payload).length === 0) 
-            return;
         const controller = new AbortController();
         const signal = controller.signal;
         loadTableData(signal, 1)
         return () => {
             controller.abort();
         }
-    }, [payload]);
+    }, [memoizedPayload]);
 
     const renderPagniationLabel = (pagination: any, index:any) : React.ReactNode => {
         if (pagination.label.includes("Next")) {
