@@ -26,6 +26,12 @@ interface BarangayDialogDataProps {
 }
 
 const Barangay = () => {
+    const {
+        uuidv4, 
+        userData,
+        CURRENT_CITY,
+        CURRENT_CITY_ID
+    } = useContext(AppContext)
 
     const barangayColumnData = [
         {
@@ -35,33 +41,53 @@ const Barangay = () => {
             sorter: (a:any, b:any) => a.barangay_name.localeCompare(b.barangay_name),
         },
         {
+            title : "Latitude",
+            dataIndex: 'latitude',
+            key: 'latitude',
+            sorter: (a:any, b:any) => a.barangay_name.localeCompare(b.latitude),
+        },
+        {
+            title : "Longitude",
+            dataIndex: 'longitude',
+            key: 'longitude',
+            sorter: (a:any, b:any) => a.barangay_name.localeCompare(b.longitude),
+        },
+        {
             title : "City",
             dataIndex: 'city',
             key: 'city',
-            sorter: (a:any, b:any) => a.address.localeCompare(b.address),
+            render: (text: any, b: any) => (
+                <span>
+                  {b.city.city_name}
+                </span>
+            ),
         },
         {
             title : "Actions",
             key: 'action',
             render: (text: any, barangay: any) => (
                 <span>
-                  <Button type="primary" onClick={() => openBarangayDialog(barangay.id)}>Edit</Button>&nbsp;
+                  <Button type="primary" onClick={() => openBarangayDialog(barangay)}>Edit</Button>&nbsp;
                 </span>
             ),
         },
     ]
 
     const defaultEmployeeSearchPayload : any = {
-        payloadObject : {
-            type: 'barangay',
-            payload : {
-                barangay_name : '',
-                city_id : 1,
-            }
-        }
+        barangay_name : '',
+        city_id : 1,
     }
 
-    const {uuidv4} = useContext(AppContext)
+    const defaultBarangayDialogForm : any = {
+        //id : null,
+        barangay_name : '',
+        city_id : 1,
+        city_name : CURRENT_CITY,
+        created_by : CURRENT_CITY_ID,
+        longitude : 0.0,
+        latitude : 0.0,
+    }
+    
     const {accessToken} = useContext(LandmarksContext)
     const landmarkService = new LandmarkService (accessToken)
     const [isLoading, setIsLoading] = useState<Boolean>(false);
@@ -75,17 +101,24 @@ const Barangay = () => {
         
     }, [])
 
-    const openBarangayDialog = (id:any|null) => {
-        if (!id) {
-            setBarangayDataForm({})
+    const openBarangayDialog = (barangayObject:any|null) => {
+        if (!barangayObject) {
+            setBarangayDataForm(defaultBarangayDialogForm)
             setIsOpenBarangayDialog(true);
             return;
         }
+        setBarangayDataForm(({...defaultBarangayDialogForm, 
+            id:barangayObject.id,
+            barangay_name:barangayObject.barangay_name,
+            latitude : barangayObject.latitude,
+            longitude : barangayObject.longitude
+        }))
+        setIsOpenBarangayDialog(true);
     }
 
     return (
         <>
-            <div style={{height:'95%'}}>
+            <div style={{height:'98%'}}>
                 {/* isLoading ?
                 <div className="overlay-form-loading">
                     <div className="loader"></div>
@@ -103,13 +136,19 @@ const Barangay = () => {
                     getDataService={landmarkService}
                     getDataMethodName={'show'}
                     payload={payload}
+                    additionalProps = {{
+                        payloadObject : {
+                            type: 'barangay',
+                            payload: payload,
+                        }
+                    }}
                 >
                     <div style={{height:'7%', paddingBottom:'1%'}}>
                         <div style={{width:'50%', float:'left'}}>
                             <Input 
                                 style={{ height: '40px' }} 
                                 placeholder="Type User's name ..."
-                                onPressEnter={() => setPayload("")}
+                                onPressEnter={() => setPayload((prev:any) => ({ ...prev , barangay_name: barangayName }))}
                                 onChange={(e)=>setBarangayName(e.target.value)}
                             />
                         </div>
