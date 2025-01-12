@@ -6,8 +6,6 @@ class LandmarkService extends HttpCommons {
     }
 
     async create (type: string, payload: any) {
-        
-        console.log(this.abortControllerSignal, payload)
         try {
             if (this.abortControllerSignal) {
                 const response = await this.apiClient.post(`${this.baseUrl}/landmark/${type}`, 
