@@ -11,6 +11,7 @@ interface AutoCompletePropsData {
     wAutoCompleteIndexPayload: string,
     wAutoCompleteIndexRsLabel: string,
     style?: any,
+    placeholder?: any
 }
 
 const WAutoComplete : React.FC<AutoCompletePropsData> = ({
@@ -22,6 +23,7 @@ const WAutoComplete : React.FC<AutoCompletePropsData> = ({
     wAutoCompleteIndexPayload,
     wAutoCompleteIndexRsLabel,
     style,
+    placeholder,
 })  => {
 
     const [autoCompleteInputValue, setAutoCompleteInputValue] = useState<string>(data);
@@ -30,7 +32,6 @@ const WAutoComplete : React.FC<AutoCompletePropsData> = ({
     const debouncedAutoCompleteValue = useDebounce<any>(autoCompleteInputValue)
 
     useEffect(()=>{
-      
       const getData = async (value:any, signal:any|null = null) => {
         try {
             setIsLoading(true)
@@ -90,11 +91,14 @@ const WAutoComplete : React.FC<AutoCompletePropsData> = ({
                     onChange={handleChange}
                     style={style}
                 >
-                    <Input />
+                    <Input 
+                        placeholder={placeholder} 
+                        style={style}
+                    />
                 </AutoComplete>
             </div>
         </Spin>
     </>)
 }
 
-export default WAutoComplete;
+export default React.memo(WAutoComplete);
