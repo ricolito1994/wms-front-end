@@ -6,12 +6,14 @@ class LandmarkService extends HttpCommons {
     }
 
     async create (type: string, payload: any) {
+        
+        console.log(this.abortControllerSignal, payload)
         try {
             if (this.abortControllerSignal) {
-                const response = await this.apiClient.post(`${this.baseUrl}/landmark/${type}`, {
-                    params : payload,
-                    signal : this.abortControllerSignal
-                });
+                const response = await this.apiClient.post(`${this.baseUrl}/landmark/${type}`, 
+                    payload,
+                    {'signal' : this.abortControllerSignal}
+                );
                 return response.data;
             }
             const response = await this.apiClient.post(`${this.baseUrl}/landmark/${type}`, payload);
@@ -24,10 +26,10 @@ class LandmarkService extends HttpCommons {
     async update (type: string, landmarkId: any,  payload: any) {
         try {
             if (this.abortControllerSignal) {
-                const response = await this.apiClient.post(`${this.baseUrl}/landmark/${type}`, {
-                    params : payload,
-                    signal : this.abortControllerSignal
-                });
+                const response = await this.apiClient.patch(`${this.baseUrl}/landmark/${landmarkId}/${type}`,
+                    payload,
+                    {'signal' : this.abortControllerSignal}
+                );
                 return response.data;
             }
             const response = await this.apiClient.patch(`${this.baseUrl}/landmark/${landmarkId}/${type}`, payload);

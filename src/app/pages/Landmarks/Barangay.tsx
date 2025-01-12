@@ -147,7 +147,7 @@ const Barangay = () => {
                         <div style={{width:'50%', float:'left'}}>
                             <Input 
                                 style={{ height: '40px' }} 
-                                placeholder="Type User's name ..."
+                                placeholder="Type Barangay name ..."
                                 onPressEnter={() => setPayload((prev:any) => ({ ...prev , barangay_name: barangayName }))}
                                 onChange={(e)=>setBarangayName(e.target.value)}
                             />
@@ -155,7 +155,7 @@ const Barangay = () => {
                         
                         <div style={{width:'20%', float:'left', paddingLeft:'0.5%'}}>
                             <Button onClick={()=>{openBarangayDialog(null)}} type="default" style={{ height: '40px', width:'100%' }}>
-                                <PlusOutlined /> Add New User
+                                <PlusOutlined /> Add New Barangay
                             </Button>
                         </div>
                         <div style={{clear:'both'}}>
