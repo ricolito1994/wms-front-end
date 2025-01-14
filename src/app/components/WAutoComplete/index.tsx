@@ -1,4 +1,4 @@
-import React, {useState, useEffect} from 'react';
+import React, {useState, useEffect, useMemo} from 'react';
 import { useDebounce } from 'hooks/useDebounce.hook';
 import { AutoComplete, Input, Spin } from 'antd';
 
@@ -11,7 +11,9 @@ interface AutoCompletePropsData {
     wAutoCompleteIndexPayload: string,
     wAutoCompleteIndexRsLabel: string,
     style?: any,
-    placeholder?: any
+    placeholder?: any,
+    clearData? : Function | undefined | null,
+    wAutoUniqueID? : any
 }
 
 const WAutoComplete : React.FC<AutoCompletePropsData> = ({
@@ -24,12 +26,21 @@ const WAutoComplete : React.FC<AutoCompletePropsData> = ({
     wAutoCompleteIndexRsLabel,
     style,
     placeholder,
+    clearData,
+    wAutoUniqueID
 })  => {
 
     const [autoCompleteInputValue, setAutoCompleteInputValue] = useState<string>(data);
     const [resultData, setResultData] = useState<any>([]);
     const [isLoading, setIsLoading] = useState<boolean>(false);
     const debouncedAutoCompleteValue = useDebounce<any>(autoCompleteInputValue)
+
+    useEffect(() => { 
+      window.addEventListener(`wAutoCompleteClear:${wAutoUniqueID}`, (p:any)=>handleClearData());
+      return () => {
+        window.removeEventListener(`wAutoCompleteClear:${wAutoUniqueID}`, handleClearData);
+      }
+    }, [])
 
     useEffect(()=>{
       const getData = async (value:any, signal:any|null = null) => {
@@ -40,7 +51,7 @@ const WAutoComplete : React.FC<AutoCompletePropsData> = ({
             payload.payload[wAutoCompleteIndexPayload] = value;
             if(service[functionName]) {
                 let data = await service[functionName](...Object.values(payload))
-                setResultData(data.data.data
+                /*setResultData(data.data.data
                     .map((item : any, index: any) => { 
                         return {
                             item,
@@ -50,7 +61,8 @@ const WAutoComplete : React.FC<AutoCompletePropsData> = ({
                             },
                         } 
                     })
-                )
+                )*/
+               setResultData(data)
             } else {
                 throw "Function not existent";
             }
@@ -66,30 +78,49 @@ const WAutoComplete : React.FC<AutoCompletePropsData> = ({
       getData(debouncedAutoCompleteValue, signal)
       
       return () => {
-        // abortController
         controller.abort();
       }  
     }, [debouncedAutoCompleteValue])
+
+    const searchValues = useMemo(()=>{
+        return (resultData?.data?.data
+            .map((item : any, index: any) => { 
+                return {
+                    item,
+                    ...{
+                        label : item[wAutoCompleteIndexRsLabel],
+                        value : item.id
+                    },
+                } 
+            })
+        )
+    }, [debouncedAutoCompleteValue, resultData]);
     
     const handleSelect = (value:any) => {
-        let result = resultData.find( (x:any) => x.value === value)
+        let result = searchValues.find( (x:any) => x.value === value)
         setAutoCompleteInputValue(result.label)
         setData(result)
     }
 
     const handleChange = (value:any) => {
         setAutoCompleteInputValue(value)
-    }   
+    }    
+
+    const handleClearData = () => {
+        setAutoCompleteInputValue("")
+    }
 
     return (<>
         <Spin spinning={isLoading}>
             <div className={"auto-complete-container"}>
                 <AutoComplete
-                    options={resultData}
+                    options={searchValues}
                     value={autoCompleteInputValue}
                     onSelect={handleSelect}
-                    onChange={handleChange}
+                    onSearch ={handleChange}
+                    onClear={()=>{if(clearData) clearData()}}
                     style={style}
+                    allowClear
                 >
                     <Input 
                         placeholder={placeholder} 

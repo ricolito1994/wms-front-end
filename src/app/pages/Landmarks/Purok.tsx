@@ -1,7 +1,8 @@
 import React, { 
     useContext, 
     useEffect, 
-    useState 
+    useState,
+    useCallback
 } from "react";
 import { 
     notification,
@@ -99,7 +100,7 @@ const Purok = () => {
         longitude : 0.0,
         latitude : 0.0,
     }
-    
+    const wAutoCompleteUniqueID1 = "101x1";
     const {accessToken} = useContext(LandmarksContext)
     const landmarkService = new LandmarkService (accessToken)
     const [isLoading, setIsLoading] = useState<Boolean>(false);
@@ -130,6 +131,8 @@ const Purok = () => {
         }))
         setIsOpenPurokDialog(true);
     }
+
+    const handleChangepSearchName = useCallback ((e:any) => setPurokSearchName((prev:any) => e.target.value), []);
 
     return (
         <>
@@ -165,18 +168,21 @@ const Purok = () => {
                                 value={purokSearchName}
                                 placeholder="Type Purok name ..."
                                 onPressEnter={() => setPayload((prev:any) => ({ ...prev , purok_name: purokSearchName }))}
-                                onChange={(e) => setPurokSearchName((prev:any) => e.target.value)}
+                                onChange={handleChangepSearchName}
                             />
                         </div>
                         <div style={{width:'30%', float:'left', paddingLeft:'0.5%'}}>
                             <WAutoComplete  
-                                key={uuidv4()}
                                 service={landmarkService}
                                 functionName={'show'}
                                 data={barangaySearchName}
                                 setData={(b:any) => {
                                     setBarangaySearchName(b.label)
                                     setPayload((prev:any) => ({ ...prev , barangay_id: b.item.id }))
+                                }}
+                                clearData={(b:any) => {
+                                    setBarangaySearchName("")
+                                    setPayload((prev:any) => ({ ...prev , barangay_id: null }))
                                 }}
                                 payload={{
                                     type : 'barangay',
@@ -188,6 +194,7 @@ const Purok = () => {
                                 }}
                                 wAutoCompleteIndexPayload={'barangay_name'}
                                 wAutoCompleteIndexRsLabel={'barangay_name'}
+                                wAutoUniqueID={wAutoCompleteUniqueID1}
                                 style={{width:'100%', height:'144%'}}
                                 placeholder={'Enter barangay name ...'}
                             />
@@ -200,7 +207,7 @@ const Purok = () => {
                         <div style={{width:'18.5%', float:'left', paddingLeft:'0.5%'}}>
                             <Button 
                                 onClick={()=>{
-                                    setBarangaySearchName("")
+                                    window.dispatchEvent(new CustomEvent(`wAutoCompleteClear:${wAutoCompleteUniqueID1}`, {detail:''}));
                                     setPurokSearchName("")
                                     setPayload((prev:any) => ({ ...prev , barangay_id: null, purok_name : '' }))
                                 }} 
