@@ -36,7 +36,7 @@ const WAutoComplete : React.FC<AutoCompletePropsData> = ({
     const debouncedAutoCompleteValue = useDebounce<any>(autoCompleteInputValue)
 
     useEffect(() => { 
-      window.addEventListener(`wAutoCompleteClear:${wAutoUniqueID}`, (p:any)=>handleClearData());
+      window.addEventListener(`wAutoCompleteClear:${wAutoUniqueID}`, handleClearData);
       return () => {
         window.removeEventListener(`wAutoCompleteClear:${wAutoUniqueID}`, handleClearData);
       }

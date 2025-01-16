@@ -112,7 +112,9 @@ const Purok = () => {
     const [isLoadingBarangayData, setIsLoadingBarangayData] = useState<boolean>(false);
     
     useEffect(() => {
-        
+        return () => {
+            
+        }
     }, [])
 
     const openPurokDialog = (purokObject:any|null) => {
