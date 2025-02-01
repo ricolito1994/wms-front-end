@@ -1,6 +1,14 @@
-import React, {useState, useEffect, useMemo} from 'react';
+import React, {
+    useState, 
+    useEffect, 
+    useMemo
+} from 'react';
 import { useDebounce } from 'hooks/useDebounce.hook';
-import { AutoComplete, Input, Spin } from 'antd';
+import { 
+    AutoComplete, 
+    Input, 
+    Spin 
+} from 'antd';
 
 interface AutoCompletePropsData {
     service? : any,
@@ -51,18 +59,7 @@ const WAutoComplete : React.FC<AutoCompletePropsData> = ({
             payload.payload[wAutoCompleteIndexPayload] = value;
             if(service[functionName]) {
                 let data = await service[functionName](...Object.values(payload))
-                /*setResultData(data.data.data
-                    .map((item : any, index: any) => { 
-                        return {
-                            item,
-                            ...{
-                                label : item[wAutoCompleteIndexRsLabel],
-                                value : item.id
-                            },
-                        } 
-                    })
-                )*/
-               setResultData(data)
+                setResultData(data)
             } else {
                 throw "Function not existent";
             }
