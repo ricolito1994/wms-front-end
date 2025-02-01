@@ -20,7 +20,7 @@ import { AppContext } from "context";
 import { LandmarksContext } from "context/LandmarksContext";
 import DataTableV2 from "app/components/DataTableV2";
 import LandmarkService from "services/LandmarkService";
-import PurokDialog from "app/components/DialogBox/PurokDialog";
+import AddressDialog from "app/components/DialogBox/AddressDialog";
 import WAutoComplete from 'app/components/WAutoComplete';
 
 const Address = () => {
@@ -35,9 +35,9 @@ const Address = () => {
     const AddressColumnData = [
         {
             title : "Address Name",
-            dataIndex: 'address_name',
-            key: 'address_name',
-            sorter: (a:any, b:any) => a.purok_name.localeCompare(b.purok_name),
+            dataIndex: 'full_address',
+            key: 'full_address',
+            sorter: (a:any, b:any) => a.full_address.localeCompare(b.full_address),
         },
         {
             title : "Barangay",
@@ -81,18 +81,24 @@ const Address = () => {
     ]
 
     const defaultAddressSearchObject : any = {
+        //id : null,
         full_address : '',
-        city_id : 1,
+        city_id : CURRENT_CITY_ID,
+        city_name : CURRENT_CITY,
+        created_by : userData.id,
+        longitude : 0.0,
+        latitude : 0.0,
+        address_type : 'street_address'
     }
     
     const wAutoCompleteUniqueID1 = "101x2";
     const landmarkService = new LandmarkService (accessToken)
     const [isLoading, setIsLoading] = useState<Boolean>(false);
-    const [isOpenPurokDialog, setIsOpenPurokDialog] = useState<boolean>(false);
+    const [isOpenAddressDialog, setIsOpenAddressDialog] = useState<boolean>(false);
     const [payload, setPayload] = useState<any>(defaultAddressSearchObject);
     const [purokSearchName, setPurokSearchName] = useState<any>('');
     const [barangaySearchName, setBarangaySearchName] = useState<any>('');
-    const [purokDataForm, setPurokDataForm] = useState<any>({});
+    const [addressDataForm, setAddressDataForm] = useState<any>({});
     const [isLoadingBarangayData, setIsLoadingBarangayData] = useState<boolean>(false);    
 
     useEffect(() => {
@@ -101,25 +107,37 @@ const Address = () => {
         }
     }, [])
 
-    const openAddressDialog = (addressObject: any) => {
-
+    const openAddressDialog = (addressObject: any|null) => {
+        setIsOpenAddressDialog(true)
+        if (! addressObject) {
+            setAddressDataForm(defaultAddressSearchObject) 
+            return;
+        } 
+        setAddressDataForm(({...defaultAddressSearchObject, 
+            id            : addressObject.id,
+            barangay_id   : addressObject.barangay_id,
+            purok_name    : addressObject.purok_name,
+            latitude      : addressObject.latitude,
+            longitude     : addressObject.longitude,
+            barangay_name : addressObject.barangay.barangay_name
+        }))
     }
 
     return (
         <>
             <div style={{height:'98%'}}>
-                {/* isLoading ?
+                {isLoading ?
                 <div className="overlay-form-loading">
                     <div className="loader"></div>
-                </div> : '' */}
-                {/* <PurokDialog 
+                </div> : '' }
+                {<AddressDialog 
                     key={uuidv4()}
-                    isOpen = {isOpenPurokDialog}
-                    setIsOpen = {setIsOpenPurokDialog}
-                    purokDataForm = {purokDataForm}
-                    setPurokDataForm = {setPurokDataForm}
-                    setIsLoadingBarangayData = {()=>{}}
-                />*/}
+                    isOpen = {isOpenAddressDialog}
+                    setIsOpen = {setIsOpenAddressDialog}
+                    addressDataForm = {addressDataForm}
+                    setAddressDataForm = {setAddressDataForm}
+                    setIsLoadingAddressData = {()=>{}}
+                />}
                 <DataTableV2
                     columnData={AddressColumnData}
                     getDataService={landmarkService}
@@ -137,7 +155,7 @@ const Address = () => {
                             <Input 
                                 style={{ height: '40px' }} 
                                 value={purokSearchName}
-                                placeholder="Type Purok name ..."
+                                placeholder="Type Address..."
                                 onPressEnter={() => setPayload((prev:any) => ({ ...prev , purok_name: purokSearchName }))}
                                 onChange={()=>{}}
                             />
@@ -156,23 +174,23 @@ const Address = () => {
                                     setPayload((prev:any) => ({ ...prev , barangay_id: null }))
                                 }}
                                 payload={{
-                                    type : 'barangay',
+                                    type : 'purok',
                                     payload : {
                                         barangay_name : '',
                                         city_id : 1
                                     },
                                     page: 1,
                                 }}
-                                wAutoCompleteIndexPayload={'barangay_name'}
-                                wAutoCompleteIndexRsLabel={'barangay_name'}
+                                wAutoCompleteIndexPayload={'purok_name'}
+                                wAutoCompleteIndexRsLabel={'purok_name'}
                                 wAutoUniqueID={wAutoCompleteUniqueID1}
                                 style={{width:'100%', height:'144%'}}
-                                placeholder={'Enter barangay name ...'}
+                                placeholder={'Enter purok name ...'}
                             />
                         </div>
                         <div style={{width:'20%', float:'left', paddingLeft:'0.5%'}}>
                             <Button onClick={()=>{openAddressDialog(null)}} type="default" style={{ height: '40px', width:'100%' }}>
-                                <PlusOutlined /> Add New Purok
+                                <PlusOutlined /> Add New Address
                             </Button>
                         </div>
                         <div style={{width:'18.5%', float:'left', paddingLeft:'0.5%'}}>
