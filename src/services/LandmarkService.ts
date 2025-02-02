@@ -22,7 +22,7 @@ class LandmarkService extends HttpCommons {
     }
 
     async update (type: string, landmarkId: any,  payload: any) {
-        try {
+        try {console.log('(this.abortControllerSignal)', (this.abortControllerSignal))
             if (this.abortControllerSignal) {
                 const response = await this.apiClient.patch(`${this.baseUrl}/landmark/${landmarkId}/${type}`,
                     payload,

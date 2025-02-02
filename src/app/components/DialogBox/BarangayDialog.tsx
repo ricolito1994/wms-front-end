@@ -60,8 +60,6 @@ const BarangayDialog = (
             setIsLoadingBarangayData(true)
             if (updatedValues?.id) {
                 await landmarkService.update(type, updatedValues.id, updatedValues)
-                setIsRefreshDataTable(true)
-                setIsOpen(false)
                 notification.success({
                     message: 'success',
                     description: 'Update barangay data success.',
@@ -71,8 +69,6 @@ const BarangayDialog = (
             }
             const { ['id']: b, ...rest } = values;
             await landmarkService.create(type, rest)
-            setIsOpen(false)
-            setIsRefreshDataTable(true)
             notification.success({
                 message: 'success',
                 description: 'Added a new barangay',
@@ -85,12 +81,23 @@ const BarangayDialog = (
                 placement: 'top',
             });
         } finally {
-
+            setIsRefreshDataTable(true)
+            setIsOpen(false)
         }
     }
     useEffect ( () => {
+        let controller :any = null;
         if (isOpen) {
             form.setFieldsValue(barangayDataForm)
+            if (! landmarkService.abortControllerSignal) {
+                controller = new AbortController();
+                landmarkService.setAbortControllerSignal(controller.signal)
+            }
+        }
+        return () => {
+            if (controller) { 
+                controller?.abort();
+            }
         }
     }, [isOpen])
     return (

@@ -129,17 +129,15 @@ const AddressDialog = (
                     placement: 'top',
                 });
             }
-
-            console.log('formAddressData', formAddressData)
         } catch (e:any) {
             notification.error({
-                message: 'purok failed. ',
+                message: 'Address failed. ',
                 description: e?.response?.data?.error,
                 placement: 'top',
             });
         } finally {
-            setIsOpen(false)
             setIsRefreshDataTable(true)
+            setIsOpen(false)
         }
     }
 
@@ -153,11 +151,20 @@ const AddressDialog = (
 
     useEffect ( () => {
         if (isOpen) {
-            form.setFieldsValue(addressDataForm)
-
             if (addressDataForm.address_type) {
                 setAddressType (addressDataForm.address_type)
             }
+            if (addressDataForm.barangay_name) {
+                setpBarangaySearchName (addressDataForm.barangay_name)
+                setpBarangayID (addressDataForm.barangay_id)
+            }
+            if (addressDataForm.purok_name) {
+                setpPurokSearchName (addressDataForm.purok_name)
+            }
+            if (addressDataForm.street_name) {
+                setpStreetSearchName (addressDataForm.street_name)
+            }
+            form.setFieldsValue(addressDataForm)
         }
     }, [isOpen])
     
@@ -209,7 +216,7 @@ const AddressDialog = (
                         key = "street_name"
                     >
                         <WAutoComplete  
-                            key={"w-1-auto-complete-street"}
+                            key={uuidv4()}
                             service={landmarkService}
                             functionName={'show'}
                             data={pStreetSearchName}
@@ -228,8 +235,8 @@ const AddressDialog = (
                                 },
                                 page: 1,
                             }}
-                            wAutoCompleteIndexPayload={'street_name'}
-                            wAutoCompleteIndexRsLabel={'street_name'}
+                            wAutoCompleteIndexPayload={'full_address'}
+                            wAutoCompleteIndexRsLabel={'full_address'}
                             style={{width:'100%', height:'130%'}}
                             placeholder={'Enter street name ...'}
                         />
@@ -241,7 +248,7 @@ const AddressDialog = (
                         key   = "purok_name"
                     >
                         <WAutoComplete  
-                            key={"w-2-auto-complete-purok"}
+                            key={uuidv4()}
                             service={landmarkService}
                             functionName={'show'}
                             data={pPurokSearchName}
@@ -271,7 +278,7 @@ const AddressDialog = (
                         key = "barangay_name"
                     >
                         <WAutoComplete  
-                            key={"w-3-auto-complete-brgy"}
+                            key={uuidv4()}
                             service={landmarkService}
                             functionName={'show'}
                             data={pbarangaySearchName}

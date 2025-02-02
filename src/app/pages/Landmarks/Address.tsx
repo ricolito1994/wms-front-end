@@ -4,7 +4,8 @@ import React, {
     useState,
     useCallback
 } from "react";
-import { 
+import {     
+    Select, 
     notification,
     Input, 
     Button, 
@@ -24,6 +25,7 @@ import AddressDialog from "app/components/DialogBox/AddressDialog";
 import WAutoComplete from 'app/components/WAutoComplete';
 
 const Address = () => {
+    const { Option } = Select;
     const {accessToken} = useContext(LandmarksContext)
     const {
         uuidv4, 
@@ -55,7 +57,7 @@ const Address = () => {
             key: 'purok',
             render: (text: any, b: any) => (
                 <span>
-                    {b.barangay.barangay_name}
+                    {b.purok.purok_name}
                 </span>
             ),
         },
@@ -81,7 +83,12 @@ const Address = () => {
     ]
 
     const defaultAddressSearchObject : any = {
-        //id : null,
+        full_address : '',
+        city_id : CURRENT_CITY_ID,
+        address_type : ''
+    }
+
+    const defaultAddressDialogFormData : any = {
         full_address : '',
         city_id : CURRENT_CITY_ID,
         city_name : CURRENT_CITY,
@@ -101,6 +108,9 @@ const Address = () => {
     const [addressDataForm, setAddressDataForm] = useState<any>({});
     const [isLoadingBarangayData, setIsLoadingBarangayData] = useState<boolean>(false);    
 
+    const [fullAddressSearchName, setFullAddressSearchName] = useState<any>("");
+    const [addressType, setAddressType] = useState<any>("");
+
     useEffect(() => {
         return () => {
 
@@ -110,18 +120,44 @@ const Address = () => {
     const openAddressDialog = (addressObject: any|null) => {
         setIsOpenAddressDialog(true)
         if (! addressObject) {
-            setAddressDataForm(defaultAddressSearchObject) 
+            setAddressDataForm(defaultAddressDialogFormData) 
             return;
         } 
-        setAddressDataForm(({...defaultAddressSearchObject, 
+        setAddressDataForm(({...defaultAddressDialogFormData, 
             id            : addressObject.id,
             barangay_id   : addressObject.barangay_id,
-            purok_name    : addressObject.purok_name,
+            purok_name    : addressObject.purok.purok_name,
             latitude      : addressObject.latitude,
             longitude     : addressObject.longitude,
-            barangay_name : addressObject.barangay.barangay_name
+            barangay_name : addressObject.barangay.barangay_name,
+            full_address  : addressObject.full_address,
+            address_type  : addressObject.address_type,
+            street_name   : addressObject.street?.full_address,
+            street        : addressObject.street?.id
         }))
     }
+
+    const handleChangeAddressName = useCallback ((e:any) => setFullAddressSearchName((prev:any) => e.target.value), []);
+
+    const handleChangeAddressType = useCallback ((value:string) => {
+        setAddressType((prev:any) => value)
+        setPayload((prev:any) => ({ ...prev , address_type : value }))
+    }, [])
+
+    const streetTypes = [
+        {
+            text : "All",
+            value : ""
+        },
+        {
+            text : "Street Address",
+            value : "street_address"
+        },
+        {
+            text : "Home Address",
+            value : "home_address"
+        },
+    ]
 
     return (
         <>
@@ -154,39 +190,16 @@ const Address = () => {
                         <div style={{width:'30%', float:'left'}}>
                             <Input 
                                 style={{ height: '40px' }} 
-                                value={purokSearchName}
+                                value={fullAddressSearchName}
                                 placeholder="Type Address..."
-                                onPressEnter={() => setPayload((prev:any) => ({ ...prev , purok_name: purokSearchName }))}
-                                onChange={()=>{}}
+                                onPressEnter={() => setPayload((prev:any) => ({ ...prev , full_address: fullAddressSearchName }))}
+                                onChange={handleChangeAddressName}
                             />
                         </div>
                         <div style={{width:'30%', float:'left', paddingLeft:'0.5%'}}>
-                            <WAutoComplete  
-                                service={landmarkService}
-                                functionName={'show'}
-                                data={barangaySearchName}
-                                setData={(b:any) => {
-                                    setBarangaySearchName(b.label)
-                                    setPayload((prev:any) => ({ ...prev , barangay_id: b.item.id }))
-                                }}
-                                clearData={(b:any) => {
-                                    setBarangaySearchName("")
-                                    setPayload((prev:any) => ({ ...prev , barangay_id: null }))
-                                }}
-                                payload={{
-                                    type : 'purok',
-                                    payload : {
-                                        barangay_name : '',
-                                        city_id : 1
-                                    },
-                                    page: 1,
-                                }}
-                                wAutoCompleteIndexPayload={'purok_name'}
-                                wAutoCompleteIndexRsLabel={'purok_name'}
-                                wAutoUniqueID={wAutoCompleteUniqueID1}
-                                style={{width:'100%', height:'144%'}}
-                                placeholder={'Enter purok name ...'}
-                            />
+                            <Select style={{ width: '100%' , height: '40px' }}  placeholder="Select address type" onChange={handleChangeAddressType} value={addressType}>
+                                {streetTypes.map((option, index) => <Option key={index} value={option.value}>{option.text}</Option>)}
+                            </Select>
                         </div>
                         <div style={{width:'20%', float:'left', paddingLeft:'0.5%'}}>
                             <Button onClick={()=>{openAddressDialog(null)}} type="default" style={{ height: '40px', width:'100%' }}>
@@ -197,8 +210,8 @@ const Address = () => {
                             <Button 
                                 onClick={()=>{
                                     window.dispatchEvent(new CustomEvent(`wAutoCompleteClear:${wAutoCompleteUniqueID1}`, {detail:''}));
-                                    setPurokSearchName("")
-                                    setPayload((prev:any) => ({ ...prev , barangay_id: null, purok_name : '' }))
+                                    setFullAddressSearchName('')
+                                    setPayload((prev:any) => ({ ...prev , full_address : '' }))
                                 }} 
                                 type="default" 
                                 style={{ height: '40px', width:'100%' }}
