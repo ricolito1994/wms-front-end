@@ -42,32 +42,6 @@ const DashboardLandmarkMaps = () => {
             zoomControl: true, 
         }
     };
-    const CityHall = ({ text }:any) => <div style={{fontSize:'35px'}}>🏢</div>;
-
-    const Places = ({ text }:any) => <div style={{fontSize:'35px'}}>📍</div>;
-
-    const [placeMarkers, setPlaceMarkers] = useState <any>( [
-        {
-            "latitude": 10.540746246928512,
-            "longitude": 122.8478014351839,
-            "id": 2
-        },
-        {
-            "latitude": 10.54605938094494,
-            "longitude": 122.8364737114137,
-            "id": 1
-        },
-        {
-            "latitude": 10.545848428761467,
-            "longitude": 122.84110856859144,
-            "id": 2
-        },
-        {
-            "latitude": 10.546439094510776,
-            "longitude": 122.84102273790296,
-            "id": 7
-        }
-    ]);
 
     useEffect(() => {
         if (coordinatesData) {
@@ -77,7 +51,7 @@ const DashboardLandmarkMaps = () => {
     }, [isOpenPlacesDialog, coordinatesData])
 
     useEffect(() => {
-        console.log(placeMarkers)
+        
     }, [places])
 
     const handleMapClick = useCallback ((e :google.maps.MapMouseEvent) => {
