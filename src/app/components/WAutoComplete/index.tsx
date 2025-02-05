@@ -65,7 +65,7 @@ const WAutoComplete : React.FC<AutoCompletePropsData> = ({
             }
         } catch (e: any) {
             // err
-            throw e;
+            // throw e;
         } finally {
             setIsLoading(false)
         }
