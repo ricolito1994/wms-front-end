@@ -12,7 +12,7 @@ import {
 import PlacesDialog from "app/components/DialogBox/PlacesDialog";
 import { LandmarksContext } from "context/LandmarksContext";
 import LandmarkService from "services/LandmarkService";
-import { Modal } from 'antd';
+import { Modal, Spin } from 'antd';
 
 const DashboardLandmarkMaps = () => {
     const API_KEY: any = process.env.REACT_APP_GOOGLE_API_KEY
@@ -26,6 +26,7 @@ const DashboardLandmarkMaps = () => {
         address_type : "address"
     })
     const [coordinatesData, setCoordinatesData] = useState<any|null>(null)
+    const [isLoadingMapData, setIsLoadingMapData] = useState<boolean>(false)
     const defaultProps = {
         center: {
             lat: 10.53846,
@@ -44,15 +45,72 @@ const DashboardLandmarkMaps = () => {
     };
 
     useEffect(() => {
-        if (coordinatesData) {
+        if (coordinatesData && ! isOpenPlacesDialog) {
+            setIsLoadingMapData(true)
+            let existingPlaceIndex = places.findIndex( (e :any) => e?.id == coordinatesData.id && 
+                e?.address_type == coordinatesData.address_type)
+            if (existingPlaceIndex > -1) {
+                setPlaces((prev:any) => 
+                    prev.map((place:any, i:number) => 
+                        i === existingPlaceIndex ? { ...place, 
+                            latitude: coordinatesData?.latitude, 
+                            longitude: coordinatesData?.longitude
+                        } : place
+                    )
+                );
+                setCoordinatesData(null)
+                setIsLoadingMapData(false)
+                return ;
+            }
             setPlaces((prev:any) => [...prev, coordinatesData])
             setCoordinatesData(null)
         }
     }, [isOpenPlacesDialog, coordinatesData])
 
     useEffect(() => {
-        
-    }, [places])
+        const getPlaces = async (signal: AbortSignal) => {
+            try {
+                setIsLoadingMapData(true)
+                landmarkService.setAbortControllerSignal(signal)
+
+                let places = await Promise.all([
+                    landmarkService.all('address', {city_id: 1}),
+                    landmarkService.all('barangay', {city_id: 1}),
+                    landmarkService.all('purok', {city_id: 1})
+                ])
+
+                for (let p in places) {
+                    let selplace = places[p].data
+                    for (let q in selplace) {
+                        let pl = selplace[q]
+                        if (pl.latitude > 0 && pl.longitude > 0)
+                            setPlaces((prev:any) => [...prev, {
+                                'id'           : pl.id,
+                                'latitude'     : parseFloat(pl.latitude),
+                                'longitude'    : parseFloat(pl.longitude),
+                                'address_type' : places[p]?.address_type,
+                            }])
+                    }
+                }
+
+            } catch (e) {
+                // throw e
+            } finally {
+                setIsLoadingMapData(false)
+            }
+        }
+
+        let abortController = new AbortController();
+
+        getPlaces(abortController.signal)
+
+
+        return () => {
+            abortController.abort();
+        }
+    }, [])
+
+    useEffect(() => {console.log(places)}, [places])
 
     const handleMapClick = useCallback ((e :google.maps.MapMouseEvent) => {
         const lat = e?.latLng?.lat();
@@ -75,6 +133,11 @@ const DashboardLandmarkMaps = () => {
 
     return (
         <>
+            {isLoadingMapData ?
+                <div className="overlay-form-loading">
+                    <div className="loader"></div>
+                </div> : '' 
+            }
             <PlacesDialog 
                 isOpen={isOpenPlacesDialog}
                 setIsOpen={setIsOpenPlacesDialog}
@@ -85,7 +148,7 @@ const DashboardLandmarkMaps = () => {
                 <GoogleMap 
                     mapContainerStyle={{height:'100%', width:'100%'}} 
                     center={defaultProps.center} 
-                    zoom={12}
+                    zoom={15}
                     onRightClick={handleMapClick}
                 >
                     <Marker position={defaultProps.center} />
