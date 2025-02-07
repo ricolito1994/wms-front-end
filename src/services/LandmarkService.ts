@@ -54,6 +54,22 @@ class LandmarkService extends HttpCommons {
         }
     }
 
+    async all (type: string, payload: any) {
+        try {
+            if (this.abortControllerSignal) {
+                const response = await this.apiClient.get(`${this.baseUrl}/landmarks/all/${type}`, {
+                    params : payload,
+                    signal : this.abortControllerSignal
+                });
+                return response.data;
+            }
+            const response = await this.apiClient.get(`${this.baseUrl}/landmarks/all/${type}`, payload);
+            return response.data;
+        } catch (error) {
+            throw error;
+        }
+    }
+
     async get (type: string, landmarkId: any) {
         try {
             const response = await this.apiClient.get(`${this.baseUrl}/landmark/${landmarkId}/${type}`);

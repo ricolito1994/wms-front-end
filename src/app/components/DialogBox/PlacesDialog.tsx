@@ -71,6 +71,7 @@ const PlacesDialog = (
                 formPlacesObjects.id, 
                 formPlacesObjects
             )
+            formPlacesObjects['address_type'] = values.address_type
             coordinatesData = formPlacesObjects;
             notification.success({
                 message: 'success',
