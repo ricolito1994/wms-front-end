@@ -33,6 +33,7 @@ const DashboardLandmarkMaps: React.FC = () => {
         lat: 10.53846,
         lng: 122.83512
     })
+    const [markerRef, setMarkerRef] = useState<google.maps.MVCObject | undefined>();
     const defaultProps = {
         center: {
             lat: 10.53846,
@@ -90,11 +91,18 @@ const DashboardLandmarkMaps: React.FC = () => {
                     for (let q in selplace) {
                         let pl = selplace[q]
                         if (pl.latitude > 0 && pl.longitude > 0) {
+                            let addressType = places[p]?.address_type;
+                            let placeName:any = {
+                                'address'    : 'full_address',
+                                'purok'      : 'purok_name',
+                                'barangay'   : 'barangay_name',
+                            }
                             setPlaces((prev:any) => [...prev, {
                                 'id'           : pl.id,
                                 'latitude'     : parseFloat(pl.latitude),
                                 'longitude'    : parseFloat(pl.longitude),
                                 'address_type' : places[p]?.address_type,
+                                'place_name'   : pl[placeName[addressType]]
                             }])
                         }
                     }
@@ -129,7 +137,12 @@ const DashboardLandmarkMaps: React.FC = () => {
             cancelText: 'No',
             onOk() {
                 setIsOpenPlacesDialog(true)
-                setPlacesDataForm((prev:any) => ({...prev, latitude: lat, longitude: lng}))
+                setPlacesDataForm((prev:any) => 
+                    ({...prev,
+                        latitude: lat, 
+                        longitude: lng
+                    })
+                )
             },
             onCancel() {
                 
@@ -137,13 +150,18 @@ const DashboardLandmarkMaps: React.FC = () => {
         });
     }, [] );
 
-    const markerClick = useCallback ( (marker: any) => {
+    const markerClick = useCallback ( (marker: any, anchor: google.maps.MVCObject) => {
         setSelectedMarker(marker)
+        setMarkerRef(anchor)
         setCenterMap({
             lat: marker.latitude,
             lng: marker.longitude
         })
     }, [])
+
+    useEffect(() => {
+        console.log('s', selectedMarker)
+    }, [selectedMarker])
 
     return (
         <>
@@ -166,14 +184,28 @@ const DashboardLandmarkMaps: React.FC = () => {
                     onRightClick={handleMapClick}
                 >
                     <Marker position={defaultProps.center} />
-                    {places.map((marker:any, index : any) => (
-                       
-                        <Marker 
-                            key={index} 
-                            onClick={() => markerClick(marker)}
-                            position={{ lat: marker.latitude, lng: marker.longitude }} 
-                        />
-                    ))}
+                    {places.map((marker:any, index : any) => {
+                        return (
+                            <Marker 
+                                key={index} 
+                                onClick={(e: any) => markerClick(marker, e)}
+                                position={{ lat: marker.latitude, lng: marker.longitude }} 
+                            >
+                                {(selectedMarker?.id === marker.id && selectedMarker?.address_type === marker.address_type) && (
+                                    <InfoWindow
+                                        anchor={markerRef} // optional - can be removed; markerref is required if outside marker component
+                                        position={{ lat: selectedMarker?.latitude, lng: selectedMarker?.longitude }}
+                                        onCloseClick={() => setSelectedMarker(null)}
+                                    >
+                                        <div>
+                                            <h3>{selectedMarker?.place_name}</h3>
+                                            <p>{selectedMarker?.address_type}</p>
+                                        </div>
+                                    </InfoWindow>
+                                )}
+                            </Marker>
+                        )
+                    })}
                 </GoogleMap>
             </LoadScript>
         </>
