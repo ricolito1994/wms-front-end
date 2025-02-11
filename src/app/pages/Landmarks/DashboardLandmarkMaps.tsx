@@ -62,11 +62,14 @@ const DashboardLandmarkMaps: React.FC = () => {
                     )
                 );
                 setCoordinatesData(null)
+                setSelectedMarker(coordinatesData)
                 setIsLoadingMapData(false)
                 return ;
             }
             setPlaces((prev:any) => [...prev, coordinatesData])
+            setSelectedMarker(coordinatesData)
             setCoordinatesData(null)
+            setIsLoadingMapData(false)
         }
     }, [isOpenPlacesDialog, coordinatesData])
 
@@ -149,14 +152,15 @@ const DashboardLandmarkMaps: React.FC = () => {
     const markerClick = useCallback ( (marker: any, anchor: google.maps.MVCObject) => {
         setSelectedMarker(marker)
         setMarkerRef(anchor)
-        setCenterMap({
-            lat: marker.latitude,
-            lng: marker.longitude
-        })
     }, [])
 
     useEffect(() => {
-        console.log('s', selectedMarker)
+        if (selectedMarker) {
+            setCenterMap({
+                lat: selectedMarker.latitude,
+                lng: selectedMarker.longitude
+            })
+        }
     }, [selectedMarker])
 
     return (

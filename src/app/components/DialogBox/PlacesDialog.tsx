@@ -66,12 +66,18 @@ const PlacesDialog = (
     const submitForm = useCallback(async (values : any) => {
         let coordinatesData : any | null = null;
         try {
-            await landmarkService.update(
+            let updated = await landmarkService.update(
                 values.address_type,
                 formPlacesObjects.id, 
                 formPlacesObjects
-            )
+            );
+            let placeName:any = {
+                'address'    : 'full_address',
+                'purok'      : 'purok_name',
+                'barangay'   : 'barangay_name',
+            }
             formPlacesObjects['address_type'] = values.address_type
+            formPlacesObjects['place_name'] = updated?.data[placeName[values.address_type]];
             coordinatesData = formPlacesObjects;
             notification.success({
                 message: 'success',
