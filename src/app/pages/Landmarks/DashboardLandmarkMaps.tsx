@@ -41,10 +41,6 @@ const DashboardLandmarkMaps: React.FC = () => {
         },
         zoom: 17,
         options : {
-            //zoomControl: false, 
-            //gestureHandling: "none", 
-            //disableDoubleClickZoom: true, 
-            //gestureHandling: "none", 
             scrollwheel: true, 
             disableDoubleClickZoom: true, 
             zoomControl: true, 
