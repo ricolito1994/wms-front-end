@@ -70,6 +70,18 @@ class LandmarkService extends HttpCommons {
         }
     }
 
+    async searchAllPlaces () {
+        try {
+            let places = await Promise.all([
+                this.all('address', {city_id: 1}),
+                this.all('barangay', {city_id: 1}),
+                this.all('purok', {city_id: 1})
+            ]) 
+        } catch (error) {
+            throw error;
+        }
+    }
+
     async get (type: string, landmarkId: any) {
         try {
             const response = await this.apiClient.get(`${this.baseUrl}/landmark/${landmarkId}/${type}`);
