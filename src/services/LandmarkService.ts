@@ -70,12 +70,12 @@ class LandmarkService extends HttpCommons {
         }
     }
 
-    async searchAllPlaces () {
+    async searchAllPlaces (payload: any) {
         try {
             let places = await Promise.all([
-                this.all('address', {city_id: 1}),
-                this.all('barangay', {city_id: 1}),
-                this.all('purok', {city_id: 1})
+                this.all('address', {...payload , city_id: 1}),
+                this.all('barangay', {...payload ,city_id: 1}),
+                this.all('purok', {...payload , city_id: 1})
             ]) 
         } catch (error) {
             throw error;

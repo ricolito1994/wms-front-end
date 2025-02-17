@@ -14,9 +14,9 @@ import PlacesDialog from "app/components/DialogBox/PlacesDialog";
 import { LandmarksContext } from "context/LandmarksContext";
 import LandmarkService from "services/LandmarkService";
 import { Modal, Spin } from 'antd';
-import WAutoComplete from "app/components/WAutoComplete";
+import SearchLocationsComponent from "app/components/Maps/SearchLocationsComponent";
 
-const DashboardLandmarkMaps: React.FC = () => {
+const DashboardLandmarkMaps: React.FC = (): React.ReactElement => {
     const API_KEY: any = process.env.REACT_APP_GOOGLE_API_KEY
     const LAT: any = process.env.REACT_APP_DEFAULT_LT
     const LNG: any = process.env.REACT_APP_DEFAULT_LG
@@ -184,24 +184,7 @@ const DashboardLandmarkMaps: React.FC = () => {
                     zoom={15}
                     onRightClick={handleMapClick}
                 >   
-                    <div style={{
-                       height:'5%', width:'50%', position:'relative', top:'2%', left: '20%',
-                        }} >
-                            <b>Search Places</b>
-                            <WAutoComplete 
-                                service = {{}}
-                                functionName  = {{}}
-                                data  = {{}}
-                                setData  = {()=>{}}
-                                payload  = {{}}
-                                wAutoCompleteIndexPayload  = {''}
-                                wAutoCompleteIndexRsLabel  = {''}
-                                style  = {{width:'100%'}}
-                                placeholder  = {{}}
-                                clearData  = {()=>{}}
-                                wAutoUniqueID  = {123}
-                            />
-                        </div>
+                    <SearchLocationsComponent />
                     <Marker position={defaultProps.center} />
                     {places.map((marker:any, index : any) => {
                         return (
