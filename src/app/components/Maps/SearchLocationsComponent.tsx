@@ -9,10 +9,12 @@ import WAutoComplete from "../WAutoComplete";
 import LandmarkService from "services/LandmarkService";
 import { LandmarksContext } from "context/LandmarksContext";
 interface SearchLocationsComponentProps {
+    searchAction: Function
 }
 
 const SearchLocationsComponent: React.FC <SearchLocationsComponentProps>  = (
     {
+        searchAction
         // props here
     } 
 ): React.ReactElement => {
@@ -20,6 +22,7 @@ const SearchLocationsComponent: React.FC <SearchLocationsComponentProps>  = (
     let {accessToken} = useContext (LandmarksContext)
     let landmarkService = new LandmarkService(accessToken)
     let [isActive, setIsActive] = useState<boolean>(true);
+    let [searchPlaceName, setSearchPlaceName] = useState<any>("");
     let [mainStyle, setMainStyle] = useState<any>( {
         height:'10%', 
         width:'50%', 
@@ -32,6 +35,9 @@ const SearchLocationsComponent: React.FC <SearchLocationsComponentProps>  = (
 
     const toggleActive = useCallback (() => {
         setIsActive((prev:boolean) => !prev)
+
+        if (! isActive) setSearchPlaceName("")
+
     }, [isActive])
 
     useEffect (() => {
@@ -49,14 +55,18 @@ const SearchLocationsComponent: React.FC <SearchLocationsComponentProps>  = (
                 
                 <WAutoComplete 
                     service = {landmarkService}
-                    functionName  = {{}}
-                    data  = {{}}
-                    setData  = {()=>{}}
-                    payload  = {{}}
-                    wAutoCompleteIndexPayload  = {''}
-                    wAutoCompleteIndexRsLabel  = {''}
+                    functionName  = {`getAllLandmarks`}
+                    data  = {searchPlaceName}
+                    setData  = {searchAction}
+                    payload  = {{
+                        payload : {
+                            place_name : '',
+                        },
+                    }}
+                    wAutoCompleteIndexPayload  = {'place_name'}
+                    wAutoCompleteIndexRsLabel  = {'place_name'}
                     style  = {{width:'100%'}}
-                    placeholder  = {{}}
+                    placeholder  = {`search place ...`}
                     clearData  = {()=>{}}
                     wAutoUniqueID  = {123}
                 />

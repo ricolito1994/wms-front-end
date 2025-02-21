@@ -13,7 +13,7 @@ import {
 import PlacesDialog from "app/components/DialogBox/PlacesDialog";
 import { LandmarksContext } from "context/LandmarksContext";
 import LandmarkService from "services/LandmarkService";
-import { Modal, Spin } from 'antd';
+import { Modal, notification, Spin } from 'antd';
 import SearchLocationsComponent from "app/components/Maps/SearchLocationsComponent";
 
 const DashboardLandmarkMaps: React.FC = (): React.ReactElement => {
@@ -98,7 +98,7 @@ const DashboardLandmarkMaps: React.FC = (): React.ReactElement => {
                                 'barangay'   : 'barangay_name',
                             }
                             setPlaces((prev:any) => [...prev, {
-                                'id'           : pl.id,
+                                'id'           : `${addressType}-${pl.id}`,
                                 'latitude'     : parseFloat(pl.latitude),
                                 'longitude'    : parseFloat(pl.longitude),
                                 'address_type' : places[p]?.address_type,
@@ -158,8 +158,8 @@ const DashboardLandmarkMaps: React.FC = (): React.ReactElement => {
     useEffect(() => {
         if (selectedMarker) {
             setCenterMap({
-                lat: selectedMarker.latitude,
-                lng: selectedMarker.longitude
+                lat: parseFloat(selectedMarker.latitude),
+                lng: parseFloat(selectedMarker.longitude)
             })
         }
     }, [selectedMarker])
@@ -184,7 +184,21 @@ const DashboardLandmarkMaps: React.FC = (): React.ReactElement => {
                     zoom={15}
                     onRightClick={handleMapClick}
                 >   
-                    <SearchLocationsComponent />
+                    <SearchLocationsComponent 
+                        searchAction = {(place: any) => {
+                            place.item[`latitude`] = parseFloat(place.item?.latitude);
+                            place.item[`longitude`] = parseFloat(place.item?.longitude)
+                            if (place.item[`latitude`] == 0 && place.item[`longitude`] == 0) {
+                                notification.error({
+                                    message: `${place.item[`place_name`]} does not have a location.`,
+                                    description: `Please add it to the map first.`,
+                                    placement: 'top',
+                                });
+                                return;
+                            }
+                            setSelectedMarker(place.item)
+                        }} 
+                    />
                     <Marker position={defaultProps.center} />
                     {places.map((marker:any, index : any) => {
                         return (

@@ -73,6 +73,9 @@ const WAutoComplete : React.FC<AutoCompletePropsData> = ({
       const controller = new AbortController();
       const signal = controller.signal;
       getData(debouncedAutoCompleteValue, signal)
+
+      if (debouncedAutoCompleteValue.length === 0)
+        setResultData([])
       
       return () => {
         controller.abort();
