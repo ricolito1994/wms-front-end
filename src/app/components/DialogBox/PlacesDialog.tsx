@@ -110,17 +110,17 @@ const PlacesDialog = (
             if (placesDataForm.barangay_name) {
                 setpBarangaySearchName (placesDataForm.barangay_name)
                 setpBarangayID (placesDataForm.barangay_id)
-                id = placesDataForm.barangay_id
+                id = `barangay-${placesDataForm.barangay_id}`
             }
             if (placesDataForm.purok_name) {
                 setpPurokSearchName (placesDataForm.purok_name)
                 setpPurokID(placesDataForm.purok_id)
-                id = placesDataForm.purok_id
+                id = `purok-${placesDataForm.purok_id}`
             }
             if (placesDataForm.address_name) {
                 setpAddressSearchName (placesDataForm.address_name)
                 setpAddressID(placesDataForm.address_id)
-                id = placesDataForm.address_id
+                id = `address-${placesDataForm.address_id}`
             }
             form.setFieldsValue(placesDataForm)
 
@@ -187,7 +187,7 @@ const PlacesDialog = (
                             setpPurokSearchName(b.label)
                             setpPurokID(b.item.id)
                             setFormPlacesObjects((prev:any) => ({...prev,
-                                id : b.item.id
+                                id : `purok-${b.item.id}`
                             }))
                         }}
                         payload={{
@@ -215,7 +215,7 @@ const PlacesDialog = (
                             setpBarangaySearchName(b.label)
                             setpBarangayID(b.item.id)
                             setFormPlacesObjects((prev:any) => ({...prev,
-                                id : b.item.id
+                                id : `barangay-${b.item.id}`
                             }))
                         }}
                         payload={{
@@ -243,7 +243,7 @@ const PlacesDialog = (
                         setpAddressSearchName(b.label)
                         setpAddressID(b.item.id)
                         setFormPlacesObjects((prev:any) => ({...prev,
-                            id : b.item.id
+                            id : `address-${b.item.id}`
                         }))
                     }}
                     payload={{
