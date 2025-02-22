@@ -1,4 +1,4 @@
-import { 
+import React, { 
     useState,
     useCallback,
     useEffect, 
@@ -18,7 +18,7 @@ import LandmarkService from 'services/LandmarkService';
 import WAutoComplete from 'app/components/WAutoComplete';
 import DialogBox from './';
 
-const PlacesDialog = (
+const PlacesDialog: React.FC<any> = (
     {
         isOpen, 
         setIsOpen, 
@@ -26,7 +26,7 @@ const PlacesDialog = (
         setCoordinatesData,
     }
     : any
-) => {
+): React.ReactElement => {
 
     const { Option } = Select;
 
@@ -44,8 +44,7 @@ const PlacesDialog = (
     ]
 
     const [form] = Form.useForm<any>()
-    const {uuidv4} = useContext(AppContext)
-    const {accessToken} = useContext(LandmarksContext)
+    const {uuidv4, accessToken} = useContext(AppContext)
     const landmarkService = new LandmarkService(accessToken);
     const [addressType, setAddressType] = useState<any>("");
 
@@ -66,9 +65,10 @@ const PlacesDialog = (
     const submitForm = useCallback(async (values : any) => {
         let coordinatesData : any | null = null;
         try {
+            let id = formPlacesObjects.id.split('-')
             let updated = await landmarkService.update(
                 values.address_type,
-                formPlacesObjects.id, 
+                id[1], 
                 formPlacesObjects
             );
             let placeName:any = {
@@ -134,6 +134,8 @@ const PlacesDialog = (
                 abort = new AbortController();
                 landmarkService.setAbortControllerSignal(abort.signal)
             }
+        } else {
+            onClosePlacesModal();
         }
         return () => {
             if (abort) {
@@ -142,6 +144,16 @@ const PlacesDialog = (
         }
     }, [isOpen])
 
+    const onClosePlacesModal = (): void => {
+        form.setFieldsValue({})
+        setpBarangaySearchName("")
+        setpAddressSearchName("")
+        setpPurokSearchName("")
+        setpAddressID(null)
+        setpBarangayID(null)
+        setpPurokID(null)
+    }
+
     return (
     <>
         <DialogBox
@@ -149,15 +161,7 @@ const PlacesDialog = (
             setIsOpen={setIsOpen}
             modalTitle={`Places Modal`}
             form={form}
-            handleClose={()=>{
-                form.setFieldsValue({})
-                setpBarangaySearchName("")
-                setpAddressSearchName("")
-                setpPurokSearchName("")
-                setpAddressID(null)
-                setpBarangayID(null)
-                setpPurokID(null)
-            }}
+            handleClose={onClosePlacesModal}
         >
             <Form 
                 form = {form}
