@@ -7,7 +7,7 @@ import React, {
 import { Modal, Spin } from 'antd';
 import WAutoComplete from "../WAutoComplete";
 import LandmarkService from "services/LandmarkService";
-import { LandmarksContext } from "context/LandmarksContext";
+import { AppContext } from "context";
 interface SearchLocationsComponentProps {
     searchAction: Function
 }
@@ -19,7 +19,7 @@ const SearchLocationsComponent: React.FC <SearchLocationsComponentProps>  = (
     } 
 ): React.ReactElement => {
 
-    let {accessToken} = useContext (LandmarksContext)
+    let {accessToken} = useContext (AppContext)
     let landmarkService = new LandmarkService(accessToken)
     let [isActive, setIsActive] = useState<boolean>(true);
     let [searchPlaceName, setSearchPlaceName] = useState<any>("");
