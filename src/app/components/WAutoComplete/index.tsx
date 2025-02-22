@@ -36,7 +36,7 @@ const WAutoComplete : React.FC<AutoCompletePropsData> = ({
     placeholder,
     clearData,
     wAutoUniqueID
-})  => {
+}): React.ReactElement  => {
 
     const [autoCompleteInputValue, setAutoCompleteInputValue] = useState<string>(data);
     const [resultData, setResultData] = useState<any>([]);
