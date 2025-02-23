@@ -2,10 +2,20 @@ ul{
     list-style-type: none;
     padding: 0;
 }
+
+
 .sidenav {
     background-color: #275927;
-    width: 250px;
+    width: 200px;
     padding: 10px;
+    transition: all 0.5s ease-in-out;
+}
+
+.sidenav-minimized {
+    background-color: #275927;
+    width: 50px;
+    padding: 10px;
+    transition: all 0.5s ease-in-out;
 }
   
 .side-menu-container {
@@ -20,6 +30,9 @@ ul{
     display: block;
     padding:1%;
     text-decoration: none;
+}
+.li-minimized {
+    font-size:2.5rem;
 }
 
 .side-menu-container li a:hover, 
