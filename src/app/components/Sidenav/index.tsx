@@ -16,7 +16,7 @@ import {
 } from '@ant-design/icons';
 import {Tooltip} from 'antd';
 
-const Sidenav = () => {
+const Sidenav: React.FC = (): React.ReactElement => {
     const location = useLocation();
     const [isMinimized, setIsMinimized] = useState<boolean>(true);
 
