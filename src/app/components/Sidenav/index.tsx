@@ -5,13 +5,13 @@ import React, {
 import { Link } from 'react-router-dom';
 import { useLocation } from 'react-router-dom';
 import { 
-    DoubleLeftOutlined , 
-    DoubleRightOutlined,
+    DoubleLeftOutlined  , 
+    DoubleRightOutlined ,
     HomeOutlined        ,
-    DeleteOutlined    ,
-    CarOutlined        ,
-    ShopOutlined       ,
-    IdcardOutlined     ,
+    DeleteOutlined      ,
+    CarOutlined         ,
+    ShopOutlined        ,
+    IdcardOutlined      ,
     PieChartOutlined    ,
 } from '@ant-design/icons';
 import {Tooltip} from 'antd';

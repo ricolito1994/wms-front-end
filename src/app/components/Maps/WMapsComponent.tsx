@@ -10,21 +10,35 @@ import {
     Marker,
     InfoWindow, 
 } from "@react-google-maps/api";
+import { 
+    DoubleLeftOutlined  , 
+    DoubleRightOutlined ,
+    HomeOutlined        ,
+    DeleteOutlined      ,
+    CarOutlined         ,
+    ShopOutlined        ,
+    IdcardOutlined      ,
+    PieChartOutlined    ,
+    DownOutlined        ,
+    CloseOutlined       ,
+} from '@ant-design/icons';
 
 import SearchLocationsComponent from "./SearchLocationsComponent";
 import { LandmarksContext } from "context/LandmarksContext";
 import LandmarkService from "services/LandmarkService";
-import { Modal, notification, Spin } from 'antd';
+import { Modal, notification, FloatButton, Spin } from 'antd';
 import PlacesDialog from "app/components/DialogBox/PlacesDialog";
+import { AppContext } from "context";
 interface LocationProps {
     lat: number,
     lng: number
 }
 
 interface WMapsProps {
+    additionalMapOptions?: any []
     APIKey? : any,
     loadingProcesses?: any [],
-    accessToken: string,
+    //accessToken: string,
     centerMap? : LocationProps
     children? : React.ReactElement
 }
@@ -32,9 +46,10 @@ interface WMapsProps {
 const WMapsComponent: React.FC <WMapsProps> = (
     {
         // props goes here
+        additionalMapOptions,
         APIKey,
         loadingProcesses,
-        accessToken,
+        //accessToken,
         centerMap,
         children 
     } 
@@ -46,6 +61,7 @@ const WMapsComponent: React.FC <WMapsProps> = (
         lat: centerMap?.lat ?? parseFloat(LAT),
         lng: centerMap?.lng ?? parseFloat(LNG)
     }
+    const {accessToken} = useContext(AppContext);
     const landmarkService = new LandmarkService(accessToken);
     const [places, setPlaces] = useState<any>([])
     const [isOpenPlacesDialog, setIsOpenPlacesDialog] = useState<any>(false)
@@ -216,6 +232,37 @@ const WMapsComponent: React.FC <WMapsProps> = (
                 />
                 
                 <Marker position={defaultCenter} />
+                <FloatButton
+                    shape="circle"
+                    type="primary"
+                    style={{ 
+                        position:'relative', 
+                        top:'20%', 
+                        left: '1%',
+                    }}
+                    icon={<HomeOutlined />}
+                    tooltip={<div>Click to default center</div>}
+                    onClick={()=>setCenterMapLocation(defaultCenter)}
+                />
+                <FloatButton.Group
+                    trigger="click"
+                    style={{ 
+                        position:'relative', 
+                        top:'22%', 
+                        left: '1%',
+                    }}
+                    icon={<DownOutlined />}
+                    tooltip={<div>Click to show options.</div>}
+                >
+                   {additionalMapOptions?.map((option:any, index:number)=> <>
+                    <FloatButton 
+                        key={index}
+                        icon={option.icon}
+                        tooltip={<div>{option.tooltipText}</div>}
+                        onClick={option.onClick}
+                    />
+                   </>)}
+                </FloatButton.Group>
                 {places.map((marker:any, index : any) => {
                     return (
                         <Marker 
