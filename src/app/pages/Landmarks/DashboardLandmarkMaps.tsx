@@ -18,7 +18,7 @@ const DashboardLandmarkMaps: React.FC<any> = (): React.ReactElement => {
         <>
             <WMapsComponent
                 APIKey={API_KEY}
-                accessToken={accessToken}
+                //accessToken={accessToken}
                 centerMap={{
                     lat: parseFloat(LAT),
                     lng: parseFloat(LNG)

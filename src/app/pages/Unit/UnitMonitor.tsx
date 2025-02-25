@@ -7,6 +7,20 @@ import React, {
 import { AppContext } from "context";
 
 import WMapsComponent from "app/components/Maps/WMapsComponent";
+import { Modal, notification, FloatButton, Spin } from 'antd';
+import { 
+    DoubleLeftOutlined  , 
+    DoubleRightOutlined ,
+    HomeOutlined        ,
+    DeleteOutlined      ,
+    CarOutlined         ,
+    ShopOutlined        ,
+    IdcardOutlined      ,
+    PieChartOutlined    ,
+    DownOutlined        ,
+    CloseOutlined       ,
+    BranchesOutlined    ,
+} from '@ant-design/icons';
 
 const UnitMonitor = () => {
     const API_KEY: any = process.env.REACT_APP_GOOGLE_API_KEY
@@ -19,8 +33,21 @@ const UnitMonitor = () => {
     }, [])
 
     return (<>
-        <WMapsComponent APIKey={API_KEY}
-            accessToken={accessToken}
+        <WMapsComponent 
+            APIKey={API_KEY}
+            //accessToken={accessToken}
+            additionalMapOptions={[
+                {
+                    tooltipText: 'Add new route template',
+                    icon : <BranchesOutlined/>,
+                    click : (e: any) => {}
+                },
+                {
+                    tooltipText: 'Plot unit/truck to a route',
+                    icon : <CarOutlined/>,
+                    click : (e: any) => {}
+                },
+            ]}
             centerMap={{
                 lat: parseFloat(LAT),
                 lng: parseFloat(LNG)
