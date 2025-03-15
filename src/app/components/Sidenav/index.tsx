@@ -80,7 +80,7 @@ const Sidenav: React.FC = (): React.ReactElement => {
     }, [isMinimized])
     return (
         <div className={! isMinimized ? "sidenav" : 'sidenav-minimized'}>
-            <a href="javascript:void(0);" onClick={()=>setIsMinimized((prev:boolean) => !prev)}>
+            <a href="#" onClick={(e:any)=>{e.preventDefault(); setIsMinimized((prev:boolean) => !prev)}}>
                 {! isMinimized ? <DoubleLeftOutlined /> : <DoubleRightOutlined />}
             </a>
             {! isMinimized ?

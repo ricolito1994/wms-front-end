@@ -1,14 +1,17 @@
 import React, { 
-    useContext, 
-    useEffect, 
-    useState ,
-    useCallback
+    useContext  , 
+    useEffect   , 
+    useState    ,
+    useCallback ,
 } from "react";
 import { 
-    GoogleMap, 
-    LoadScript, 
-    Marker,
-    InfoWindow, 
+    GoogleMap          , 
+    LoadScript         , 
+    Marker             ,
+    InfoWindow         , 
+    useJsApiLoader     ,
+    useLoadScript      ,
+    DirectionsRenderer ,
 } from "@react-google-maps/api";
 import { 
     DoubleLeftOutlined  , 
@@ -24,6 +27,7 @@ import {
 } from '@ant-design/icons';
 
 import SearchLocationsComponent from "./SearchLocationsComponent";
+import WMapsDirectionsList from "./SearchLocationsComponent";
 import { LandmarksContext } from "context/LandmarksContext";
 import LandmarkService from "services/LandmarkService";
 import { Modal, notification, FloatButton, Spin } from 'antd';
@@ -73,6 +77,23 @@ const WMapsComponent: React.FC <WMapsProps> = (
     const [markerRef, setMarkerRef] = useState<google.maps.MVCObject | undefined>();
     const [selectedMarker, setSelectedMarker] = useState<any|null>(null)
     const [isLoadingMapData, setIsLoadingMapData] = useState<boolean>(false)
+
+    const {isLoaded} = useLoadScript ({
+        googleMapsApiKey: API_KEY
+    })
+
+    const [newWaypoints, setNewWaypoints] = useState<{ location: google.maps.LatLngLiteral }[]>([]);
+    const [newDirections, setNewDirections] = useState<google.maps.DirectionsResult | null>(null);
+
+    const clickAddNewRoute = (event: google.maps.MapMouseEvent) => {
+        if (event.latLng) {
+            let latlng = event.latLng;
+            setNewWaypoints((prev: any) => [...prev, { location: latlng.toJSON() }]);
+        }
+    };
+    useEffect (() => {
+        fetchDirections();
+    }, [newWaypoints])
     
     useEffect(() => {
         if (coordinatesData && ! isOpenPlacesDialog) {
@@ -101,6 +122,9 @@ const WMapsComponent: React.FC <WMapsProps> = (
     }, [isOpenPlacesDialog, coordinatesData])
 
     useEffect(() => {
+
+        if (!isLoaded && typeof google === "undefined") return;
+
         const getPlaces = async (signal: AbortSignal) => {
             try {
                 setIsLoadingMapData(true)
@@ -150,13 +174,35 @@ const WMapsComponent: React.FC <WMapsProps> = (
         let abortController = new AbortController();
 
         getPlaces(abortController.signal)
-
+        
         return () => {
             abortController.abort();
         }
-    }, [])
+    }, [isLoaded])
 
     useEffect(() => {console.log(places)}, [places])
+
+
+    const fetchDirections = () => {
+        if (newWaypoints.length < 2) return; // Need at least 2 points to draw a route
+    
+        const directionsService = new google.maps.DirectionsService();
+        directionsService.route(
+          {
+            origin: newWaypoints[0].location,
+            destination: newWaypoints[newWaypoints.length - 1].location,
+            waypoints: newWaypoints.slice(1, -1),
+            travelMode: google.maps.TravelMode.DRIVING,
+          },
+          (result, status) => {
+            if (status === google.maps.DirectionsStatus.OK) {
+              setNewDirections(result);
+            } else {
+              console.error("Error fetching directions:", status);
+            }
+          }
+        );
+    };
 
     const handleMapClick = useCallback ((e :google.maps.MapMouseEvent) => {
         const lat = e?.latLng?.lat();
@@ -214,6 +260,7 @@ const WMapsComponent: React.FC <WMapsProps> = (
                 center={centerMapLocation} 
                 zoom={15}
                 onRightClick={handleMapClick}
+                onClick={clickAddNewRoute}
             >   
                 <SearchLocationsComponent 
                     searchAction = {(place: any) => {
@@ -232,6 +279,21 @@ const WMapsComponent: React.FC <WMapsProps> = (
                 />
                 
                 <Marker position={defaultCenter} />
+
+                {newDirections && <DirectionsRenderer directions={newDirections} />}
+                
+                <div style={{
+                    background: "white",
+                    height: "50%",
+                    width:  "20%",
+                    left:    "5%",
+                    top:     "25%",
+                    position: "absolute",
+                    zIndex: 9999,
+                }}>
+                    AAA
+                </div>
+
                 <FloatButton
                     shape="circle"
                     type="primary"
@@ -247,12 +309,15 @@ const WMapsComponent: React.FC <WMapsProps> = (
                 <FloatButton.Group
                     trigger="click"
                     style={{ 
-                        position:'relative', 
-                        top:'22%', 
+                        position:'absolute', 
+                        top:'45%', 
                         left: '1%',
+                        width: '0%',
+                        height: '0%'
                     }}
                     icon={<DownOutlined />}
                     tooltip={<div>Click to show options.</div>}
+                    placement="bottom"
                 >
                    {additionalMapOptions?.map((option:any, index:number)=> <>
                     <FloatButton 
@@ -286,7 +351,7 @@ const WMapsComponent: React.FC <WMapsProps> = (
                      )
                 })}
                 {children}
-            </GoogleMap>
+            </GoogleMap> 
         </LoadScript>
     </>)
 }
