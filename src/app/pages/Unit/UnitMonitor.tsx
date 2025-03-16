@@ -43,7 +43,7 @@ const UnitMonitor = () => {
                     click : (e: any) => {}
                 },
                 {
-                    tooltipText: 'Plot unit/truck to a route',
+                    tooltipText: 'View/track unit route',
                     icon : <CarOutlined/>,
                     click : (e: any) => {}
                 },
