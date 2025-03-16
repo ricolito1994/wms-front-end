@@ -27,7 +27,7 @@ import {
 } from '@ant-design/icons';
 
 import SearchLocationsComponent from "./SearchLocationsComponent";
-import WMapsDirectionsList from "./SearchLocationsComponent";
+import WMapsDirectionsListComponent from "./WMapsDirectionsListComponent";
 import { LandmarksContext } from "context/LandmarksContext";
 import LandmarkService from "services/LandmarkService";
 import { Modal, notification, FloatButton, Spin } from 'antd';
@@ -82,8 +82,11 @@ const WMapsComponent: React.FC <WMapsProps> = (
         googleMapsApiKey: API_KEY
     })
 
+    /* unit directions */
     const [newWaypoints, setNewWaypoints] = useState<{ location: google.maps.LatLngLiteral }[]>([]);
     const [newDirections, setNewDirections] = useState<google.maps.DirectionsResult | null>(null);
+    const [selectedWaypoints, setSelectedWaypoints] = useState<{ location: google.maps.LatLngLiteral }[]>([]);
+    const [selectedDirections, setSelectedDirections] = useState<google.maps.DirectionsResult | null>(null);
 
     const clickAddNewRoute = (event: google.maps.MapMouseEvent) => {
         if (event.latLng) {
@@ -92,8 +95,13 @@ const WMapsComponent: React.FC <WMapsProps> = (
         }
     };
     useEffect (() => {
+        console.log(newWaypoints)
         fetchDirections();
     }, [newWaypoints])
+
+    useEffect (() => {
+        console.log(newDirections)
+    }, [newDirections])
     
     useEffect(() => {
         if (coordinatesData && ! isOpenPlacesDialog) {
@@ -183,7 +191,7 @@ const WMapsComponent: React.FC <WMapsProps> = (
     useEffect(() => {console.log(places)}, [places])
 
 
-    const fetchDirections = () => {
+    const fetchDirections = (waypoints:any|null = null) => {
         if (newWaypoints.length < 2) return; // Need at least 2 points to draw a route
     
         const directionsService = new google.maps.DirectionsService();
@@ -282,17 +290,15 @@ const WMapsComponent: React.FC <WMapsProps> = (
 
                 {newDirections && <DirectionsRenderer directions={newDirections} />}
                 
-                <div style={{
-                    background: "white",
-                    height: "50%",
-                    width:  "20%",
-                    left:    "5%",
-                    top:     "25%",
-                    position: "absolute",
-                    zIndex: 9999,
-                }}>
-                    AAA
-                </div>
+                {newDirections && (
+                    <WMapsDirectionsListComponent>
+                        <>
+                            {newWaypoints.map((direction:any, index:any) => {
+
+                            })}
+                        </>
+                    </WMapsDirectionsListComponent>
+                )}
 
                 <FloatButton
                     shape="circle"
@@ -328,7 +334,7 @@ const WMapsComponent: React.FC <WMapsProps> = (
                     />
                    </>)}
                 </FloatButton.Group>
-                {places.map((marker:any, index : any) => {
+                {/*places.map((marker:any, index : any) => {
                     return (
                         <Marker 
                             key={index} 
@@ -349,7 +355,7 @@ const WMapsComponent: React.FC <WMapsProps> = (
                             )}
                          </Marker>
                      )
-                })}
+                })*/}
                 {children}
             </GoogleMap> 
         </LoadScript>
