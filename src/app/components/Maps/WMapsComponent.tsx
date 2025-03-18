@@ -39,31 +39,38 @@ interface LocationProps {
 }
 
 interface WMapsProps {
-    additionalMapOptions?: any []
-    APIKey? : any,
-    loadingProcesses?: any [],
-    //accessToken: string,
-    centerMap? : LocationProps
-    children? : React.ReactElement
+    additionalMapOptions?   : any []
+    APIKey?                 : any,
+    loadingProcesses?       : any [],
+    accessTokenF?           : string,
+    centerMap?              : LocationProps
+    children?               : React.ReactElement,
+    disablePlaceMarkers?    : boolean,
+    isAddRouteMode?         : boolean,
+    mode?                   : any,
 }
+
+const API_KEY: any = process.env.REACT_APP_GOOGLE_API_KEY ?? 'ABCDE123';
+const LAT: any = parseFloat(process.env.REACT_APP_DEFAULT_LT ?? '0.00');
+const LNG: any = parseFloat(process.env.REACT_APP_DEFAULT_LG ?? '0.00');
 
 const WMapsComponent: React.FC <WMapsProps> = (
     {
-        // props goes here
-        additionalMapOptions,
-        APIKey,
-        loadingProcesses,
-        //accessToken,
-        centerMap,
-        children 
+        /* WMS Maps component props */
+        centerMap               = {lat: LAT, lng: LNG},
+        APIKey                  = API_KEY,
+        disablePlaceMarkers     = true,
+        additionalMapOptions    = [],
+        loadingProcesses        = [],
+        mode                        ,
+        accessTokenF                ,
+        children                    ,
+        isAddRouteMode              ,
     } 
 ): React.ReactElement => {
-    const API_KEY: any = APIKey ?? process.env.REACT_APP_GOOGLE_API_KEY
-    const LAT: any = process.env.REACT_APP_DEFAULT_LT
-    const LNG: any = process.env.REACT_APP_DEFAULT_LG
     const defaultCenter: LocationProps = {
-        lat: centerMap?.lat ?? parseFloat(LAT),
-        lng: centerMap?.lng ?? parseFloat(LNG)
+        lat: centerMap?.lat ,
+        lng: centerMap?.lng ,
     }
     const {accessToken} = useContext(AppContext);
     const landmarkService = new LandmarkService(accessToken);
@@ -77,9 +84,10 @@ const WMapsComponent: React.FC <WMapsProps> = (
     const [markerRef, setMarkerRef] = useState<google.maps.MVCObject | undefined>();
     const [selectedMarker, setSelectedMarker] = useState<any|null>(null)
     const [isLoadingMapData, setIsLoadingMapData] = useState<boolean>(false)
+    const [isOpenMapOptions, setIsOpenMapOptions] = useState<boolean>(false);
 
     const {isLoaded} = useLoadScript ({
-        googleMapsApiKey: API_KEY
+        googleMapsApiKey: APIKey
     })
 
     /* unit directions */
@@ -89,21 +97,25 @@ const WMapsComponent: React.FC <WMapsProps> = (
     const [selectedDirections, setSelectedDirections] = useState<google.maps.DirectionsResult | null>(null);
 
     const clickAddNewRoute = (event: google.maps.MapMouseEvent) => {
+        if (! isAddRouteMode) return;
+
         if (event.latLng) {
             let latlng = event.latLng;
             setNewWaypoints((prev: any) => [...prev, { location: latlng.toJSON() }]);
         }
     };
+    
     useEffect (() => {
-        console.log(newWaypoints)
         fetchDirections();
     }, [newWaypoints])
 
     useEffect (() => {
-        console.log(newDirections)
+        //
     }, [newDirections])
     
     useEffect(() => {
+        if (disablePlaceMarkers) return;
+
         if (coordinatesData && ! isOpenPlacesDialog) {
             setIsLoadingMapData(true)
             let existingPlaceIndex = places.findIndex( (e :any) => e?.id == coordinatesData.id && 
@@ -130,10 +142,10 @@ const WMapsComponent: React.FC <WMapsProps> = (
     }, [isOpenPlacesDialog, coordinatesData])
 
     useEffect(() => {
-
         if (!isLoaded && typeof google === "undefined") return;
 
         const getPlaces = async (signal: AbortSignal) => {
+            if (disablePlaceMarkers) return;
             try {
                 setIsLoadingMapData(true)
                 landmarkService.setAbortControllerSignal(signal)
@@ -324,17 +336,24 @@ const WMapsComponent: React.FC <WMapsProps> = (
                     icon={<DownOutlined />}
                     tooltip={<div>Click to show options.</div>}
                     placement="bottom"
+                    open={isOpenMapOptions}
+                    onClick={()=>setIsOpenMapOptions((prev: boolean) => !prev)} // toggle
                 >
                    {additionalMapOptions?.map((option:any, index:number)=> <>
                     <FloatButton 
                         key={index}
                         icon={option.icon}
                         tooltip={<div>{option.tooltipText}</div>}
-                        onClick={option.onClick}
+                        onClick={option.click}
+                        type={
+                            /* for toggle properties - define some of unique toggle conditions */
+                            mode === 'add-route-mode' ? ((option.id && option.id === 'route_mode' && isAddRouteMode) ? 'primary' : 'default')
+                            : 'default'
+                        }
                     />
                    </>)}
                 </FloatButton.Group>
-                {/*places.map((marker:any, index : any) => {
+                {!disablePlaceMarkers && places.map((marker:any, index : any) => {
                     return (
                         <Marker 
                             key={index} 
@@ -355,7 +374,7 @@ const WMapsComponent: React.FC <WMapsProps> = (
                             )}
                          </Marker>
                      )
-                })*/}
+                })}
                 {children}
             </GoogleMap> 
         </LoadScript>

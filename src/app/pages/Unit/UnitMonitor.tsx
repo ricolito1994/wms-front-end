@@ -23,10 +23,11 @@ import {
 } from '@ant-design/icons';
 
 const UnitMonitor = () => {
-    const API_KEY: any = process.env.REACT_APP_GOOGLE_API_KEY
-    const LAT: any = process.env.REACT_APP_DEFAULT_LT
-    const LNG: any = process.env.REACT_APP_DEFAULT_LG
-    const {accessToken} = useContext(AppContext)
+    const API_KEY   : any                     = process.env.REACT_APP_GOOGLE_API_KEY
+    const LAT       : any                     = process.env.REACT_APP_DEFAULT_LT
+    const LNG       : any                     = process.env.REACT_APP_DEFAULT_LG
+    const {accessToken}                       = useContext(AppContext);
+    const [isAddRouteMode, setIsAddRouteMode] = useState<boolean>(false);
 
     useEffect(() => {
         
@@ -35,12 +36,12 @@ const UnitMonitor = () => {
     return (<>
         <WMapsComponent 
             APIKey={API_KEY}
-            //accessToken={accessToken}
             additionalMapOptions={[
                 {
                     tooltipText: 'Add new route template',
                     icon : <BranchesOutlined/>,
-                    click : (e: any) => {}
+                    click : () => setIsAddRouteMode((prev: boolean) => !prev),
+                    id : 'route_mode',
                 },
                 {
                     tooltipText: 'View/track unit route',
@@ -52,6 +53,8 @@ const UnitMonitor = () => {
                 lat: parseFloat(LAT),
                 lng: parseFloat(LNG)
             }}
+            isAddRouteMode = {isAddRouteMode}
+            mode = {"add-route-mode"}
         >
             <>
                {/*marker components here*/} 
