@@ -26,6 +26,8 @@ import {
     CloseOutlined       ,
 } from '@ant-design/icons';
 
+import { Button } from "antd";
+
 import SearchLocationsComponent from "./SearchLocationsComponent";
 import WMapsDirectionsListComponent from "./WMapsDirectionsListComponent";
 import { LandmarksContext } from "context/LandmarksContext";
@@ -106,11 +108,12 @@ const WMapsComponent: React.FC <WMapsProps> = (
     };
     
     useEffect (() => {
-        fetchDirections();
+        fetchDirections(newWaypoints, setNewDirections);
     }, [newWaypoints])
 
     useEffect (() => {
         //
+        console.log(newDirections)
     }, [newDirections])
     
     useEffect(() => {
@@ -203,20 +206,32 @@ const WMapsComponent: React.FC <WMapsProps> = (
     useEffect(() => {console.log(places)}, [places])
 
 
-    const fetchDirections = (waypoints:any|null = null) => {
-        if (newWaypoints.length < 2) return; // Need at least 2 points to draw a route
+    const fetchDirections = (
+        waypoints               : any|null      = null, 
+        plotDirectionsCallback  : Function|null = null
+    ) => {
+        if (waypoints.length < 2) return; // Need at least 2 points to draw a route
     
         const directionsService = new google.maps.DirectionsService();
         directionsService.route(
           {
-            origin: newWaypoints[0].location,
-            destination: newWaypoints[newWaypoints.length - 1].location,
-            waypoints: newWaypoints.slice(1, -1),
+            origin: waypoints[0].location,
+            destination: waypoints[waypoints.length - 1].location,
+            waypoints: waypoints.slice(1, -1),
             travelMode: google.maps.TravelMode.DRIVING,
           },
           (result, status) => {
             if (status === google.maps.DirectionsStatus.OK) {
-              setNewDirections(result);
+                if(plotDirectionsCallback && result) { 
+                    /*let legsLength = result?.routes[0].legs.length
+                    const origin      = new google.maps.LatLng(waypoints[0].location.lat, waypoints[0].location.lng);
+                    const destination = new google.maps.LatLng(waypoints[waypoints.length - 1].location.lat, waypoints[waypoints.length - 1].location.lng);
+                    result.routes[0].legs[legsLength - 1] = {...result?.routes[0].legs[legsLength - 1], 
+                        start_location : origin,
+                        end_location   : destination
+                    }*/
+                    plotDirectionsCallback (result)
+                }
             } else {
               console.error("Error fetching directions:", status);
             }
@@ -252,6 +267,14 @@ const WMapsComponent: React.FC <WMapsProps> = (
         setSelectedMarker(marker)
         setMarkerRef(anchor)
     }, [])
+
+    const saveDirections = () => {
+
+    }
+
+    const deleteDirections = (index: any|null = null) => {
+
+    }
 
     useEffect(() => {
         if (selectedMarker) {
@@ -303,11 +326,22 @@ const WMapsComponent: React.FC <WMapsProps> = (
                 {newDirections && <DirectionsRenderer directions={newDirections} />}
                 
                 {newDirections && (
-                    <WMapsDirectionsListComponent>
+                    <WMapsDirectionsListComponent
+                        directions={newDirections}
+                        waypoints={newWaypoints}
+                        setDirections={setNewDirections}
+                        setWaypoints={setNewWaypoints}
+                    >
                         <>
-                            {newWaypoints.map((direction:any, index:any) => {
-
-                            })}
+                            <Button type="primary" >
+                                Save
+                            </Button> &nbsp;
+                            <Button onClick={()=>{
+                                setNewDirections(null)
+                                setNewWaypoints([])
+                            }} type="primary" danger>
+                                Cancel
+                            </Button>
                         </>
                     </WMapsDirectionsListComponent>
                 )}
