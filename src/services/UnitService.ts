@@ -1,4 +1,5 @@
 import { HttpCommons } from "./http-common";
+import axios from "axios";
 const BASE_URL = process.env.REACT_APP_WMS_BASE_URL;
 export class UnitService extends HttpCommons {
     constructor (accessToken: any) {
@@ -8,8 +9,12 @@ export class UnitService extends HttpCommons {
         try {
             const response = await this.apiClient.post(`${this.baseUrl}/unit/create`, payload);
             return response.data;
-        } catch (error) {
-            throw error;
+        } catch (e:any) {
+            if (axios.isAxiosError(e) && e.code === "ERR_CANCELED") {
+                // Request was cancelled, return nothing
+                return;
+            }
+            throw e;
         }
     }
     async editUnit (payload:any) {
@@ -25,8 +30,12 @@ export class UnitService extends HttpCommons {
             let url = `${BASE_URL}/unit/show${unitId ? '/'+unitId : ''}${page ? '?page='+page : ''}`;
             const response = await this.apiClient.get(url, {params : payload});
             return response.data;
-        } catch (error) {
-            throw error;
+        } catch (e:any) {
+            if (axios.isAxiosError(e) && e.code === "ERR_CANCELED") {
+                // Request was cancelled, return nothing
+                return;
+            }
+            throw e;
         }
     }
 
@@ -35,8 +44,12 @@ export class UnitService extends HttpCommons {
             let url = `${BASE_URL}/employee/crew/${unitId}`;
             const response = await this.apiClient.post(url, payload);
             return response.data;
-        } catch (error) {
-            throw error;
+        } catch (e:any) {
+            if (axios.isAxiosError(e) && e.code === "ERR_CANCELED") {
+                // Request was cancelled, return nothing
+                return;
+            }
+            throw e;
         }
     }
 
@@ -45,8 +58,12 @@ export class UnitService extends HttpCommons {
             let url = `${BASE_URL}/employee/crew/${unitId}`;
             const response = await this.apiClient.get(url);
             return response.data;
-        } catch (error) {
-            throw error;
+        } catch (e:any) {
+            if (axios.isAxiosError(e) && e.code === "ERR_CANCELED") {
+                // Request was cancelled, return nothing
+                return;
+            }
+            throw e;
         }
     }
 }

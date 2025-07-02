@@ -1,5 +1,5 @@
 import { HttpCommons } from "./http-common";
-
+import axios from "axios";
 class LandmarkService extends HttpCommons {
     constructor (accessToken: any) {
         super(accessToken);
@@ -16,8 +16,12 @@ class LandmarkService extends HttpCommons {
             }
             const response = await this.apiClient.post(`${this.baseUrl}/landmark/${type}`, payload);
             return response.data;
-        } catch (error) {
-            throw error;
+        } catch (e) {
+            if (axios.isAxiosError(e) && e.code === "ERR_CANCELED") {
+                // Request was cancelled, return nothing
+                return;
+            }
+            throw e;
         }
     }
 
@@ -32,8 +36,12 @@ class LandmarkService extends HttpCommons {
             }
             const response = await this.apiClient.patch(`${this.baseUrl}/landmark/${landmarkId}/${type}`, payload);
             return response.data;
-        } catch (error) {
-            throw error;
+        } catch (e) {
+            if (axios.isAxiosError(e) && e.code === "ERR_CANCELED") {
+                // Request was cancelled, return nothing
+                return;
+            }
+            throw e;
         }
     }
 
@@ -49,8 +57,12 @@ class LandmarkService extends HttpCommons {
             }
             const response = await this.apiClient.get(`${this.baseUrl}/landmark/${type}${pageParam}`, payload);
             return response.data;
-        } catch (error) {
-            throw error;
+        } catch (e) {
+            if (axios.isAxiosError(e) && e.code === "ERR_CANCELED") {
+                // Request was cancelled, return nothing
+                return;
+            }
+            throw e;
         }
     }
 
@@ -65,8 +77,12 @@ class LandmarkService extends HttpCommons {
             }
             const response = await this.apiClient.get(`${this.baseUrl}/landmarks/all/${type}`, payload);
             return response.data;
-        } catch (error) {
-            throw error;
+        } catch (e) {
+            if (axios.isAxiosError(e) && e.code === "ERR_CANCELED") {
+                // Request was cancelled, return nothing
+                return;
+            }
+            throw e;
         }
     }
 
@@ -81,8 +97,12 @@ class LandmarkService extends HttpCommons {
             }
             const response = await this.apiClient.get(`${this.baseUrl}/landmarks/getAllLandmarks`, payload);
             return response.data;
-        } catch (error) {
-            throw error;
+        } catch (e) {
+            if (axios.isAxiosError(e) && e.code === "ERR_CANCELED") {
+                // Request was cancelled, return nothing
+                return;
+            }
+            throw e;
         }
     }
 
@@ -93,8 +113,12 @@ class LandmarkService extends HttpCommons {
                 this.all('barangay', {...payload ,city_id: 1}),
                 this.all('purok', {...payload , city_id: 1})
             ]) 
-        } catch (error) {
-            throw error;
+        } catch (e) {
+            if (axios.isAxiosError(e) && e.code === "ERR_CANCELED") {
+                // Request was cancelled, return nothing
+                return;
+            }
+            throw e;
         }
     }
 
@@ -111,8 +135,12 @@ class LandmarkService extends HttpCommons {
         try {
             const response = await this.apiClient.delete(`${this.baseUrl}/landmark/${landmarkId}/${type}`);
             return response.data;
-        } catch (error) {
-            throw error;
+        } catch (e) {
+            if (axios.isAxiosError(e) && e.code === "ERR_CANCELED") {
+                // Request was cancelled, return nothing
+                return;
+            }
+            throw e;
         }
     }
 }

@@ -1,4 +1,6 @@
 import { HttpCommons } from "./http-common";
+import axios from "axios";
+
 const BASE_URL = process.env.REACT_APP_WMS_BASE_URL;
 class UserService extends HttpCommons {
     humanResource : string = "employee";
@@ -10,8 +12,12 @@ class UserService extends HttpCommons {
         try {
             const response = await this.apiClient.get(`${this.baseUrl}/${this.auth}/me`);
             return response.data;
-        } catch (error) {
-            throw error;
+        } catch (e:any) {
+            if (axios.isAxiosError(e) && e.code === "ERR_CANCELED") {
+                // Request was cancelled, return nothing
+                return;
+            }
+            throw e;
         }
     }
 
@@ -19,8 +25,12 @@ class UserService extends HttpCommons {
         try {
             const response = await this.apiClient.post(`${this.baseUrl}/${this.humanResource}/create`, payload);
             return response.data;
-        } catch (error) {
-            throw error;
+        } catch (e:any) {
+            if (axios.isAxiosError(e) && e.code === "ERR_CANCELED") {
+                // Request was cancelled, return nothing
+                return;
+            }
+            throw e;
         }
     }
 
@@ -28,8 +38,12 @@ class UserService extends HttpCommons {
         try {
             const response = await this.apiClient.post(`${this.baseUrl}/${this.humanResource}/${userId}/update`, payload);
             return response.data;
-        } catch (error) {
-            throw error;
+        } catch (e:any) {
+            if (axios.isAxiosError(e) && e.code === "ERR_CANCELED") {
+                // Request was cancelled, return nothing
+                return;
+            }
+            throw e;
         }
     }
 
@@ -54,8 +68,12 @@ class UserService extends HttpCommons {
                 params: payload
             } : {});
             return response.data;
-        } catch (error) {
-            throw error;
+        } catch (e:any) {
+            if (axios.isAxiosError(e) && e.code === "ERR_CANCELED") {
+                // Request was cancelled, return nothing
+                return;
+            }
+            throw e;
         }
     }
 }

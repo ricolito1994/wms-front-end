@@ -26,48 +26,48 @@ const Sidenav: React.FC = (): React.ReactElement => {
 
     const sideMenus = [
         {
-            menu         : <><li><Link className={isActiveLink('')} to ='/'>Dashboard</Link></li></>,
-            minimized    : <><li className='li-minimized'>
+            menu         : <><li key={`0-side-nav-menu`}><Link className={isActiveLink('')} to ='/'>Dashboard</Link></li></>,
+            minimized    : <><li key={`0-side-nav-min`} className='li-minimized'>
                             <Tooltip title="dashboard" placement="right">  
                                 <Link className={isActiveLink('')} to ='/'> <HomeOutlined /></Link>
                             </Tooltip>
                            </li></>
         },
         {
-            menu         : <><li><Link className={isActiveLink('waste-management')} to ='/waste-management'>Waste Management</Link></li></>,
-            minimized    : <><li className='li-minimized'>
+            menu         : <><li key={`1-side-nav-menu`}><Link className={isActiveLink('waste-management')} to ='/waste-management'>Waste Management</Link></li></>,
+            minimized    : <><li key={`1-side-nav-min`} className='li-minimized'>
                             <Tooltip title="Waste Management" placement="right">
                                 <Link className={isActiveLink('waste-management')} to ='/waste-management'> <DeleteOutlined /></Link>
                             </Tooltip>
                             </li></>
         },
         {
-            menu         : <><li><Link className={isActiveLink('unit')} to ='/unit'>Unit</Link></li></>,
-            minimized    : <><li className='li-minimized'>
+            menu         : <><li key={`2-side-nav-menu`}><Link className={isActiveLink('unit')} to ='/unit'>Unit</Link></li></>,
+            minimized    : <><li key={`2-side-nav-min`} className='li-minimized'>
                             <Tooltip title="Unit Management" placement="right">
                                 <Link className={isActiveLink('unit')} to ='/unit'><CarOutlined /></Link>
                             </Tooltip>
                            </li></>
         },
         {
-            menu         : <><li><Link className={isActiveLink('landmarks')} to ='/landmarks'>Landmarks</Link></li></>,
-            minimized    : <><li className='li-minimized'>
+            menu         : <><li key={`3-side-nav-menu`}><Link className={isActiveLink('landmarks')} to ='/landmarks'>Landmarks</Link></li></>,
+            minimized    : <><li key={`3-side-nav-min`} className='li-minimized'>
                             <Tooltip title="Landmarks" placement="right">
                                 <Link className={isActiveLink('landmarks')} to ='/landmarks'><ShopOutlined /></Link>
                             </Tooltip>
                             </li></>
         },
         {
-            menu         : <><li><Link className={isActiveLink('hr')} to ='/hr'>HR</Link></li></>,
-            minimized    : <><li className='li-minimized'>
+            menu         : <><li key={`4-side-nav-menu`}><Link className={isActiveLink('hr')} to ='/hr'>HR</Link></li></>,
+            minimized    : <><li key={`4-side-nav-min`} className='li-minimized'>
                             <Tooltip title="Human Resource" placement="right">
                                 <Link className={isActiveLink('hr')} to ='/hr'><IdcardOutlined /></Link>
                             </Tooltip>
                            </li></>
         },
         {
-            menu         : <><li><Link className={isActiveLink('reports')} to ='/reports'>Reports</Link></li></>,
-            minimized    : <><li className='li-minimized'>
+            menu         : <><li key={`5-side-nav-menu`}><Link className={isActiveLink('reports')} to ='/reports'>Reports</Link></li></>,
+            minimized    : <><li key={`5-side-nav-min`} className='li-minimized'>
                             <Tooltip title="Reports" placement="right">
                                 <Link className={isActiveLink('reports')} to ='/reports'><PieChartOutlined /></Link>
                             </Tooltip>
@@ -98,12 +98,14 @@ const Sidenav: React.FC = (): React.ReactElement => {
                     </div>
                 </div>    
             }
-            <div className='side-menu-container'>
+            <div key={`side-menu-container-xx`} className='side-menu-container'>
                 <ul>
                     {
-                        sideMenus.map((menu:any, index: number) => <>
-                            <span key={index}>{isMinimized ? menu.minimized : menu.menu}</span>
-                        </>)
+                        sideMenus.map((menu:any, index: number) => 
+                            <React.Fragment key={`sidemenu-${index}`}>
+                                <span key={index}>{isMinimized ? menu.minimized : menu.menu}</span>
+                            </React.Fragment>
+                        )
                     }
                 </ul>
             </div>
