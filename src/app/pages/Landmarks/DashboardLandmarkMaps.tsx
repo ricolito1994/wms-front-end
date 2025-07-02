@@ -23,7 +23,7 @@ const DashboardLandmarkMaps: React.FC<any> = (): React.ReactElement => {
                     lat: parseFloat(LAT),
                     lng: parseFloat(LNG)
                 }}
-                disablePlaceMarkers={false}
+                //enablePlaceMarkers
             />
         </>
     )
