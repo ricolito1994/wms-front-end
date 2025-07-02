@@ -43,11 +43,12 @@ interface LocationProps {
 interface WMapsProps {
     additionalMapOptions?   : any []
     APIKey?                 : any,
-    loadingProcesses?       : any [],
+    loadingProcesses?       : Promise<any> [],
     accessTokenF?           : string,
     centerMap?              : LocationProps
     children?               : React.ReactElement,
-    disablePlaceMarkers?    : boolean,
+    enablePlaceMarkers?     : boolean,
+    enableSearchPlaces?     : boolean,
     isAddRouteMode?         : boolean,
     mode?                   : any,
 }
@@ -61,7 +62,8 @@ const WMapsComponent: React.FC <WMapsProps> = (
         /* WMS Maps component props */
         centerMap               = {lat: LAT, lng: LNG},
         APIKey                  = API_KEY,
-        disablePlaceMarkers     = true,
+        enablePlaceMarkers      = false,
+        enableSearchPlaces      = false,
         additionalMapOptions    = [],
         loadingProcesses        = [],
         mode                        ,
@@ -117,7 +119,7 @@ const WMapsComponent: React.FC <WMapsProps> = (
     }, [newDirections])
     
     useEffect(() => {
-        if (disablePlaceMarkers) return;
+        if (! enablePlaceMarkers) return;
 
         if (coordinatesData && ! isOpenPlacesDialog) {
             setIsLoadingMapData(true)
@@ -148,7 +150,7 @@ const WMapsComponent: React.FC <WMapsProps> = (
         if (!isLoaded && typeof google === "undefined") return;
 
         const getPlaces = async (signal: AbortSignal) => {
-            if (disablePlaceMarkers) return;
+            if (! enablePlaceMarkers) return;
             try {
                 setIsLoadingMapData(true)
                 landmarkService.setAbortControllerSignal(signal)
@@ -159,8 +161,8 @@ const WMapsComponent: React.FC <WMapsProps> = (
                     landmarkService.all('purok', {city_id: 1})
                 ]
 
-                if (loadingProcesses) {
-                    concurrentProcesses = [...loadingProcesses];
+                if (loadingProcesses && Array.isArray(loadingProcesses)) {
+                    concurrentProcesses =[...concurrentProcesses, ...loadingProcesses];
                 }
 
                 let places = await Promise.all(concurrentProcesses)
@@ -305,7 +307,7 @@ const WMapsComponent: React.FC <WMapsProps> = (
                 onRightClick={handleMapClick}
                 onClick={clickAddNewRoute}
             >   
-                <SearchLocationsComponent 
+                {enableSearchPlaces ? <SearchLocationsComponent 
                     searchAction = {(place: any) => {
                         place.item[`latitude`] = parseFloat(place.item?.latitude);
                         place.item[`longitude`] = parseFloat(place.item?.longitude)
@@ -319,7 +321,7 @@ const WMapsComponent: React.FC <WMapsProps> = (
                         }
                         setSelectedMarker(place.item)
                     }} 
-                />
+                /> : ''}
                 
                 <Marker position={defaultCenter} />
 
@@ -373,21 +375,23 @@ const WMapsComponent: React.FC <WMapsProps> = (
                     open={isOpenMapOptions}
                     onClick={()=>setIsOpenMapOptions((prev: boolean) => !prev)} // toggle
                 >
-                   {additionalMapOptions?.map((option:any, index:number)=> <>
-                    <FloatButton 
-                        key={index}
-                        icon={option.icon}
-                        tooltip={<div>{option.tooltipText}</div>}
-                        onClick={option.click}
-                        type={
-                            /* for toggle properties - define some of unique toggle conditions */
-                            mode === 'add-route-mode' ? ((option.id && option.id === 'route_mode' && isAddRouteMode) ? 'primary' : 'default')
-                            : 'default'
-                        }
-                    />
-                   </>)}
+                   {additionalMapOptions?.map((option:any, index:number)=> 
+                    <React.Fragment key={index}>
+                        <FloatButton 
+                            key={index}
+                            icon={option.icon}
+                            tooltip={<div>{option.tooltipText}</div>}
+                            onClick={option.click}
+                            type={
+                                /* for toggle properties - define some of unique toggle conditions */
+                                mode === 'add-route-mode' ? ((option.id && option.id === 'route_mode' && isAddRouteMode) ? 'primary' : 'default')
+                                : 'default'
+                            }
+                        />
+                    </React.Fragment>
+                   )}
                 </FloatButton.Group>
-                {!disablePlaceMarkers && places.map((marker:any, index : any) => {
+                {enablePlaceMarkers && places.map((marker:any, index : any) => {
                     return (
                         <Marker 
                             key={index} 
