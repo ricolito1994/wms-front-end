@@ -118,7 +118,7 @@ const Barangay = () => {
 
     return (
         <>
-            <div style={{height:'98%'}}>
+            {/*<div style={{height:'98%'}}>*/}
                 {/* isLoading ?
                 <div className="overlay-form-loading">
                     <div className="loader"></div>
@@ -162,7 +162,7 @@ const Barangay = () => {
                         </div>
                     </div>
                 </DataTableV2>
-            </div>
+            {/*</div>*/}
         </>
     );
 }

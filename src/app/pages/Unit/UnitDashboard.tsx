@@ -284,10 +284,10 @@ const UnitDashboard = () => {
                 loadedResult={loadedResult}
                 totalResult={totalResult}
             >
-                { isLoadingUnitData ?
+                {/* isLoadingUnitData ?
                 <div className="overlay-form-loading">
                     <div className="loader"></div>
-                </div> : '' }
+                </div> : '' */}
                 <div style={{height:'10%'}}>
                     <div style={{width:'50%', float:'left'}}>
                         <Input 

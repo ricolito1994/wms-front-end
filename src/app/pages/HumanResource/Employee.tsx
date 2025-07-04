@@ -129,7 +129,7 @@ const Employee = () => {
 
     return (
         <>
-            <div style={{height:'100%'}}>
+            {/*<div style={{height:'100%'}}>*/}
                 {/* isLoading ?
                 <div className="overlay-form-loading">
                     <div className="loader"></div>
@@ -166,7 +166,7 @@ const Employee = () => {
                         </div>
                     </div>
                 </DataTableV2>
-            </div>
+            {/*</div>*/}
         </>
     );
 }

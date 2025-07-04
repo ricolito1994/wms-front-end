@@ -138,7 +138,7 @@ const Purok = () => {
 
     return (
         <>
-            <div style={{height:'98%'}}>
+            {/*<div style={{height:'98%'}}>*/}
                 {/* isLoading ?
                 <div className="overlay-form-loading">
                     <div className="loader"></div>
@@ -223,7 +223,7 @@ const Purok = () => {
                         </div>
                     </div>
                 </DataTableV2>
-            </div>
+            {/*</div>*/}
         </>
     );
 }

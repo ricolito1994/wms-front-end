@@ -137,11 +137,11 @@ const DataTableV2 = (
     }
     return (
         <>
-            {/*<Spin spinning={isLoading} style={{height:'110%'}} />*/}
-            { isLoading ?
+            <Spin spinning={isLoading} style={{height:'100%'}} >
+            {/* isLoading ?
                 <div className="overlay-form-loading"> 
                     <div className="loader"></div>
-                </div> : '' }
+                </div> : ''*/ }
             <div className="data-table-container">
                 {children}
                 <div className="data-table-main-container">
@@ -149,6 +149,8 @@ const DataTableV2 = (
                         dataSource={tableData}
                         columns={columnData}
                         pagination={false}
+                        scroll={{ y: 365 }}
+                        sticky
                     />
                 </div>
                 <div>
@@ -158,6 +160,7 @@ const DataTableV2 = (
                     {paginationButtons.map((value:any, index:any) => renderPagniationLabel(value, index))}
                 </div>
             </div>
+            </Spin>
         </>
 
     )
