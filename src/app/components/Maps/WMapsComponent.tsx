@@ -90,7 +90,7 @@ const WMapsComponent: React.FC <WMapsProps> = (
     const [isLoadingMapData, setIsLoadingMapData] = useState<boolean>(false)
     const [isOpenMapOptions, setIsOpenMapOptions] = useState<boolean>(false);
 
-    const {isLoaded} = useLoadScript ({
+    const {isLoaded, loadError} = useLoadScript ({
         googleMapsApiKey: APIKey
     })
 
@@ -206,7 +206,6 @@ const WMapsComponent: React.FC <WMapsProps> = (
     }, [isLoaded])
 
     useEffect(() => {console.log(places)}, [places])
-
 
     const fetchDirections = (
         waypoints               : any|null      = null, 
