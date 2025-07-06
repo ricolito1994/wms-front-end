@@ -3,7 +3,7 @@ import {
     useEffect, 
     useState 
 } from "react";
-import { Input, Button, Menu } from 'antd';
+import { Input, Button, Menu, Spin } from 'antd';
 import { AppContext } from "context";
 import { UnitContext } from 'context/UnitContext';
 import { UnitService } from 'services/UnitService';
@@ -274,6 +274,7 @@ const UnitDashboard = () => {
                     }
                 }
             />
+            <Spin spinning={isLoadingUnitData} style={{height:'100%'}} >
             <DataTable
                 key={uuidv4()}
                 columnData={columnData}
@@ -324,6 +325,7 @@ const UnitDashboard = () => {
                     </div>
                 </div>
             </DataTable>
+            </Spin>
         </>
     )
 }

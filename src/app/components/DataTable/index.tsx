@@ -62,7 +62,7 @@ const DataTable = (
     return (
         <>
             <div className="data-table-container">
-                {children}
+                {children}<br></br>
                 <div className="data-table-main-container">
                     <Table 
                         dataSource={tableData}
