@@ -16,7 +16,7 @@ const TopTabMenu = (
     tabOptions, 
     currentIndex, 
     setCurrentIndex 
-}: TabOptions) => {
+}: TabOptions): React.ReactElement <TabOptions> => {
     const location = useLocation();
     const navigate = useNavigate();
     const isActiveLink = (index : any) => 
@@ -25,6 +25,9 @@ const TopTabMenu = (
         let loc = location.pathname.split('/')[2]
         let indexLoc = tabOptions.findIndex(x => x.name === loc)
             indexLoc = indexLoc < 0 ? 0 : indexLoc;
+
+        if (indexLoc == 0) navigate(tabOptions[0].link.toString())
+        console.log(indexLoc)
         setCurrentIndex(indexLoc)
     },[currentIndex])
     return (

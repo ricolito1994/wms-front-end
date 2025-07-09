@@ -43,13 +43,13 @@ export abstract class ApiService implements HTTPRequestableInterface {
 
     accessToken: string | null;
     apiClient: AxiosInstance;
-    baseUrl: string;
+    baseUrl: string|undefined;
     abortControllerSignal: any | null;
     methodMap: Record<HTTPMethod, Function>;
 
-    constructor(accessToken: string|null) {
+    constructor(accessToken: string|null, baseURL? : string) {
         this.accessToken = accessToken;
-        this.baseUrl = process.env.REACT_APP_WMS_BASE_URL ?? '';
+        this.baseUrl = baseURL ?? (process.env.REACT_APP_WMS_BASE_URL ?? '');
         this.apiClient = (this.accessToken === '' || ! this.accessToken) ? 
         this.getApiClientWithoutAuthentication() : this.getApiClient();
         this.methodMap = {
@@ -197,6 +197,9 @@ export abstract class ApiService implements HTTPRequestableInterface {
 
     /**
      * HTTP request implemented from HTTPRequestable Interface
+     * you must never name your functions
+     * same with these inherited functions
+     * from HTTPRequestableInterface
      */
     public get <T = any> (url: string, config?: any) : Promise<AxiosResponse <T>> {
         return this.apiClient.get(url, config)
