@@ -6,6 +6,7 @@ import { AppContext } from 'context';
 import UnitContextProvider from '../context/UnitContext';
 import HRContextProvider from 'context/HRContext';
 import LandmarksContextProvider from 'context/LandmarksContext';
+import GenericTabContextProvider from 'context/GenericTabContext';
 // components
 import MainLayout from './components/Layouts/MainLayout';
 import AuthLayout from './components/Layouts/AuthLayout';
@@ -29,6 +30,10 @@ import Address from './pages/Landmarks/Address';
 import Barangay from './pages/Landmarks/Barangay';
 import Purok from './pages/Landmarks/Purok';
 import DashboardLandmarkMaps from './pages/Landmarks/DashboardLandmarkMaps';
+//waste management
+import TruckArrivals from './pages/WasteManagement/ScrappedMaterials';
+import WasteCollection from './pages/WasteManagement/WasteCollection';
+import ScrappedMaterials from './pages/WasteManagement/ScrappedMaterials';
 //authentication page
 import Login from './pages/Login';
 //import { RootState } from 'store';
@@ -133,7 +138,27 @@ const App = () => {
                             </LandmarksContextProvider>
                         )}/>
                     </Route>
-                    <Route path="/waste-management" element={renderElement(<WasteManagement />)}/>
+                    <Route path="/waste-management" element={renderElement(
+                        <GenericTabContextProvider>
+                            <WasteManagement />
+                        </GenericTabContextProvider>
+                    )}>
+                        <Route path="/waste-management/truck-arrivals" element={renderElement(
+                            <GenericTabContextProvider>
+                                <TruckArrivals />
+                            </GenericTabContextProvider>
+                        )}/>
+                        <Route path="/waste-management/waste-collection" element={renderElement(
+                            <GenericTabContextProvider>
+                                <WasteCollection />
+                            </GenericTabContextProvider>
+                        )}/>
+                        <Route path="/waste-management/scrapped-materials" element={renderElement(
+                            <GenericTabContextProvider>
+                                <ScrappedMaterials />
+                            </GenericTabContextProvider>
+                        )}/>
+                    </Route>
                 </Route>
                 <Route path="*" element={<NotFound />} />
             </Routes>
