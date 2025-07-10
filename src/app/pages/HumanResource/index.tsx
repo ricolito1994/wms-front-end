@@ -1,8 +1,8 @@
 import { useContext }from 'react';
 import { Outlet } from 'react-router-dom';
 import { AppContext } from 'context';
-import { HRContext } from '../../../context/HRContext';
-import TopTabMenu from 'app/components/TopTabMenu';
+import { HRContext } from '@/context/HRContext';
+import TopTabMenu from '@/app/components/TopTabMenu';
 
 function HumanResource () {
     const { 

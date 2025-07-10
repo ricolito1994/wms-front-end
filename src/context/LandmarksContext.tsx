@@ -4,7 +4,7 @@ import {
     useState, 
     useContext 
 } from 'react';
-import { AppContext } from 'context';
+import { AppContext } from '@/context';
 
 export const LandmarksContext = createContext<any>(null);
 const LandmarksContextProvider = ({children} : any) => {

@@ -4,9 +4,9 @@ import React, {
     useState 
 } from "react";
 
-import { AppContext } from "context";
+import { AppContext } from "@/context";
 
-import WMapsComponent from "app/components/Maps/WMapsComponent";
+import WMapsComponent from "@/app/components/Maps/WMapsComponent";
 import { Modal, notification, FloatButton, Spin } from 'antd';
 import { 
     DoubleLeftOutlined  , 
@@ -23,9 +23,9 @@ import {
 } from '@ant-design/icons';
 
 const UnitMonitor = () => {
-    const API_KEY   : any                     = process.env.REACT_APP_GOOGLE_API_KEY
-    const LAT       : any                     = process.env.REACT_APP_DEFAULT_LT
-    const LNG       : any                     = process.env.REACT_APP_DEFAULT_LG
+    const API_KEY   : any                     = import.meta.env.REACT_APP_GOOGLE_API_KEY
+    const LAT       : any                     = import.meta.env.REACT_APP_DEFAULT_LT
+    const LNG       : any                     = import.meta.env.REACT_APP_DEFAULT_LG
     const {accessToken}                       = useContext(AppContext);
     const [isAddRouteMode, setIsAddRouteMode] = useState<boolean>(false);
 

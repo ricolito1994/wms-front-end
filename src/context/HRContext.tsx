@@ -4,7 +4,7 @@ import {
     useState, 
     useContext 
 } from 'react';
-import { AppContext } from 'context';
+import { AppContext } from '@/context';
 
 export const HRContext = createContext<any>(null);
 const HRContextProvider = ({children} : any) => {

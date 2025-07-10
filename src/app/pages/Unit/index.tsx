@@ -1,8 +1,8 @@
 import { useContext }from 'react';
 import { Outlet } from 'react-router-dom';
-import { AppContext } from 'context';
+import { AppContext } from '@/context';
 import { UnitContext } from '../../../context/UnitContext';
-import TopTabMenu from 'app/components/TopTabMenu';
+import TopTabMenu from '@/app/components/TopTabMenu';
 
 function Unit () {
     const { 

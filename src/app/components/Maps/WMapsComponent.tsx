@@ -30,11 +30,11 @@ import { Button } from "antd";
 
 import SearchLocationsComponent from "./SearchLocationsComponent";
 import WMapsDirectionsListComponent from "./WMapsDirectionsListComponent";
-import { LandmarksContext } from "context/LandmarksContext";
-import LandmarkService from "services/LandmarkService";
+import { LandmarksContext } from "@/context/LandmarksContext";
+import LandmarkService from "@/services/LandmarkService";
 import { Modal, notification, FloatButton, Spin } from 'antd';
-import PlacesDialog from "app/components/DialogBox/PlacesDialog";
-import { AppContext } from "context";
+import PlacesDialog from "@/app/components/DialogBox/PlacesDialog";
+import { AppContext } from "@/context";
 interface LocationProps {
     lat: number,
     lng: number
@@ -53,9 +53,9 @@ interface WMapsProps {
     mode?                   : any,
 }
 
-const API_KEY: any = process.env.REACT_APP_GOOGLE_API_KEY ?? 'ABCDE123';
-const LAT: any = parseFloat(process.env.REACT_APP_DEFAULT_LT ?? '0.00');
-const LNG: any = parseFloat(process.env.REACT_APP_DEFAULT_LG ?? '0.00');
+const API_KEY: any = import.meta.env.REACT_APP_GOOGLE_API_KEY ?? 'ABCDE123';
+const LAT: any = parseFloat(import.meta.env.REACT_APP_DEFAULT_LT ?? '0.00');
+const LNG: any = parseFloat(import.meta.env.REACT_APP_DEFAULT_LG ?? '0.00');
 
 const WMapsComponent: React.FC <WMapsProps> = (
     {

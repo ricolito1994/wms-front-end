@@ -1,5 +1,5 @@
 
-import persistedReducer from 'reducers'; // Import your persisted reducer
+import persistedReducer from '@/reducers'; // Import your persisted reducer
 import { persistStore } from 'redux-persist';
 import { configureStore } from "@reduxjs/toolkit"
 

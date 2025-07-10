@@ -10,7 +10,7 @@ import {
     Line ,
     Pie,
 } from 'react-chartjs-2';
-import { AppContext } from "context";
+import { AppContext } from "@/context";
 
 const Dashboard = () => {
     const { 

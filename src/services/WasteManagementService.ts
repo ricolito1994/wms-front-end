@@ -1,5 +1,5 @@
 import { ApiService } from "./ApiService";
-import { WASTE_MANAGEMENT } from "constants/api";
+import { WASTE_MANAGEMENT } from "@/constants/api";
 
 export class WasteManagementService extends ApiService 
 {

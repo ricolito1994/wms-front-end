@@ -15,11 +15,11 @@ import {
     PlusOutlined 
     /*CloseOutlined*/ 
 } from '@ant-design/icons';
-import { AppContext } from "context";
-import { LandmarksContext } from "context/LandmarksContext";
-import DataTableV2 from "app/components/DataTableV2";
-import LandmarkService from "services/LandmarkService";
-import BarangayDialog from "app/components/DialogBox/BarangayDialog";
+import { AppContext } from "@/context";
+import { LandmarksContext } from "@/context/LandmarksContext";
+import DataTableV2 from "@/app/components/DataTableV2";
+import LandmarkService from "@/services/LandmarkService";
+import BarangayDialog from "@/app/components/DialogBox/BarangayDialog";
 
 interface BarangayDialogDataProps {
 

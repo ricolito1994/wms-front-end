@@ -4,7 +4,7 @@ import {
     useState 
 } from "react";
 
-import { AppContext } from "context";
+import { AppContext } from "@/context";
 
 const TruckArrivals = () : React.ReactElement => {
 

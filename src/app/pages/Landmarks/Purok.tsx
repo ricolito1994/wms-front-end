@@ -16,12 +16,12 @@ import {
     PlusOutlined 
     /*CloseOutlined*/ 
 } from '@ant-design/icons';
-import { AppContext } from "context";
-import { LandmarksContext } from "context/LandmarksContext";
-import DataTableV2 from "app/components/DataTableV2";
-import LandmarkService from "services/LandmarkService";
-import PurokDialog from "app/components/DialogBox/PurokDialog";
-import WAutoComplete from 'app/components/WAutoComplete';
+import { AppContext } from "@/context";
+import { LandmarksContext } from "@/context/LandmarksContext";
+import DataTableV2 from "@/app/components/DataTableV2";
+import LandmarkService from "@/services/LandmarkService";
+import PurokDialog from "@/app/components/DialogBox/PurokDialog";
+import WAutoComplete from '@/app/components/WAutoComplete';
 import { idText } from "typescript";
 interface PurokDialogDataProps {
 

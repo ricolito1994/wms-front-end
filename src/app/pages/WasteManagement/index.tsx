@@ -3,11 +3,11 @@ import React, {
     useEffect, 
     useState 
 } from "react";
-import { AppContext } from "context";
+import { AppContext } from "@/context";
 //import { WasteManagementService } from "services/WasteManagementService";
 import { Outlet } from 'react-router-dom';
-import { GenericTabContext } from 'context/GenericTabContext';
-import TopTabMenu from 'app/components/TopTabMenu';
+import { GenericTabContext } from '@/context/GenericTabContext';
+import TopTabMenu from '@/app/components/TopTabMenu';
 const WasteManagement = () => {
     const { 
         setIsAuthenticated, 

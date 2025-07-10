@@ -1,8 +1,8 @@
 import { useContext }from 'react';
 import { Outlet } from 'react-router-dom';
 import { AppContext } from 'context';
-import { LandmarksContext } from '../../../context/LandmarksContext';
-import TopTabMenu from 'app/components/TopTabMenu';
+import { LandmarksContext } from '@/context/LandmarksContext';
+import TopTabMenu from '@/app/components/TopTabMenu';
 
 function Landmarks () {
     const { 

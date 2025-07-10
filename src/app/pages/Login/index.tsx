@@ -1,11 +1,11 @@
-import AuthService from 'services/AuthService';
+import AuthService from '@/services/AuthService';
 import { useState, useEffect, useContext } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Form, Input, Button, notification, Spin } from 'antd';
-import { AppContext } from 'context';
+import { AppContext } from '@/context';
 import { useDispatch } from 'react-redux';
-import { setToken } from 'slice/AuthSlice';
-import { userAsync } from 'slice/UserSlice'
+import { setToken } from '@/slice/AuthSlice';
+import { userAsync } from '@/slice/UserSlice'
 import { AppDispatch } from 'store';
 interface LoginCredentials {
     username : String,
@@ -59,10 +59,10 @@ const Login = () => {
         <div className='login-container'>
             <div className='login-form-container'  style={{marginTop:'5%'}}>
                 <div className='login-form-logo-container'>
-                    <img src={`${process.env.PUBLIC_URL}/wms-logo.png?${new Date().getTime()}`} alt="Logo" />
+                    <img src={`${import.meta.env.PUBLIC_URL}/wms-logo.png?${new Date().getTime()}`} alt="Logo" />
                 </div>
                 <div className='login-form-app-title-container'>
-                    {process.env.REACT_APP_NAME} - {process.env.REACT_APP_WMS_VERSION}
+                    {import.meta.env.REACT_APP_NAME} - {import.meta.env.REACT_APP_WMS_VERSION}
                 </div>
                 <div className='login-form-main-container'>
                     <Form 

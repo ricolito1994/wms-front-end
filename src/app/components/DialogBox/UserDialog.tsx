@@ -2,7 +2,7 @@ import {
     useEffect, 
     useContext 
 } from 'react';
-import { HRContext } from 'context/HRContext';
+import { HRContext } from '@/context/HRContext';
 import { 
     Form, 
     Input, 
@@ -10,8 +10,8 @@ import {
     Checkbox, 
     notification /*, Button, Row, Col*/
 } from 'antd';
-import { DatatableContext } from "context/DataTableContext";
-import UserService from 'services/UserService';
+import { DatatableContext } from "@/context/DataTableContext";
+import UserService from '@/services/UserService';
 import DialogBox from './';
 
 const { Option } = Select;

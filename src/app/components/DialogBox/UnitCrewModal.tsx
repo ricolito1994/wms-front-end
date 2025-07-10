@@ -1,12 +1,12 @@
 import { useEffect, useState, useContext } from 'react';
 import { DownOutlined, PlusOutlined ,CloseOutlined } from '@ant-design/icons';
-import { UnitContext } from 'context/UnitContext';
+import { UnitContext } from '@/context/UnitContext';
 import { Button, Checkbox } from 'antd';
-import UserService from 'services/UserService';
-import { UnitService } from 'services/UnitService';
+import UserService from '@/services/UserService';
+import { UnitService } from '@/services/UnitService';
 import WAutoComplete from '../WAutoComplete';
 import DialogBox from './';
-
+import { v4 as uuidv4 } from 'uuid';
 interface UnitCrewDialogProps {
     unitData : any,
     isOpen : boolean,
@@ -31,7 +31,6 @@ const UnitCrewDialog : React.FC <UnitCrewDialogProps> = ({
     const [teamMemberData, setTeamMemberData] = useState<any[]>([]);
     const userService = new UserService(accessToken);
     const unitService = new UnitService(accessToken);
-    const { v4: uuidv4 } = require('uuid');
 
     const addCrewMember = (crew:any|null = null) => {
         setTeamMemberData((prev:any) => [...prev, {

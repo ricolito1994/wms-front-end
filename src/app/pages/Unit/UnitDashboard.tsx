@@ -4,13 +4,13 @@ import {
     useState 
 } from "react";
 import { Input, Button, Menu, Spin } from 'antd';
-import { AppContext } from "context";
-import { UnitContext } from 'context/UnitContext';
-import { UnitService } from 'services/UnitService';
+import { AppContext } from "@/context";
+import { UnitContext } from '@/context/UnitContext';
+import { UnitService } from '@/services/UnitService';
 import { DownOutlined, PlusOutlined /*CloseOutlined*/ } from '@ant-design/icons';
-import DataTable from 'app/components/DataTable';
-import UnitDialog from '../../components/DialogBox/UnitDialog';
-import UnitCrewDialog from "app/components/DialogBox/UnitCrewModal";
+import DataTable from '@/app/components/DataTable';
+import UnitDialog from '@/app/components/DialogBox/UnitDialog';
+import UnitCrewDialog from "@/app/components/DialogBox/UnitCrewModal";
 interface UnitModel {
     id? : Number | null,
     model_name: String,
