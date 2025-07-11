@@ -53,9 +53,9 @@ interface WMapsProps {
     mode?                   : any,
 }
 
-const API_KEY: any = import.meta.env.REACT_APP_GOOGLE_API_KEY ?? 'ABCDE123';
-const LAT: any = parseFloat(import.meta.env.REACT_APP_DEFAULT_LT ?? '0.00');
-const LNG: any = parseFloat(import.meta.env.REACT_APP_DEFAULT_LG ?? '0.00');
+const API_KEY: any = import.meta.env.VITE_GOOGLE_API_KEY ?? 'ABCDE123';
+const LAT: any = parseFloat(import.meta.env.VITE_DEFAULT_LT ?? '0.00');
+const LNG: any = parseFloat(import.meta.env.VITE_DEFAULT_LG ?? '0.00');
 
 const WMapsComponent: React.FC <WMapsProps> = (
     {

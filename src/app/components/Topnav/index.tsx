@@ -35,7 +35,7 @@ const Topnav = () => {
         <div className='topnav'>
             <div className='topnav-container'>
                 <div className='topnav-container-app-name'>
-                    {import.meta.env.REACT_APP_NAME}
+                    {import.meta.env.VITE_APP_NAME}
                 </div>
                 <div className='topnav-container-middle'>
                     
@@ -44,7 +44,7 @@ const Topnav = () => {
                     <div>
                         <div>
                             <img 
-                                src={`${import.meta.env.PUBLIC_URL}/profilepic.png?${new Date().getTime()}`} 
+                                src={`/profilepic.png?${new Date().getTime()}`} 
                                 alt="Logo" 
                                 width='50'
                             />
