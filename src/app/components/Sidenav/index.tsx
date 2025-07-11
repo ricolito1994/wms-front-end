@@ -86,7 +86,7 @@ const Sidenav: React.FC = (): React.ReactElement => {
             {! isMinimized ?
                 <div className="logo-container">
                     <div>
-                        <img src={`${import.meta.env.PUBLIC_URL}/wms-logo.png?${new Date().getTime()}`} alt="Logo" width='100'/>
+                        <img src={`/wms-logo.png?${new Date().getTime()}`} alt="Logo" width='100'/>
                     </div>
                     <div className='version-number'>
                         {import.meta.env.REACT_APP_WMS_VERSION}
@@ -94,7 +94,7 @@ const Sidenav: React.FC = (): React.ReactElement => {
                 </div> :
                 <div className="logo-container">
                     <div>
-                        <img src={`${import.meta.env.PUBLIC_URL}/wms-logo.png?${new Date().getTime()}`} alt="Logo" width='40'/>
+                        <img src={`/wms-logo.png?${new Date().getTime()}`} alt="Logo" width='40'/>
                     </div>
                 </div>    
             }
