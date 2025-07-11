@@ -9,9 +9,9 @@ import {
     Checkbox, 
     notification /*, Button, Row, Col*/
 } from 'antd';
-import { DatatableContext } from "context/DataTableContext";
-import { LandmarksContext } from 'context/LandmarksContext';
-import LandmarkService from 'services/LandmarkService';
+import { DatatableContext } from "@/context/DataTableContext";
+import { LandmarksContext } from '@/context/LandmarksContext';
+import LandmarkService from '@/services/LandmarkService';
 import DialogBox from './';
 
 const { Option } = Select;

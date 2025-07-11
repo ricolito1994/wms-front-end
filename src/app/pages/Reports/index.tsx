@@ -3,7 +3,7 @@ import React, {
     useEffect, 
     useState 
 } from "react";
-import { AppContext } from "context";
+import { AppContext } from "@/context";
 const Reports = () => {
     const { 
         setIsAuthenticated, 

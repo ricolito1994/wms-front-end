@@ -17,12 +17,12 @@ import {
     PlusOutlined 
     /*CloseOutlined*/ 
 } from '@ant-design/icons';
-import { AppContext } from "context";
-import { LandmarksContext } from "context/LandmarksContext";
-import DataTableV2 from "app/components/DataTableV2";
-import LandmarkService from "services/LandmarkService";
-import AddressDialog from "app/components/DialogBox/AddressDialog";
-import WAutoComplete from 'app/components/WAutoComplete';
+import { AppContext } from "@/context";
+import { LandmarksContext } from "@/context/LandmarksContext";
+import DataTableV2 from "@/app/components/DataTableV2";
+import LandmarkService from "@/services/LandmarkService";
+import AddressDialog from "@/app/components/DialogBox/AddressDialog";
+import WAutoComplete from '@/app/components/WAutoComplete';
 
 const Address = () => {
     const { Option } = Select;

@@ -10,11 +10,11 @@ import {
     Checkbox, 
     notification /*, Button, Row, Col*/
 } from 'antd';
-import { AppContext } from "context";
-import { DatatableContext } from "context/DataTableContext";
-import { LandmarksContext } from 'context/LandmarksContext';
-import LandmarkService from 'services/LandmarkService';
-import WAutoComplete from 'app/components/WAutoComplete';
+import { AppContext } from "@/context";
+import { DatatableContext } from "@/context/DataTableContext";
+import { LandmarksContext } from '@/context/LandmarksContext';
+import LandmarkService from '@/services/LandmarkService';
+import WAutoComplete from '@/app/components/WAutoComplete';
 import DialogBox from './';
 
 const { Option } = Select;

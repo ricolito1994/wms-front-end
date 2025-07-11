@@ -3,7 +3,7 @@ import React, {
     useEffect, 
     useMemo
 } from 'react';
-import { useDebounce } from 'hooks/useDebounce.hook';
+import { useDebounce } from '@/hooks/useDebounce.hook';
 import { 
     AutoComplete, 
     Input, 

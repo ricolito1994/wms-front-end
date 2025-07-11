@@ -2,12 +2,13 @@ import { createContext, useEffect, useState } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { RootState } from 'store';
 //import { userAsync } from 'slice/UserSlice'
-import { UserModel, UserDefaults } from 'models/user.model'
-import UserService from 'services/UserService'
+import { UserModel, UserDefaults } from '@/models/user.model'
+import UserService from '@/services/UserService'
 //import { setUser } from 'slice/UserSlice';
-import { clearUser } from 'slice/UserSlice';
-import { clearToken } from 'slice/AuthSlice';
+import { clearUser } from '@/slice/UserSlice';
+import { clearToken } from '@/slice/AuthSlice';
 //import { AppDispatch } from 'store';
+import { v4 as uuidv4 } from 'uuid';
 import {
     Chart as ChartJS,
     CategoryScale,
@@ -43,7 +44,7 @@ const AppContextProvider = ({children} : any) => {
     const [isUserDataLoaded, setIsUserDataLoaded] = useState<boolean>(false);
     const [userData, setUserData] = useState<UserModel>(UserDefaults);
     const [accessToken, setAccessToken] = useState<any>(null);
-    const { v4: uuidv4 } = require('uuid');
+    //const { v4: uuidv4 } = require('uuid');
 
     useEffect (() => {
         const getUserData = async () => {

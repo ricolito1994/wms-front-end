@@ -1,10 +1,10 @@
-import AuthService from 'services/AuthService';
+import AuthService from '@/services/AuthService';
 import { useContext, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { AppContext } from "context";
+import { AppContext } from "@/context";
 import { useDispatch } from 'react-redux';
-import { clearToken } from 'slice/AuthSlice';
-import { clearUser } from 'slice/UserSlice';
+import { clearToken } from '@/slice/AuthSlice';
+import { clearUser } from '@/slice/UserSlice';
 // import { RootState } from 'store';
 const Topnav = () => {
     const { 
@@ -35,7 +35,7 @@ const Topnav = () => {
         <div className='topnav'>
             <div className='topnav-container'>
                 <div className='topnav-container-app-name'>
-                    {process.env.REACT_APP_NAME}
+                    {import.meta.env.REACT_APP_NAME}
                 </div>
                 <div className='topnav-container-middle'>
                     
@@ -44,7 +44,7 @@ const Topnav = () => {
                     <div>
                         <div>
                             <img 
-                                src={`${process.env.PUBLIC_URL}/profilepic.png?${new Date().getTime()}`} 
+                                src={`${import.meta.env.PUBLIC_URL}/profilepic.png?${new Date().getTime()}`} 
                                 alt="Logo" 
                                 width='50'
                             />

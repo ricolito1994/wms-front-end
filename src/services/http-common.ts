@@ -10,7 +10,7 @@ export class HttpCommons {
   constructor (accessToken:string) {
     this.accessToken = accessToken;
     this.apiClient = this.accessToken === '' ? this.getLoginClient() : this.getApiClient();
-    this.baseUrl = process.env.REACT_APP_WMS_BASE_URL
+    this.baseUrl = import.meta.env.VITE_WMS_BASE_URL
   }
 
   protected getLoginClient () : AxiosInstance {

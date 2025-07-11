@@ -2,11 +2,11 @@ import React , {useContext, useEffect} from 'react';
 import { Helmet } from 'react-helmet-async';
 // import { useSelector } from 'react-redux';
 import { Route, Routes, /*useLocation, useNavigate,*/ Navigate } from 'react-router-dom';
-import { AppContext } from 'context';
-import UnitContextProvider from '../context/UnitContext';
-import HRContextProvider from 'context/HRContext';
-import LandmarksContextProvider from 'context/LandmarksContext';
-import GenericTabContextProvider from 'context/GenericTabContext';
+import { AppContext } from '@/context';
+import UnitContextProvider from '@/context/UnitContext';
+import HRContextProvider from '@/context/HRContext';
+import LandmarksContextProvider from '@/context/LandmarksContext';
+import GenericTabContextProvider from '@/context/GenericTabContext';
 // components
 import MainLayout from './components/Layouts/MainLayout';
 import AuthLayout from './components/Layouts/AuthLayout';

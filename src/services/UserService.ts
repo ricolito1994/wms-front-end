@@ -1,7 +1,7 @@
 import { HttpCommons } from "./http-common";
 import axios from "axios";
 
-const BASE_URL = process.env.REACT_APP_WMS_BASE_URL;
+const BASE_URL = import.meta.env.VITE_WMS_BASE_URL;
 class UserService extends HttpCommons {
     humanResource : string = "employee";
     auth: string = "auth";

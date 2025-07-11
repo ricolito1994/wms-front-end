@@ -6,8 +6,8 @@ import React, {
 } from "react";
 import { Modal, Spin } from 'antd';
 import WAutoComplete from "../WAutoComplete";
-import LandmarkService from "services/LandmarkService";
-import { AppContext } from "context";
+import LandmarkService from "@/services/LandmarkService";
+import { AppContext } from "@/context";
 interface SearchLocationsComponentProps {
     searchAction: Function
 }

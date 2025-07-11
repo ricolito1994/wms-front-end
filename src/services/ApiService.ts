@@ -37,7 +37,7 @@ import {
     HTTPMethod, 
     HTTPEnpointType
 } 
-from "models/api.model";
+from "@/models/api.model";
 
 export abstract class ApiService implements HTTPRequestableInterface {
 
@@ -49,7 +49,7 @@ export abstract class ApiService implements HTTPRequestableInterface {
 
     constructor(accessToken: string|null, baseURL? : string) {
         this.accessToken = accessToken;
-        this.baseUrl = baseURL ?? (process.env.REACT_APP_WMS_BASE_URL ?? '');
+        this.baseUrl = baseURL ?? (import.meta.env.VITE_WMS_BASE_URL ?? '');
         this.apiClient = (this.accessToken === '' || ! this.accessToken) ? 
         this.getApiClientWithoutAuthentication() : this.getApiClient();
         this.methodMap = {

@@ -14,7 +14,7 @@ import {
 } from 'antd';
 
 import { LeftOutlined, RightOutlined } from '@ant-design/icons';
-import { DatatableContext } from "context/DataTableContext";
+import { DatatableContext } from "@/context/DataTableContext";
 
 
 interface AdditionalProps {

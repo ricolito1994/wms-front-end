@@ -11,11 +11,11 @@ import {
     Spin
 } from 'antd';
 import { DownOutlined, PlusOutlined /*CloseOutlined*/ } from '@ant-design/icons';
-import { HRContext } from "context/HRContext";
-import UserDialog from "app/components/DialogBox/UserDialog";
-import DataTableV2 from "app/components/DataTableV2";
-import UserService from "services/UserService";
-import { DatatableContext }from 'context/DataTableContext';
+import { HRContext } from "@/context/HRContext";
+import UserDialog from "@/app/components/DialogBox/UserDialog";
+import DataTableV2 from "@/app/components/DataTableV2";
+import UserService from "@/services/UserService";
+import { DatatableContext }from '@/context/DataTableContext';
 
 interface UserModel {
     id? : Number | null,

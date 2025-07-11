@@ -1,6 +1,6 @@
 import { PayloadAction, createAsyncThunk, createSlice } from "@reduxjs/toolkit";
-import { UserModel } from 'models/user.model'
-import UserService from "services/UserService";
+import { UserModel } from '@/models/user.model'
+import UserService from "@/services/UserService";
 
 interface UserState  {
     loading: boolean,

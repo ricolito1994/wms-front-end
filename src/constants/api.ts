@@ -25,7 +25,7 @@ import { HTTPEnpointType } from "models/api.model";
  * 
  */
 
-const BASE_URL = process.env.REACT_APP_WMS_BASE_URL;
+const BASE_URL = import.meta.env.VITE_WMS_BASE_URL ?? '';
 
 const USER: Object = {
     'auth'         : (payload: any):        string => `${BASE_URL}/user/auth`,

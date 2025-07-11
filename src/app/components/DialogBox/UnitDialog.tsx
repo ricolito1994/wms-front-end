@@ -1,6 +1,6 @@
 import { useEffect, useContext } from 'react';
-import { UnitContext } from 'context/UnitContext';
-import { UnitService } from 'services/UnitService';
+import { UnitContext } from '@/context/UnitContext';
+import { UnitService } from '@/services/UnitService';
 import { Form, Input /*, Button, Row, Col*/ } from 'antd';
 import DialogBox from './';
 interface UnitForm {
