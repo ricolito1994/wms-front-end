@@ -23,9 +23,9 @@ import {
 } from '@ant-design/icons';
 
 const UnitMonitor = () => {
-    const API_KEY   : any                     = import.meta.env.REACT_APP_GOOGLE_API_KEY
-    const LAT       : any                     = import.meta.env.REACT_APP_DEFAULT_LT
-    const LNG       : any                     = import.meta.env.REACT_APP_DEFAULT_LG
+    const API_KEY   : any                     = import.meta.env.VITE_GOOGLE_API_KEY
+    const LAT       : any                     = import.meta.env.VITE_DEFAULT_LT
+    const LNG       : any                     = import.meta.env.VITE_DEFAULT_LG
     const {accessToken}                       = useContext(AppContext);
     const [isAddRouteMode, setIsAddRouteMode] = useState<boolean>(false);
 

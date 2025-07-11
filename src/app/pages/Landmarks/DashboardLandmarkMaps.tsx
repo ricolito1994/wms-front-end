@@ -9,9 +9,9 @@ import { LandmarksContext } from "@/context/LandmarksContext";
 import WMapsComponent from "@/app/components/Maps/WMapsComponent";
 
 const DashboardLandmarkMaps: React.FC<any> = (): React.ReactElement => {
-    const API_KEY: any = import.meta.env.REACT_APP_GOOGLE_API_KEY
-    const LAT: any = import.meta.env.REACT_APP_DEFAULT_LT
-    const LNG: any = import.meta.env.REACT_APP_DEFAULT_LG
+    const API_KEY: any = import.meta.env.VITE_GOOGLE_API_KEY
+    const LAT: any = import.meta.env.VITE_DEFAULT_LT
+    const LNG: any = import.meta.env.VITE_DEFAULT_LG
     const {accessToken} = useContext(LandmarksContext)
 
     return (
