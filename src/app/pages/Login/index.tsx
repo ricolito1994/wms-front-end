@@ -59,10 +59,10 @@ const Login = () => {
         <div className='login-container'>
             <div className='login-form-container'  style={{marginTop:'5%'}}>
                 <div className='login-form-logo-container'>
-                    <img src={`${import.meta.env.PUBLIC_URL}/wms-logo.png?${new Date().getTime()}`} alt="Logo" />
+                    <img src={`/wms-logo.png?${new Date().getTime()}`} alt="Logo" />
                 </div>
                 <div className='login-form-app-title-container'>
-                    {import.meta.env.REACT_APP_NAME} - {import.meta.env.REACT_APP_WMS_VERSION}
+                    {import.meta.env.VITE_APP_NAME} - {import.meta.env.VITE_WMS_VERSION}
                 </div>
                 <div className='login-form-main-container'>
                     <Form 
