@@ -1,4 +1,4 @@
-import React , {useContext, useEffect} from 'react';
+import React , {useContext, useEffect, useState} from 'react';
 import { Helmet } from 'react-helmet-async';
 // import { useSelector } from 'react-redux';
 import { Route, Routes, /*useLocation, useNavigate,*/ Navigate } from 'react-router-dom';
@@ -39,6 +39,7 @@ import Login from './pages/Login';
 //import { RootState } from 'store';
 const App = () => {
     const { isAuthenticated, accessToken } = useContext(AppContext);
+    const [ isLoadingPage , setIsLoadingPage ] = useState<boolean>(true);
     //const location = useLocation();
     //const navigate = useNavigate();
     //const auth = useSelector((state: RootState) => state.token)
@@ -48,8 +49,13 @@ const App = () => {
         } else {
             //navigate('/login')
         }
+        setIsLoadingPage(false)
         //console.log(accessToken)
     },[accessToken,isAuthenticated])
+
+    useEffect(()=>{
+        //console.log(isLoading)
+    }, [isLoadingPage])
 
     const renderLayout = () : JSX.Element => {
         return (!accessToken ? <AuthLayout /> : <MainLayout />)
@@ -66,12 +72,12 @@ const App = () => {
             </Helmet>
             <Routes>
                 <Route
-                    element={renderLayout()}
+                    element={!isLoadingPage ? renderLayout() : <>Loading...</>}
                 >
                     <Route path="/login" element={!accessToken ? renderElement(): <Navigate to="/"/>}/> 
                 </Route>
                 <Route
-                    element={renderLayout()}
+                    element={!isLoadingPage ? renderLayout() : <>Loading...</>}
                 >
                     <Route path="/" element={renderElement(<Dashboard />)}/>
                     <Route path="/reports" element={renderElement(<Reports />)} />
