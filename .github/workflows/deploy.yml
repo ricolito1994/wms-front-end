@@ -3,14 +3,14 @@ name: Deploy Frontend
 on:
   push:
     branches:
-      - stable  # adjust if needed
+      - stable
 
 jobs:
   build-and-deploy:
     runs-on: ubuntu-latest
 
     steps:
-      # 1. Checkout frontend code
+      # 1. Checkout repo
       - name: Checkout code
         uses: actions/checkout@v3
 
@@ -20,20 +20,14 @@ jobs:
         with:
           node-version: 18
 
-      # 3. Install dependencies
-      - name: Install dependencies
-        run: npm ci
+      # 3. Install dependencies and build Vite project
+      - name: Build frontend
+        run: |
+          npm ci
+          npm run build
 
-      # 4. Build Vite project
-      - name: Build project
-        run: npm run build
-
-      # 5. List build output (debug)
-      - name: List build output
-        run: ls -la dist
-
-      # 6. Deploy build to EC2 Nginx container
-      - name: Deploy frontend to EC2 Docker
+      # 4. Deploy to EC2 Docker Nginx
+      - name: Deploy to EC2
         uses: appleboy/ssh-action@v0.1.6
         with:
           host: ${{ secrets.EC2_HOST }}
@@ -42,16 +36,16 @@ jobs:
           script: |
             set -euxo pipefail
 
-            FRONTEND_LOCAL_DIST="/home/runner/work/wms-front-end/dist"
-            FRONTEND_REMOTE_DIR="/var/www/frontend"  # this matches your Docker volume mount
+            LOCAL_DIST="${{ github.workspace }}/dist"
+            REMOTE_DIR="/var/www/frontend"
 
-            # Create remote folder if missing
-            sudo mkdir -p "$FRONTEND_REMOTE_DIR"
+            # Ensure volume folder exists
+            sudo mkdir -p "$REMOTE_DIR"
 
-            # Sync dist/ into Docker volume
-            sudo rsync -av --delete "$FRONTEND_LOCAL_DIST/" "$FRONTEND_REMOTE_DIR/"
+            # Copy build into Docker volume
+            sudo rsync -av --delete "$LOCAL_DIST/" "$REMOTE_DIR/"
 
-            # Restart nginx container to pick up new files
+            # Restart Nginx container
             sudo docker restart nginx
 
-            echo "✅ Frontend deployed successfully!"
+            echo "✅ Frontend deployed inside Docker Nginx!"
