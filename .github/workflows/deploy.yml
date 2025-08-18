@@ -1,60 +1,41 @@
-name: Deploy Frontend
+name: Deploy Frontend to EC2
 
 on:
   push:
     branches:
-      - stable  # or your production branch
+      - stable
 
 jobs:
-  build-and-deploy:
+  deploy:
     runs-on: ubuntu-latest
 
     steps:
-      # 1. Checkout code
-      - name: Checkout code
+      - name: Checkout frontend code
         uses: actions/checkout@v3
 
-      # 2. Setup Node.js
       - name: Setup Node.js
         uses: actions/setup-node@v3
         with:
-          node-version: 18
+          node-version: '20'
 
-      # 3. Install frontend dependencies
       - name: Install dependencies
-        working-directory: ./wms-front-end
         run: npm ci
 
-      # 4. Build Vite frontend
       - name: Build frontend
-        working-directory: ./wms-front-end
         run: npm run build
 
-      # 5. Verify build output
-      - name: List dist folder
-        working-directory: ./wms-front-end
-        run: ls -la dist
-
-      # 6. Deploy to EC2 Docker Nginx
-      - name: Deploy frontend to EC2
-        uses: appleboy/ssh-action@v0.1.6
+      - name: Deploy to EC2 via SSH
+        uses: appleboy/ssh-action@v0.1.9
         with:
           host: ${{ secrets.EC2_HOST }}
           username: ${{ secrets.EC2_USER }}
-          key: ${{ secrets.EC2_SSH_KEY }}
+          key: ${{ secrets.EC2_KEY }}
+          port: 22
           script: |
-            set -euxo pipefail
-
-            FRONTEND_LOCAL_DIST="/home/ubuntu/wms-front-end/dist" # Adjust if needed
-            FRONTEND_REMOTE_DIR="/var/www/frontend"  # Your Docker volume mount
-
-            # Ensure remote folder exists
-            sudo mkdir -p "$FRONTEND_REMOTE_DIR"
-
-            # Sync local dist/ into Docker volume (overwrite old files)
-            sudo rsync -av --delete "$FRONTEND_LOCAL_DIST/" "$FRONTEND_REMOTE_DIR/"
-
-            # Restart nginx container to pick up new files
-            sudo docker restart nginx
-
-            echo "✅ Frontend deployed successfully!"
+            # Go to frontend directory on EC2
+            cd /var/www/wms-front-end
+            # Remove old build and replace with new build
+            rm -rf dist/*
+            cp -r /tmp/frontend_build/* dist/
+            # Reload Nginx container
+            docker-compose exec nginx nginx -s reload
