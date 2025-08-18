@@ -45,6 +45,6 @@ jobs:
           host: ${{ secrets.EC2_HOST }}
           username: ${{ secrets.EC2_USER }}
           key: ${{ secrets.EC2_SSH_KEY }}
-          source: "build/**/*"      # React/Vue
+          source: "dist/*"     # React/Vue
           target: "/var/www/wms-front-end"
           strip_components: 1
