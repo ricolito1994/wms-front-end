@@ -1,42 +1,60 @@
-name: 🚀 Deploy Frontend + Backend
+name: Deploy Frontend
 
 on:
   push:
     branches:
-      - stable
+      - stable   # adjust to your default branch
 
 jobs:
-  deploy:
+  build-and-deploy:
     runs-on: ubuntu-latest
 
     steps:
-      # 1. Checkout code
+      # 1. Checkout frontend code
       - name: Checkout code
         uses: actions/checkout@v3
 
-      # 2. Setup Node.js for frontend
+      # 2. Setup Node.js
       - name: Setup Node.js
         uses: actions/setup-node@v3
         with:
           node-version: 18
 
-      # 3. Build frontend (Vite)
-      - name: Build frontend
+      # 3. Prepare env file (optional)
+      - name: Prepare env file
         working-directory: ./wms-front-end
         run: |
-          # Use production env if exists
           if [ -f .env.production ]; then
             cp .env.production .env
           fi
-          npm ci
-          npm run build
 
-      - name: List frontend build output
+      # 4. Install dependencies
+      - name: Install dependencies
+        working-directory: ./wms-front-end
+        run: npm ci
+
+      # 5. Build Vite project
+      - name: Build project
+        working-directory: ./wms-front-end
+        run: npm run build
+
+      # 6. List build output (debug)
+      - name: List build output
         working-directory: ./wms-front-end
         run: ls -la dist
 
-      # 4. Deploy frontend to Docker Nginx
-      - name: Deploy frontend to Docker Nginx
+      # 7. Deploy build to EC2 (Nginx container volume)
+      - name: Deploy to EC2
+        uses: appleboy/scp-action@v0.1.7
+        with:
+          host: ${{ secrets.EC2_HOST }}
+          username: ${{ secrets.EC2_USER }}
+          key: ${{ secrets.EC2_SSH_KEY }}
+          source: "./wms-front-end/dist/*"
+          target: "/var/www/wms-front-end"
+          strip_components: 1
+      # 8. Reload Nginx in Docker
+      - name: Reload Nginx
         uses: appleboy/ssh-action@v0.1.6
         with:
           host: ${{ secrets.EC2_HOST }}
@@ -44,31 +62,5 @@ jobs:
           key: ${{ secrets.EC2_SSH_KEY }}
           script: |
             set -euxo pipefail
-
-            # Copy build to temporary folder on host
-            rm -rf /tmp/frontend_build
-            mkdir -p /tmp/frontend_build
-            scp -r ./wms-front-end/dist/* ${{ secrets.EC2_USER }}@${{ secrets.EC2_HOST }}:/tmp/frontend_build
-
-            # Copy into Nginx container
-            sudo docker cp /tmp/frontend_build/. nginx:/var/www/frontend/
-
-            # Restart Nginx container to refresh files
+            # restart Nginx container to refresh frontend
             sudo docker restart nginx
-
-      # 5. Optional: Deploy backend Laravel (if needed)
-      # - name: Deploy backend
-      #   uses: appleboy/ssh-action@v0.1.6
-      #   with:
-      #     host: ${{ secrets.EC2_HOST }}
-      #     username: ${{ secrets.EC2_USER }}
-      #     key: ${{ secrets.EC2_SSH_KEY }}
-      #     script: |
-      #       set -euxo pipefail
-      #       cd /var/www/wms-back-end
-      #       sudo chown -R ubuntu:ubuntu .
-      #       git reset --hard
-      #       git clean -fd
-      #       git pull origin stable
-      #       sudo docker compose -f docker-compose.prod.yml down
-      #       sudo docker compose -f docker-compose.prod.yml up -d --build --scale wms-app=3
