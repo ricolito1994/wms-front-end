@@ -26,17 +26,9 @@ jobs:
           npm ci
           npm run build
 
-      - name: Upload frontend build via SSH
-        uses: appleboy/ssh-action@v0.1.9
-        with:
-          host: ${{ secrets.EC2_HOST }}
-          username: ${{ secrets.EC2_USER }}
-          key: ${{ secrets.EC2_SSH_KEY }}
-          port: 22
-          script: |
-            mkdir -p /var/www/wms-front-end/dist
-            scp -r dist/* ${{ secrets.EC2_USER }}@${{ secrets.EC2_HOST }}:/var/www/wms-front-end/dist/
-
+      - name: Upload via rsync
+        run: |
+          rsync -avz -e "ssh -i ${{ secrets.EC2_SSH_KEY }} -p 22" dist/ ${{ secrets.EC2_USER }}@${{ secrets.EC2_HOST }}:/var/www/wms-front-end/dist/
 
       # 4. Deploy to EC2 via SSH
       - name: Copy build and reload Nginx
