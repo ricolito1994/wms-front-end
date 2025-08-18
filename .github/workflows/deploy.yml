@@ -1,4 +1,4 @@
-name: Deploy Frontend to EC2
+name: Deploy Frontend
 
 on:
   push:
@@ -6,36 +6,49 @@ on:
       - stable
 
 jobs:
-  deploy:
+  build-and-deploy:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout frontend code
+      # 1. Checkout code
+      - name: Checkout code
         uses: actions/checkout@v3
 
+      # 2. Setup Node.js
       - name: Setup Node.js
         uses: actions/setup-node@v3
         with:
-          node-version: '20'
+          node-version: 18
 
+      # 3. Install dependencies
       - name: Install dependencies
         run: npm ci
 
+      # 4. Build frontend (Vite)
       - name: Build frontend
         run: npm run build
 
-      - name: Deploy to EC2 via SSH
-        uses: appleboy/ssh-action@v0.1.9
+      # 5. List build output (debug)
+      - name: Show build files
+        run: ls -la dist
+
+      # 6. Deploy to EC2
+      - name: Deploy to EC2
+        uses: appleboy/ssh-action@v0.1.6
         with:
           host: ${{ secrets.EC2_HOST }}
           username: ${{ secrets.EC2_USER }}
           key: ${{ secrets.EC2_SSH_KEY }}
-          port: 22
           script: |
-            # Go to frontend directory on EC2
-            cd /var/www/wms-front-end
-            # Remove old build and replace with new build
-            rm -rf dist/*
-            cp -r /tmp/frontend_build/* dist/
-            # Reload Nginx container
-            docker-compose exec nginx nginx -s reload
+            set -euxo pipefail
+
+            FRONTEND_REMOTE_DIR="/var/www/wms-front-end/dist"
+            mkdir -p "$FRONTEND_REMOTE_DIR"
+
+            # Copy build from runner to EC2 host
+            rsync -av --delete "${GITHUB_WORKSPACE}/dist/" "$FRONTEND_REMOTE_DIR/"
+
+            # Restart nginx container
+            docker restart nginx
+
+            echo "✅ Frontend deployed!"
