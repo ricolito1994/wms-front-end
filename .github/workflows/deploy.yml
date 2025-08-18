@@ -26,6 +26,16 @@ jobs:
           npm ci
           npm run build
 
+      - name: Upload frontend build to EC2
+        uses: appleboy/scp-action@v0.1.0
+        with:
+          host: ${{ secrets.EC2_HOST }}
+          username: ${{ secrets.EC2_USER }}
+          key: ${{ secrets.EC2_SSH_KEY }}
+          port: 22
+          source: "dist/*"       # This is on the GitHub runner
+          target: "/var/www/wms-front-end/dist/"  # EC2 path
+
       # 4. Deploy to EC2 via SSH
       - name: Copy build and reload Nginx
         uses: appleboy/ssh-action@v0.1.9
@@ -35,14 +45,7 @@ jobs:
           key: ${{ secrets.EC2_SSH_KEY }}
           port: 22
           script: |
-            # Go to Nginx container
             CONTAINER_ID=$(docker ps -qf "name=nginx")
-            
-            # Remove old frontend files inside container
             docker exec $CONTAINER_ID rm -rf /var/www/frontend/*
-
-            # Copy new build into container
-            docker cp /home/${{ secrets.EC2_USER }}/wms-front-end/dist/. $CONTAINER_ID:/var/www/frontend/
-
-            # Reload Nginx inside container
+            docker cp /var/www/wms-front-end/dist/. $CONTAINER_ID:/var/www/frontend/
             docker exec $CONTAINER_ID nginx -s reload
