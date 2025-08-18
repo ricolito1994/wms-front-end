@@ -26,11 +26,19 @@ jobs:
           npm ci
           npm run build
 
-      - name: Upload via rsync
+      # 4. Save SSH key to a temporary file
+      - name: Save SSH key
         run: |
-          rsync -avz -e "ssh -i *** -p 22" dist/ user@host:/var/www/wms-front-end/dist/
-      # 4. Deploy to EC2 via SSH
-      - name: Copy build and reload Nginx
+          echo "${{ secrets.EC2_SSH_KEY }}" > key.pem
+          chmod 600 key.pem
+
+      # 5. Upload build to EC2 via rsync
+      - name: Upload frontend build
+        run: |
+          rsync -avz -e "ssh -i key.pem -o StrictHostKeyChecking=no -p 22" dist/ ${{ secrets.EC2_USER }}@${{ secrets.EC2_HOST }}:/var/www/wms-front-end/dist/
+
+      # 6. Copy build into Nginx container and reload
+      - name: Deploy to Nginx container
         uses: appleboy/ssh-action@v0.1.9
         with:
           host: ${{ secrets.EC2_HOST }}
