@@ -3,14 +3,14 @@ name: Deploy Frontend
 on:
   push:
     branches:
-      - stable
+      - stable  # or your production branch
 
 jobs:
   build-and-deploy:
     runs-on: ubuntu-latest
 
     steps:
-      # 1. Checkout repo
+      # 1. Checkout code
       - name: Checkout code
         uses: actions/checkout@v3
 
@@ -20,14 +20,23 @@ jobs:
         with:
           node-version: 18
 
-      # 3. Install dependencies and build Vite project
-      - name: Build frontend
-        run: |
-          npm ci
-          npm run build
+      # 3. Install frontend dependencies
+      - name: Install dependencies
+        working-directory: ./wms-front-end
+        run: npm ci
 
-      # 4. Deploy to EC2 Docker Nginx
-      - name: Deploy to EC2
+      # 4. Build Vite frontend
+      - name: Build frontend
+        working-directory: ./wms-front-end
+        run: npm run build
+
+      # 5. Verify build output
+      - name: List dist folder
+        working-directory: ./wms-front-end
+        run: ls -la dist
+
+      # 6. Deploy to EC2 Docker Nginx
+      - name: Deploy frontend to EC2
         uses: appleboy/ssh-action@v0.1.6
         with:
           host: ${{ secrets.EC2_HOST }}
@@ -36,16 +45,16 @@ jobs:
           script: |
             set -euxo pipefail
 
-            LOCAL_DIST="${{ github.workspace }}/dist"
-            REMOTE_DIR="/var/www/frontend"
+            FRONTEND_LOCAL_DIST="/home/ubuntu/wms-front-end/dist" # Adjust if needed
+            FRONTEND_REMOTE_DIR="/var/www/frontend"  # Your Docker volume mount
 
-            # Ensure volume folder exists
-            sudo mkdir -p "$REMOTE_DIR"
+            # Ensure remote folder exists
+            sudo mkdir -p "$FRONTEND_REMOTE_DIR"
 
-            # Copy build into Docker volume
-            sudo rsync -av --delete "$LOCAL_DIST/" "$REMOTE_DIR/"
+            # Sync local dist/ into Docker volume (overwrite old files)
+            sudo rsync -av --delete "$FRONTEND_LOCAL_DIST/" "$FRONTEND_REMOTE_DIR/"
 
-            # Restart Nginx container
+            # Restart nginx container to pick up new files
             sudo docker restart nginx
 
-            echo "✅ Frontend deployed inside Docker Nginx!"
+            echo "✅ Frontend deployed successfully!"
