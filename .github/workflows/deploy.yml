@@ -28,8 +28,7 @@ jobs:
 
       - name: Upload via rsync
         run: |
-          rsync -avz -e "ssh -i ${{ secrets.EC2_SSH_KEY }} -p 22" dist/ ${{ secrets.EC2_USER }}@${{ secrets.EC2_HOST }}:/var/www/wms-front-end/dist/
-
+          rsync -avz -e "ssh -i *** -p 22" dist/ user@host:/var/www/wms-front-end/dist/
       # 4. Deploy to EC2 via SSH
       - name: Copy build and reload Nginx
         uses: appleboy/ssh-action@v0.1.9
