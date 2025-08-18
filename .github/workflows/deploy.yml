@@ -3,48 +3,32 @@ name: Deploy Frontend
 on:
   push:
     branches:
-      - stable   # adjust to your default branch
+      - stable
 
 jobs:
   build-and-deploy:
     runs-on: ubuntu-latest
 
     steps:
-      # 1. Checkout frontend code
-      - name: Checkout code
+      - name: Checkout frontend code
         uses: actions/checkout@v3
 
-      # 2. Setup Node.js
       - name: Setup Node.js
         uses: actions/setup-node@v3
         with:
           node-version: 18
 
-      # 3. Prepare env file (optional)
-      - name: Prepare env file
-        working-directory: ./wms-front-end
-        run: |
-          if [ -f .env.production ]; then
-            cp .env.production .env
-          fi
-
-      # 4. Install dependencies
       - name: Install dependencies
-        working-directory: ./wms-front-end
-        run: npm ci
+        run: |
+          cd wms-front-end
+          npm ci
 
-      # 5. Build Vite project
-      - name: Build project
-        working-directory: ./wms-front-end
-        run: npm run build
+      - name: Build Vite project
+        run: |
+          cd wms-front-end
+          npm run build
 
-      # 6. List build output (debug)
-      - name: List build output
-        working-directory: ./wms-front-end
-        run: ls -la dist
-
-      # 7. Deploy build to EC2 (Nginx container volume)
-      - name: Deploy frontend to Docker Nginx
+      - name: Deploy frontend to EC2 Docker Nginx
         uses: appleboy/ssh-action@v0.1.6
         with:
           host: ${{ secrets.EC2_HOST }}
@@ -54,15 +38,12 @@ jobs:
             set -euxo pipefail
 
             FRONTEND_LOCAL_DIST="${{ github.workspace }}/wms-front-end/dist"
-            FRONTEND_REMOTE_DIR="/var/www/wms-front-end"
+            FRONTEND_REMOTE_DIR="/var/www/frontend"
 
-            # Ensure remote directory exists
             sudo mkdir -p "$FRONTEND_REMOTE_DIR"
-
-            # Copy frontend into Docker volume (overwrites old files)
             sudo rsync -av --delete "$FRONTEND_LOCAL_DIST/" "$FRONTEND_REMOTE_DIR/"
 
-            # Restart the nginx container so it picks up new files
+            # Restart nginx container so it picks up the new frontend
             sudo docker restart nginx
 
             echo "✅ Frontend deployed inside Docker Nginx!"
