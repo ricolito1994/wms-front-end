@@ -1,4 +1,4 @@
-name: Deploy Frontend
+name: Deploy Frontend to Nginx Container
 
 on:
   push:
@@ -6,49 +6,43 @@ on:
       - stable
 
 jobs:
-  build-and-deploy:
+  deploy:
     runs-on: ubuntu-latest
 
     steps:
-      # 1. Checkout code
-      - name: Checkout code
+      # 1. Checkout frontend code
+      - name: Checkout frontend
         uses: actions/checkout@v3
 
       # 2. Setup Node.js
       - name: Setup Node.js
         uses: actions/setup-node@v3
         with:
-          node-version: 18
+          node-version: '20'
 
-      # 3. Install dependencies
-      - name: Install dependencies
-        run: npm ci
-
-      # 4. Build frontend (Vite)
+      # 3. Install dependencies and build
       - name: Build frontend
-        run: npm run build
+        run: |
+          npm ci
+          npm run build
 
-      # 5. List build output (debug)
-      - name: Show build files
-        run: ls -la dist
-
-      # 6. Deploy to EC2
-      - name: Deploy to EC2
-        uses: appleboy/ssh-action@v0.1.6
+      # 4. Deploy to EC2 via SSH
+      - name: Copy build and reload Nginx
+        uses: appleboy/ssh-action@v0.1.9
         with:
           host: ${{ secrets.EC2_HOST }}
           username: ${{ secrets.EC2_USER }}
-          key: ${{ secrets.EC2_SSH_KEY }}
+          key: ${{ secrets.EC2_KEY }}
+          port: 22
           script: |
-            set -euxo pipefail
+            # Go to Nginx container
+            CONTAINER_ID=$(docker ps -qf "name=nginx")
+            
+            # Remove old frontend files inside container
+            docker exec $CONTAINER_ID rm -rf /var/www/frontend/*
 
-            FRONTEND_REMOTE_DIR="/var/www/wms-front-end/dist"
-            mkdir -p "$FRONTEND_REMOTE_DIR"
+            # Copy new build into container
+            docker cp /home/${{ secrets.EC2_USER }}/wms-front-end/dist/. $CONTAINER_ID:/var/www/frontend/
 
-            # Copy build from runner to EC2 host
-            rsync -av --delete "${GITHUB_WORKSPACE}/dist/" "$FRONTEND_REMOTE_DIR/"
-
-            # Restart nginx container
-            docker restart nginx
-
-            echo "✅ Frontend deployed!"
+            # Reload Nginx inside container
+            docker exec $CONTAINER_ID nginx -s reload
