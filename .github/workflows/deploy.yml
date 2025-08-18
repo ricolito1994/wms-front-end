@@ -3,32 +3,37 @@ name: Deploy Frontend
 on:
   push:
     branches:
-      - stable
+      - stable  # adjust if needed
 
 jobs:
   build-and-deploy:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout frontend code
+      # 1. Checkout frontend code
+      - name: Checkout code
         uses: actions/checkout@v3
 
+      # 2. Setup Node.js
       - name: Setup Node.js
         uses: actions/setup-node@v3
         with:
           node-version: 18
 
+      # 3. Install dependencies
       - name: Install dependencies
-        run: |
-          cd wms-front-end
-          npm ci
+        run: npm ci
 
-      - name: Build Vite project
-        run: |
-          cd wms-front-end
-          npm run build
+      # 4. Build Vite project
+      - name: Build project
+        run: npm run build
 
-      - name: Deploy frontend to EC2 Docker Nginx
+      # 5. List build output (debug)
+      - name: List build output
+        run: ls -la dist
+
+      # 6. Deploy build to EC2 Nginx container
+      - name: Deploy frontend to EC2 Docker
         uses: appleboy/ssh-action@v0.1.6
         with:
           host: ${{ secrets.EC2_HOST }}
@@ -37,13 +42,16 @@ jobs:
           script: |
             set -euxo pipefail
 
-            FRONTEND_LOCAL_DIST="${{ github.workspace }}/wms-front-end/dist"
-            FRONTEND_REMOTE_DIR="/var/www/frontend"
+            FRONTEND_LOCAL_DIST="/home/runner/work/wms-front-end/dist"
+            FRONTEND_REMOTE_DIR="/var/www/frontend"  # this matches your Docker volume mount
 
+            # Create remote folder if missing
             sudo mkdir -p "$FRONTEND_REMOTE_DIR"
+
+            # Sync dist/ into Docker volume
             sudo rsync -av --delete "$FRONTEND_LOCAL_DIST/" "$FRONTEND_REMOTE_DIR/"
 
-            # Restart nginx container so it picks up the new frontend
+            # Restart nginx container to pick up new files
             sudo docker restart nginx
 
-            echo "✅ Frontend deployed inside Docker Nginx!"
+            echo "✅ Frontend deployed successfully!"
