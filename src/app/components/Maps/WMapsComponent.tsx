@@ -35,6 +35,7 @@ import LandmarkService from "@/services/LandmarkService";
 import { Modal, notification, FloatButton, Spin } from 'antd';
 import PlacesDialog from "@/app/components/DialogBox/PlacesDialog";
 import { AppContext } from "@/context";
+import { WMapsContext } from "@/context/WMapsContext";
 interface LocationProps {
     lat: number,
     lng: number
@@ -51,6 +52,8 @@ interface WMapsProps {
     enableSearchPlaces?     : boolean,
     isAddRouteMode?         : boolean,
     mode?                   : any,
+    resetMap?               : Function,
+    onSelectRoute?          : Function,
 }
 
 const API_KEY: any = import.meta.env.VITE_GOOGLE_API_KEY ?? 'ABCDE123';
@@ -70,6 +73,7 @@ const WMapsComponent: React.FC <WMapsProps> = (
         accessTokenF                ,
         children                    ,
         isAddRouteMode              ,
+        onSelectRoute               ,
     } 
 ): React.ReactElement => {
     const defaultCenter: LocationProps = {
@@ -77,6 +81,12 @@ const WMapsComponent: React.FC <WMapsProps> = (
         lng: centerMap?.lng ,
     }
     const {accessToken} = useContext(AppContext);
+    const {
+        routeData,
+        setRouteData,
+        isResetMap,
+        setIsResetMap
+    } = useContext(WMapsContext);
     const landmarkService = new LandmarkService(accessToken);
     const [places, setPlaces] = useState<any>([])
     const [isOpenPlacesDialog, setIsOpenPlacesDialog] = useState<any>(false)
@@ -114,9 +124,9 @@ const WMapsComponent: React.FC <WMapsProps> = (
     }, [newWaypoints])
 
     useEffect (() => {
-        //
-        console.log(newDirections)
-    }, [newDirections])
+        //console.log('routeData', routeData)
+        fetchDirections(routeData, setNewDirections)
+    }, [routeData])
     
     useEffect(() => {
         if (! enablePlaceMarkers) return;
@@ -212,7 +222,7 @@ const WMapsComponent: React.FC <WMapsProps> = (
         plotDirectionsCallback  : Function|null = null
     ) => {
         if (waypoints.length < 2) return; // Need at least 2 points to draw a route
-    
+    console.log(waypoints.slice(1, -1))
         const directionsService = new google.maps.DirectionsService();
         directionsService.route(
           {
@@ -270,7 +280,7 @@ const WMapsComponent: React.FC <WMapsProps> = (
     }, [])
 
     const saveDirections = () => {
-
+       // console.log(newWaypoints)
     }
 
     const deleteDirections = (index: any|null = null) => {
@@ -332,19 +342,7 @@ const WMapsComponent: React.FC <WMapsProps> = (
                         waypoints={newWaypoints}
                         setDirections={setNewDirections}
                         setWaypoints={setNewWaypoints}
-                    >
-                        <>
-                            <Button type="primary" >
-                                Save
-                            </Button> &nbsp;
-                            <Button onClick={()=>{
-                                setNewDirections(null)
-                                setNewWaypoints([])
-                            }} type="primary" danger>
-                                Cancel
-                            </Button>
-                        </>
-                    </WMapsDirectionsListComponent>
+                    />
                 )}
 
                 <FloatButton

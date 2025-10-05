@@ -60,6 +60,12 @@ const WASTE_MANAGEMENT : Object = {
     'post'         : ()                  :   HTTPEnpointType => ({endpoint: `${BASE_URL}/wastemanagement`,  req: "post"}),
 }
 
+const UNIT_ROUTE_TEMPLATE: Object = {
+    'index'        : ()                  :   HTTPEnpointType => ({endpoint: `${BASE_URL}/unitroutes`,               req: "get"}),
+    'post'         : ()                  :   HTTPEnpointType => ({endpoint: `${BASE_URL}/unitroutes`,               req: "post"}),
+    'show'         : (unitRoute: Number) :   HTTPEnpointType => ({endpoint: `${BASE_URL}/unitroutes/${unitRoute}`,  req: "get"}),                     
+}
+
 /*
  * I added to export BASE_URL just in case
  * If you want to import this to your service class
@@ -69,6 +75,7 @@ const WASTE_MANAGEMENT : Object = {
  * 
 */
 export { 
+    UNIT_ROUTE_TEMPLATE,
     WASTE_MANAGEMENT,
     BASE_URL,
     LISTING,

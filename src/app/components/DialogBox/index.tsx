@@ -7,6 +7,7 @@ interface DialogBoxProps {
     handleClose: Function | null,
     onSave? : Function | null,
     children : any,
+    width?: any,
 }
 const DialogBox = ({
     isOpen, 
@@ -15,7 +16,8 @@ const DialogBox = ({
     form,
     handleClose,
     onSave,
-    children
+    children,
+    width = 500
 } : DialogBoxProps) => {
     const handleOk = () => {
         //setIsOpen(!isOpen)
@@ -33,6 +35,7 @@ const DialogBox = ({
                 open={isOpen}
                 onOk={handleOk}
                 onCancel={handleCancel}
+                width={width}
             >
                 {children}
             </Modal>

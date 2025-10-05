@@ -17,6 +17,7 @@ import App from '@/app';
 import AppContextProvider from '@/context';
 
 import DatatableContextProvider from '@/context/DataTableContext';
+import WMapsContextProvider from './context/WMapsContext';
 import { HelmetProvider } from 'react-helmet-async';
 import { BrowserRouter } from 'react-router-dom';
 import { Provider } from 'react-redux';
@@ -38,7 +39,9 @@ ReactDOM.createRoot(document.getElementById('root')!).render(
           <AppContextProvider>
             <BrowserRouter>
               <DatatableContextProvider>
-                <App />
+                <WMapsContextProvider>
+                  <App />
+                </WMapsContextProvider>
               </DatatableContextProvider>
             </BrowserRouter>
           </AppContextProvider>

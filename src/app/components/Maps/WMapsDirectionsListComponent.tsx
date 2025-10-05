@@ -4,19 +4,27 @@ import React, {
     useState ,
     useCallback
 } from "react";
-import { Modal, Spin } from 'antd';
+/*import { Modal, Spin } from 'antd';
 import WAutoComplete from "../WAutoComplete";
-import LandmarkService from "services/LandmarkService";
-import { AppContext } from "context";
-import { Button } from "antd";
-import { start } from "node:repl";
+import LandmarkService from "services/LandmarkService";*/
+import { UnitService } from "@/services/UnitService";
+import { AppContext } from "@/context";
+import SaveRouteDialogComponent from "../DialogBox/SaveRouteDialogComponent";
+
+import { 
+    App,
+    Button, 
+    Modal, 
+    Spin 
+} from "antd";
 interface WMapsDirectionsListComponentProps {
     directions    : any,
     waypoints     : any,
-    children      : any,
+    //children      : any,
     omitStrings?  : any [],
     setDirections : any,
     setWaypoints  : any,
+    truckID?      : number|null,
 }
 
 const WMapsDirectionsListComponent: React.FC <WMapsDirectionsListComponentProps>  = (
@@ -26,12 +34,16 @@ const WMapsDirectionsListComponent: React.FC <WMapsDirectionsListComponentProps>
         setDirections,
         setWaypoints,
         directions,
-        children
+        truckID,
+        // children
         // props here
     } 
 ): React.ReactElement => {
-
+    let {accessToken} = useContext(AppContext);
+    let unitService = new UnitService(accessToken)
     let [mainStyle, setMainStyle] = useState<any>({});
+    const [isOpenSaveRouteDialogComponent, setIsOpenSaveRouteDialogComponentog] = useState<boolean>(false)
+    const [saveRouteTemplateParams, setSaveRouteTemplateParams] = useState<any>({});
 
     useEffect(() => {
         setMainStyle({
@@ -40,10 +52,10 @@ const WMapsDirectionsListComponent: React.FC <WMapsDirectionsListComponentProps>
             left:       "5%"      ,
             top:        "15%"     ,
             position:   "absolute",
-            zIndex: 9999,
-            padding: "1%",
-            border: "1px solid #ccc",
-            fontSize: "12px"
+            // zIndex:     9999,
+            padding:    "1%",
+            border:     "1px solid #ccc",
+            fontSize:   "12px"
         })
     }, [])
 
@@ -63,22 +75,17 @@ const WMapsDirectionsListComponent: React.FC <WMapsDirectionsListComponentProps>
         return filteredWords
     }
 
-    const deleteWaypoint = (direction: any) => {
-        /*let startLocation = {
-            lat : direction.start_location.lat(),
-            lng : direction.start_location.lng()
-        }
-        let endLocation = {
-            lat : direction.end_location.lat(),
-            lng : direction.end_location.lng()
-        }
-        setWaypoints((prev:any) => prev.filter((item: any) => 
-            ((item.location.lat !== startLocation.lat) || (item.location.lng !== startLocation.lng))
-        ));
-        setWaypoints((prev:any) => prev.filter((item: any) => 
-            ((item.location.lat !== endLocation.lat) || (item.location.lng !== endLocation.lng))
-        ));
-        setDirections(null);*/
+    const saveTruckRoute = () => {
+        setIsOpenSaveRouteDialogComponentog(true)
+        setSaveRouteTemplateParams({
+            directions: directions,
+            waypoints: waypoints
+        })
+    }
+
+    const clearData = () =>{
+        setDirections(null)
+        setWaypoints([])
     }
 
     return (<>
@@ -89,15 +96,23 @@ const WMapsDirectionsListComponent: React.FC <WMapsDirectionsListComponentProps>
                 return (
                     <li key={index}>
                         {omitString(direction.start_address)} - {omitString(direction.end_address)}
-                        {/*<Button onClick={()=>deleteWaypoint(direction)} type="primary" danger>
-                            delete
-                        </Button> &nbsp;*/}
                     </li>
                 )
             })}
             </ol>
-           {children}
+            <Button type="primary" onClick={saveTruckRoute} >
+                Save
+            </Button> &nbsp;
+            <Button onClick={clearData} type="primary" danger>
+                Cancel
+            </Button>&nbsp;
         </div>
+        <SaveRouteDialogComponent 
+            isOpen={isOpenSaveRouteDialogComponent}
+            setIsOpen={setIsOpenSaveRouteDialogComponentog}
+            saveParams={saveRouteTemplateParams}
+            clearData={clearData}
+        />
     </>)
 }
 
